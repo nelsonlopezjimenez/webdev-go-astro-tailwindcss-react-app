@@ -87,7 +87,7 @@ func (s *Server) startFileWatcher() {
 						strings.HasSuffix(strings.ToLower(event.Name), ".yaml") ||
 						strings.HasSuffix(strings.ToLower(event.Name), ".yml") {
 
-						log.Printf("🔍 Detected file change: %s", event.Name)
+						log.Printf("Detected file change: %s", event.Name)
 
 						// Small delay to ensure file write is complete
 						time.Sleep(100 * time.Millisecond)
@@ -95,15 +95,15 @@ func (s *Server) startFileWatcher() {
 						// Reload course info and lessons
 						if strings.Contains(event.Name, "course.yaml") || strings.Contains(event.Name, "course.yml") {
 							if err := s.loadCourseInfo(); err != nil {
-								log.Printf("❌ Error reloading course info: %v", err)
+								log.Printf("Error reloading course info: %v", err)
 							}
 						}
 
 						if strings.HasSuffix(strings.ToLower(event.Name), ".md") {
 							if err := s.scanLessons(); err != nil {
-								log.Printf("❌ Error rescanning lessons: %v", err)
+								log.Printf("Error rescanning lessons: %v", err)
 							} else {
-								log.Printf("✅ Lessons updated. Found %d lessons", len(s.lessons))
+								log.Printf("Lessons updated. Found %d lessons", len(s.lessons))
 							}
 						}
 					}
@@ -113,7 +113,7 @@ func (s *Server) startFileWatcher() {
 				if !ok {
 					return
 				}
-				log.Printf("❌ File watcher error: %v", err)
+				log.Printf("File watcher error: %v", err)
 			}
 		}
 	}()
@@ -135,7 +135,6 @@ func (s *Server) loadCourseInfo() error {
 				Duration:    "10 weeks",
 				Instructor:  "Course Instructor",
 			}
-			log.Printf("📄 Using default course info (no course.yaml found)")
 			return nil
 		}
 	}
@@ -149,7 +148,7 @@ func (s *Server) loadCourseInfo() error {
 		return fmt.Errorf("failed to parse course file: %w", err)
 	}
 
-	log.Printf("📚 Course info loaded: %s", s.course.Title)
+	log.Printf("Course info loaded: %s", s.course.Title)
 	return nil
 }
 
@@ -157,68 +156,42 @@ func (s *Server) scanLessons() error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	log.Printf("🔍 Scanning lessons directory: %s", s.lessonsDir)
-
 	newLessons := make(map[int]*Lesson)
-	fileCount := 0
 
 	err := filepath.WalkDir(s.lessonsDir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
-			log.Printf("❌ Error walking path %s: %v", path, err)
 			return err
 		}
 
-		// Skip directories
-		if d.IsDir() {
-			log.Printf("📁 Skipping directory: %s", path)
+		if d.IsDir() || !strings.HasSuffix(strings.ToLower(d.Name()), ".md") {
 			return nil
 		}
-
-		// Log all files found
-		log.Printf("📄 Found file: %s", path)
-		fileCount++
-
-		// Check if it's a markdown file
-		if !strings.HasSuffix(strings.ToLower(d.Name()), ".md") {
-			log.Printf("⏭️  Skipping non-markdown file: %s", path)
-			return nil
-		}
-
-		log.Printf("📝 Processing markdown file: %s", path)
 
 		lesson, err := s.parseLesson(path)
 		if err != nil {
-			log.Printf("❌ Error parsing lesson %s: %v", path, err)
+			log.Printf("Error parsing lesson %s: %v", path, err)
 			return nil // Continue processing other lessons
 		}
 
-		log.Printf("📖 Parsed lesson - Week: %d, Title: %s", lesson.Week, lesson.Title)
-
 		if lesson.Week >= 1 && lesson.Week <= 10 {
 			newLessons[lesson.Week] = lesson
-			log.Printf("✅ Added lesson for week %d: %s", lesson.Week, lesson.Title)
+			log.Printf("Loaded lesson for week %d: %s", lesson.Week, lesson.Title)
 		} else {
-			log.Printf("⚠️  Skipping lesson with invalid week number %d: %s", lesson.Week, path)
+			log.Printf("Skipping lesson with invalid week number %d: %s", lesson.Week, path)
 		}
 
 		return nil
 	})
 
 	if err != nil {
-		log.Printf("❌ Error during directory walk: %v", err)
 		return err
 	}
-
-	log.Printf("📊 Scan complete - Files found: %d, Markdown files: %d, Valid lessons: %d",
-		fileCount, fileCount-1 /* subtract directories */, len(newLessons))
 
 	s.lessons = newLessons
 	return nil
 }
 
 func (s *Server) parseLesson(filePath string) (*Lesson, error) {
-	log.Printf("🔍 Parsing lesson file: %s", filePath)
-
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
@@ -237,11 +210,8 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 		FileSize:  fileInfo.Size(),
 	}
 
-	log.Printf("📄 File size: %d bytes", fileInfo.Size())
-
 	// Check if file has frontmatter
 	if strings.HasPrefix(contentStr, "---") {
-		log.Printf("🏷️  Found YAML frontmatter in %s", filePath)
 		parts := strings.SplitN(contentStr, "---", 3)
 		if len(parts) >= 3 {
 			// Parse YAML frontmatter
@@ -251,23 +221,14 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 				lesson.Description = metadata.Description
 				lesson.Week = metadata.Week
 				lesson.Content = strings.TrimSpace(parts[2])
-				log.Printf("✅ YAML parsed - Week: %d, Title: %s", metadata.Week, metadata.Title)
-			} else {
-				log.Printf("❌ Failed to parse YAML frontmatter: %v", err)
 			}
-		} else {
-			log.Printf("⚠️  Malformed frontmatter in %s", filePath)
 		}
-	} else {
-		log.Printf("📝 No frontmatter found, trying filename detection")
 	}
 
 	// If no frontmatter or parsing failed, try to infer from filename
 	if lesson.Week == 0 {
 		filename := filepath.Base(filePath)
-		weekNum := extractWeekFromFilename(filename)
-		log.Printf("🔍 Filename '%s' -> Week number: %d", filename, weekNum)
-		if weekNum > 0 {
+		if weekNum := extractWeekFromFilename(filename); weekNum > 0 {
 			lesson.Week = weekNum
 		}
 	}
@@ -275,41 +236,29 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 	// Set default title if not provided
 	if lesson.Title == "" {
 		lesson.Title = fmt.Sprintf("Week %d Lesson", lesson.Week)
-		log.Printf("📝 Using default title: %s", lesson.Title)
 	}
 
 	// Use full content if no frontmatter was found
 	if lesson.Content == "" {
 		lesson.Content = contentStr
-		log.Printf("📄 Using full file content (no frontmatter)")
 	}
 
-	if lesson.Week == 0 {
-		log.Printf("❌ Could not determine week number for %s", filePath)
-		return nil, fmt.Errorf("could not determine week number for %s", filePath)
-	}
-
-	log.Printf("✅ Successfully parsed lesson: Week %d, Title: %s", lesson.Week, lesson.Title)
 	return lesson, nil
 }
 
 func extractWeekFromFilename(filename string) int {
-	log.Printf("🔍 Extracting week from filename: %s", filename)
-
 	// Try to extract week number from filename patterns like:
 	// week1.md, week-1.md, 01-lesson.md, lesson_week_1.md, etc.
 	lower := strings.ToLower(filename)
 
 	// Remove extension
 	lower = strings.TrimSuffix(lower, ".md")
-	log.Printf("   After removing .md: %s", lower)
 
 	// Look for patterns
 	patterns := []string{"week", "lesson", "chapter"}
 
 	for _, pattern := range patterns {
 		if strings.Contains(lower, pattern) {
-			log.Printf("   Found pattern '%s'", pattern)
 			// Extract numbers from the string
 			var num string
 			for _, char := range lower {
@@ -317,15 +266,12 @@ func extractWeekFromFilename(filename string) int {
 					num += string(char)
 				}
 			}
-			log.Printf("   Extracted number string: %s", num)
-			if weekNum, err := strconv.Atoi(num); err == nil && weekNum >= 1 && weekNum <= 10 {
-				log.Printf("   ✅ Week number: %d", weekNum)
+			if weekNum, err := strconv.Atoi(num); err == nil && weekNum >= 1 && weekNum <= 100 {
 				return weekNum
 			}
 		}
 	}
 
-	log.Printf("   ❌ No valid week number found")
 	return 0
 }
 
@@ -344,7 +290,7 @@ func (s *Server) handleLessons(w http.ResponseWriter, r *http.Request) {
 
 	// Convert map to slice and sort by week
 	var lessons []*Lesson
-	for i := 1; i <= 10; i++ {
+	for i := 1; i <= 100; i++ { // Check up to 100 weeks
 		if lesson, exists := s.lessons[i]; exists {
 			lessons = append(lessons, lesson)
 		}
@@ -359,7 +305,7 @@ func (s *Server) handleLesson(w http.ResponseWriter, r *http.Request) {
 	weekStr := vars["week"]
 
 	week, err := strconv.Atoi(weekStr)
-	if err != nil || week < 1 || week > 10 {
+	if err != nil || week < 1 || week > 100 { // Allow up to 100 weeks
 		http.Error(w, "Invalid week number", http.StatusBadRequest)
 		return
 	}

@@ -12,7 +12,39 @@ export async function getStaticPaths() {
   }
   return paths;
 }
-
+// export async function getStaticPaths() {
+//   // Fetch available lessons from API to generate paths dynamically
+//   try {
+//     const API_BASE = 'http://localhost:8080/api';
+//     const response = await fetch(`${API_BASE}/lessons`);
+    
+//     if (response.ok) {
+//       const lessons = await response.json();
+//       // Generate paths based on actual available lessons
+//       const paths = lessons.map(lesson => ({
+//         params: { week: lesson.week.toString() }
+//       }));
+      
+//       // Also add paths for weeks 1-50 to handle future lessons
+//       for (let week = 1; week <= 50; week++) {
+//         if (!paths.some(p => p.params.week === week.toString())) {
+//           paths.push({ params: { week: week.toString() } });
+//         }
+//       }
+      
+//       return paths;
+//     }
+//   } catch (error) {
+//     console.error('Failed to fetch lessons for static paths:', error);
+//   }
+  
+//   // Fallback: generate paths for weeks 1-50
+//   const fallbackPaths = [];
+//   for (let week = 1; week <= 50; week++) {
+//     fallbackPaths.push({ params: { week: week.toString() } });
+//   }
+//   return fallbackPaths;
+// }
 const { week } = Astro.params;
 
 // Fetch lesson data
