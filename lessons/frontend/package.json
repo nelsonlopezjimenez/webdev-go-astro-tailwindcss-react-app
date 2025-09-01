@@ -1,5 +1,5 @@
 {
-  "name": "webdev-course-app-frontend",
+  "name": "course-app-frontend",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -7,17 +7,21 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "build:watch": "nodemon --watch ../lessons --ext md --exec \"npm run build\"",
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/react": "^3.0.0",
-    "@astrojs/tailwind": "^5.0.0",
+    "@astrojs/react": "^3.6.2",
+    "@astrojs/tailwind": "^5.1.1",
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "astro": "^4.0.0",
+    "astro": "^4.16.19",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "tailwindcss": "^3.0.0",
     "marked": "^9.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
