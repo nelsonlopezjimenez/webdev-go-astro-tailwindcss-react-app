@@ -1,7 +1,7 @@
 ---
 title: "Data Types and Variables WEEK 16"
 description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
-week: 2
+week: 10
 ---
 
 # Data Types and Variables WEEK 16

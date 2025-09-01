@@ -1,7 +1,7 @@
 ---
 title: "Data Types and Variables WEEK 05"
 description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
-week: 2
+week: 5
 ---
 
 # Data Types and Variables WEEK 05
