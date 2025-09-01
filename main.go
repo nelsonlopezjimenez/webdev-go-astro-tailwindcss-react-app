@@ -11,8 +11,10 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"gopkg.in/yaml.v3"
@@ -32,6 +34,7 @@ type Lesson struct {
 	Content     string    `json:"content"`
 	CreatedAt   time.Time `json:"created_at"`
 	FilePath    string    `json:"file_path"`
+	FileSize    int64     `json:"file_size"`
 }
 
 type LessonMetadata struct {
@@ -44,26 +47,96 @@ type Server struct {
 	lessonsDir string
 	course     Course
 	lessons    map[int]*Lesson
+	mutex      sync.RWMutex
+	watcher    *fsnotify.Watcher
 }
 
-func NewServer(lessonsDir string) *Server {
-	return &Server{
+func NewServer(lessonsDir string) (*Server, error) {
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		return nil, fmt.Errorf("failed to create file watcher: %w", err)
+	}
+
+	server := &Server{
 		lessonsDir: lessonsDir,
 		lessons:    make(map[int]*Lesson),
+		watcher:    watcher,
 	}
+
+	// Add the lessons directory to the watcher
+	err = watcher.Add(lessonsDir)
+	if err != nil {
+		return nil, fmt.Errorf("failed to watch lessons directory: %w", err)
+	}
+
+	return server, nil
+}
+
+func (s *Server) startFileWatcher() {
+	go func() {
+		for {
+			select {
+			case event, ok := <-s.watcher.Events:
+				if !ok {
+					return
+				}
+
+				// Only react to write and create events for .md and .yaml files
+				if event.Has(fsnotify.Write) || event.Has(fsnotify.Create) {
+					if strings.HasSuffix(strings.ToLower(event.Name), ".md") ||
+						strings.HasSuffix(strings.ToLower(event.Name), ".yaml") ||
+						strings.HasSuffix(strings.ToLower(event.Name), ".yml") {
+
+						log.Printf("Detected file change: %s", event.Name)
+
+						// Small delay to ensure file write is complete
+						time.Sleep(100 * time.Millisecond)
+
+						// Reload course info and lessons
+						if strings.Contains(event.Name, "course.yaml") || strings.Contains(event.Name, "course.yml") {
+							if err := s.loadCourseInfo(); err != nil {
+								log.Printf("Error reloading course info: %v", err)
+							}
+						}
+
+						if strings.HasSuffix(strings.ToLower(event.Name), ".md") {
+							if err := s.scanLessons(); err != nil {
+								log.Printf("Error rescanning lessons: %v", err)
+							} else {
+								log.Printf("Lessons updated. Found %d lessons", len(s.lessons))
+							}
+						}
+					}
+				}
+
+			case err, ok := <-s.watcher.Errors:
+				if !ok {
+					return
+				}
+				log.Printf("File watcher error: %v", err)
+			}
+		}
+	}()
 }
 
 func (s *Server) loadCourseInfo() error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	courseFile := filepath.Join(s.lessonsDir, "course.yaml")
 	if _, err := os.Stat(courseFile); os.IsNotExist(err) {
-		// Default course info if file doesn't exist
-		s.course = Course{
-			Title:       "Programming Fundamentals",
-			Description: "A comprehensive 10-week course covering programming fundamentals",
-			Duration:    "10 weeks",
-			Instructor:  "Course Instructor",
+		// Try .yml extension
+		courseFile = filepath.Join(s.lessonsDir, "course.yml")
+		if _, err := os.Stat(courseFile); os.IsNotExist(err) {
+			// Default course info if file doesn't exist
+			s.course = Course{
+				Title:       "Programming Fundamentals",
+				Description: "A comprehensive 10-week course covering programming fundamentals",
+				Duration:    "10 weeks",
+				Instructor:  "Course Instructor",
+			}
+			return nil
 		}
-		return nil
 	}
 
 	data, err := os.ReadFile(courseFile)
@@ -75,11 +148,15 @@ func (s *Server) loadCourseInfo() error {
 		return fmt.Errorf("failed to parse course file: %w", err)
 	}
 
+	log.Printf("Course info loaded: %s", s.course.Title)
 	return nil
 }
 
 func (s *Server) scanLessons() error {
-	s.lessons = make(map[int]*Lesson)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	newLessons := make(map[int]*Lesson)
 
 	err := filepath.WalkDir(s.lessonsDir, func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
@@ -97,13 +174,21 @@ func (s *Server) scanLessons() error {
 		}
 
 		if lesson.Week >= 1 && lesson.Week <= 10 {
-			s.lessons[lesson.Week] = lesson
+			newLessons[lesson.Week] = lesson
+			log.Printf("Loaded lesson for week %d: %s", lesson.Week, lesson.Title)
+		} else {
+			log.Printf("Skipping lesson with invalid week number %d: %s", lesson.Week, path)
 		}
 
 		return nil
 	})
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	s.lessons = newLessons
+	return nil
 }
 
 func (s *Server) parseLesson(filePath string) (*Lesson, error) {
@@ -112,10 +197,17 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 		return nil, err
 	}
 
+	// Get file info
+	fileInfo, err := os.Stat(filePath)
+	if err != nil {
+		return nil, err
+	}
+
 	contentStr := string(content)
 	lesson := &Lesson{
 		FilePath:  filePath,
-		CreatedAt: time.Now(),
+		CreatedAt: fileInfo.ModTime(),
+		FileSize:  fileInfo.Size(),
 	}
 
 	// Check if file has frontmatter
@@ -151,11 +243,6 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 		lesson.Content = contentStr
 	}
 
-	// Get file modification time
-	if stat, err := os.Stat(filePath); err == nil {
-		lesson.CreatedAt = stat.ModTime()
-	}
-
 	return lesson, nil
 }
 
@@ -163,13 +250,13 @@ func extractWeekFromFilename(filename string) int {
 	// Try to extract week number from filename patterns like:
 	// week1.md, week-1.md, 01-lesson.md, lesson_week_1.md, etc.
 	lower := strings.ToLower(filename)
-	
+
 	// Remove extension
 	lower = strings.TrimSuffix(lower, ".md")
-	
+
 	// Look for patterns
 	patterns := []string{"week", "lesson", "chapter"}
-	
+
 	for _, pattern := range patterns {
 		if strings.Contains(lower, pattern) {
 			// Extract numbers from the string
@@ -184,21 +271,22 @@ func extractWeekFromFilename(filename string) int {
 			}
 		}
 	}
-	
+
 	return 0
 }
 
 func (s *Server) handleCourse(w http.ResponseWriter, r *http.Request) {
+	s.mutex.RLock()
+	course := s.course
+	s.mutex.RUnlock()
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(s.course)
+	json.NewEncoder(w).Encode(course)
 }
 
 func (s *Server) handleLessons(w http.ResponseWriter, r *http.Request) {
-	// Rescan lessons to pick up any new files
-	if err := s.scanLessons(); err != nil {
-		http.Error(w, "Failed to scan lessons", http.StatusInternalServerError)
-		return
-	}
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 
 	// Convert map to slice and sort by week
 	var lessons []*Lesson
@@ -215,20 +303,17 @@ func (s *Server) handleLessons(w http.ResponseWriter, r *http.Request) {
 func (s *Server) handleLesson(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	weekStr := vars["week"]
-	
+
 	week, err := strconv.Atoi(weekStr)
 	if err != nil || week < 1 || week > 10 {
 		http.Error(w, "Invalid week number", http.StatusBadRequest)
 		return
 	}
 
-	// Rescan lessons to pick up any new files
-	if err := s.scanLessons(); err != nil {
-		http.Error(w, "Failed to scan lessons", http.StatusInternalServerError)
-		return
-	}
-
+	s.mutex.RLock()
 	lesson, exists := s.lessons[week]
+	s.mutex.RUnlock()
+
 	if !exists {
 		http.Error(w, "Lesson not found", http.StatusNotFound)
 		return
@@ -239,20 +324,21 @@ func (s *Server) handleLesson(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
-	// Rescan lessons to get latest data
-	if err := s.scanLessons(); err != nil {
-		http.Error(w, "Failed to scan lessons", http.StatusInternalServerError)
-		return
-	}
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
 
 	syllabus := struct {
-		Course  Course             `json:"course"`
-		Lessons map[int]*Lesson    `json:"lessons"`
-		Weeks   []int             `json:"weeks"`
+		Course      Course          `json:"course"`
+		Lessons     map[int]*Lesson `json:"lessons"`
+		Weeks       []int           `json:"weeks"`
+		LastUpdated time.Time       `json:"last_updated"`
+		TotalFiles  int             `json:"total_files"`
 	}{
-		Course:  s.course,
-		Lessons: s.lessons,
-		Weeks:   make([]int, 0, 10),
+		Course:      s.course,
+		Lessons:     s.lessons,
+		Weeks:       make([]int, 0, 10),
+		LastUpdated: time.Now(),
+		TotalFiles:  len(s.lessons),
 	}
 
 	// Add available weeks in order
@@ -267,6 +353,33 @@ func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(syllabus)
 }
 
+func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
+	status := struct {
+		Status         string    `json:"status"`
+		LessonsDir     string    `json:"lessons_dir"`
+		TotalLessons   int       `json:"total_lessons"`
+		LastScanned    time.Time `json:"last_scanned"`
+		AvailableWeeks []int     `json:"available_weeks"`
+	}{
+		Status:         "healthy",
+		LessonsDir:     s.lessonsDir,
+		TotalLessons:   len(s.lessons),
+		LastScanned:    time.Now(),
+		AvailableWeeks: make([]int, 0, len(s.lessons)),
+	}
+
+	for week := range s.lessons {
+		status.AvailableWeeks = append(status.AvailableWeeks, week)
+	}
+	sort.Ints(status.AvailableWeeks)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(status)
+}
+
 func (s *Server) setupRoutes() http.Handler {
 	r := mux.NewRouter()
 
@@ -276,6 +389,7 @@ func (s *Server) setupRoutes() http.Handler {
 	api.HandleFunc("/lessons", s.handleLessons).Methods("GET")
 	api.HandleFunc("/lessons/{week:[0-9]+}", s.handleLesson).Methods("GET")
 	api.HandleFunc("/syllabus", s.handleSyllabus).Methods("GET")
+	api.HandleFunc("/status", s.handleStatus).Methods("GET")
 
 	// CORS middleware
 	corsHandler := handlers.CORS(
@@ -285,6 +399,10 @@ func (s *Server) setupRoutes() http.Handler {
 	)(r)
 
 	return corsHandler
+}
+
+func (s *Server) close() error {
+	return s.watcher.Close()
 }
 
 func main() {
@@ -298,7 +416,11 @@ func main() {
 		log.Fatal("Failed to create lessons directory:", err)
 	}
 
-	server := NewServer(lessonsDir)
+	server, err := NewServer(lessonsDir)
+	if err != nil {
+		log.Fatal("Failed to create server:", err)
+	}
+	defer server.close()
 
 	// Load course information
 	if err := server.loadCourseInfo(); err != nil {
@@ -310,9 +432,19 @@ func main() {
 		log.Fatal("Failed to scan lessons:", err)
 	}
 
-	log.Printf("Starting server on :8080")
-	log.Printf("Lessons directory: %s", lessonsDir)
-	log.Printf("Found %d lessons", len(server.lessons))
+	// Start file watcher
+	server.startFileWatcher()
+
+	log.Printf("🚀 Server starting on :8080")
+	log.Printf("📁 Lessons directory: %s", lessonsDir)
+	log.Printf("📚 Found %d lessons", len(server.lessons))
+	log.Printf("👀 File watcher active - will detect new lessons automatically")
+	log.Printf("🔗 Available endpoints:")
+	log.Printf("   GET /api/course - Course information")
+	log.Printf("   GET /api/lessons - All lessons")
+	log.Printf("   GET /api/lessons/{week} - Specific lesson")
+	log.Printf("   GET /api/syllabus - Complete syllabus")
+	log.Printf("   GET /api/status - Server status")
 
 	handler := server.setupRoutes()
 	log.Fatal(http.ListenAndServe(":8080", handler))
