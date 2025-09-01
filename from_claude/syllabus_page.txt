@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Fetch syllabus data
+const API_BASE = 'http://localhost:8080/api';
+let syllabusData = null;
+
+try {
+  const response = await fetch(`${API_BASE}/syllabus`);
+  if (response.ok) {
+    syllabusData = await response.json();
+  }
+} catch (error) {
+  console.error('Failed to fetch syllabus data:', error);
+}
+---
+
+<Layout title="Course Syllabus">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">Course Syllabus</h1>
+      
+      <!-- Course Information -->
+      <div class="border-b pb-6 mb-6">
+        <h2 class="text-2xl font-semibold text-blue-800 mb-4">Course Information</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-2">Course Title</h3>
+            <p class="text-gray-600">{syllabusData?.course?.title || 'Programming Fundamentals'}</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-2">Duration</h3>
+            <p class="text-gray-600">{syllabusData?.course?.duration || '10 weeks'}</p>
+          </div>
+          <div>
+            <h3 class="font-semibold text-gray-700 mb-2">Instructor</h3>
+            <p class="text-gray-600">{syllabusData?.course?.instructor || 'Course Instructor'}</p>
+          </div>
+        </div>
+        
+        {syllabusData?.course?.description && (
+          <div class="mt-4">
+            <h3 class="font-semibold text-gray-700 mb-2">Description</h3>
+            <p class="text-gray-600 leading-relaxed">{syllabusData.course.description}</p>
+          </div>
+        )}
+      </div>
+
+      <!-- Weekly Schedule -->
+      <div>
+        <h2 class="text-2xl font-semibold text-blue-800 mb-6">Weekly Schedule</h2>
+        <div class="space-y-4">
+          {Array.from({length: 10}, (_, i) => i + 1).map(week => {
+            const lesson = syllabusData?.lessons?.[week];
+            const isAvailable = lesson !== undefined;
+            
+            return (
+              <div class={`border rounded-lg p-6 ${
+                isAvailable 
+                  ? 'border-green-200 bg-green-50' 
+                  : 'border-gray-200 bg-gray-50'
+              }`}>
+                <div class="flex items-center justify-between">
+                  <div class="flex-1">
+                    <h3 class={`text-lg font-semibold mb-2 ${
+                      isAvailable ? 'text-green-800' : 'text-gray-500'
+                    }`}>
+                      Week {week}: {lesson?.title || 'Lesson Coming Soon'}
+                    </h3>
+                    
+                    {lesson?.description && (
+                      <p class="text-gray-700 mb-3">{lesson.description}</p>
+                    )}
+                    
+                    {!isAvailable && (
+                      <p class="text-gray-500 text-sm">This lesson is not yet available</p>
+                    )}
+                    
+                    {lesson?.created_at && (
+                      <p class="text-sm text-gray-600">
+                        Last updated: {new Date(lesson.created_at).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                  
+                  <div class="ml-6">
+                    {isAvailable ? (
+                      <a 
+                        href={`/lessons/${week}`}
+                        class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+                      >
+                        View Lesson
+                      </a>
+                    ) : (
+                      <div class="bg-gray-300 text-gray-500 px-4 py-2 rounded-lg cursor-not-allowed">
+                        Not Available
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Course Statistics -->
+      {syllabusData && (
+        <div class="mt-8 pt-6 border-t">
+          <h2 class="text-xl font-semibold text-gray-800 mb-4">Course Statistics</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            <div class="bg-blue-100 p-4 rounded-lg text-center">
+              <div class="text-2xl font-bold text-blue-800">
+                {syllabusData.weeks?.length || 0}
+              </div>
+              <div class="text-blue-600">Lessons Available</div>
+            </div>
+            <div class="bg-green-100 p-4 rounded-lg text-center">
+              <div class="text-2xl font-bold text-green-800">
+                {Math.round(((syllabusData.weeks?.length || 0) / 10) * 100)}%
+              </div>
+              <div class="text-green-600">Course Complete</div>
+            </div>
+            <div class="bg-purple-100 p-4 rounded-lg text-center">
+              <div class="text-2xl font-bold text-purple-800">10</div>
+              <div class="text-purple-600">Total Weeks</div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</Layout>

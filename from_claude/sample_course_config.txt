@@ -1,0 +1,4 @@
+title: "Programming Fundamentals"
+description: "A comprehensive 10-week course covering programming fundamentals, data structures, algorithms, and best practices. Perfect for beginners looking to build a strong foundation in computer science."
+duration: "10 weeks"
+instructor: "Dr. Sarah Johnson"

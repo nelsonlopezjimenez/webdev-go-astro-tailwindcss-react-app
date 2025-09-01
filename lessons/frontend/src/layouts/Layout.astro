@@ -1,0 +1,155 @@
+---
+export interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Course Management System" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+    <nav class="bg-blue-600 text-white shadow-lg">
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">
+            <a href="/" class="hover:text-blue-200">Course Portal</a>
+          </h1>
+          <div class="space-x-6">
+            <a href="/" class="hover:text-blue-200 transition-colors">Home</a>
+            <a href="/syllabus" class="hover:text-blue-200 transition-colors">Syllabus</a>
+            <a href="/lessons" class="hover:text-blue-200 transition-colors">Lessons</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+    
+    <main class="container mx-auto px-6 py-8">
+      <slot />
+    </main>
+    
+    <footer class="bg-gray-800 text-white mt-16">
+      <div class="container mx-auto px-6 py-8 text-center">
+        <p>&copy; 2024 Course Portal. Built with Astro and Go.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  html {
+    font-family: system-ui, sans-serif;
+  }
+  
+  .markdown-content {
+    @apply max-w-none text-gray-800 leading-relaxed;
+  }
+  
+  .markdown-content h1 {
+    @apply text-4xl font-bold text-blue-800 mt-8 mb-6 border-b border-blue-200 pb-2;
+  }
+  
+  .markdown-content h2 {
+    @apply text-3xl font-semibold text-blue-700 mt-8 mb-4;
+  }
+  
+  .markdown-content h3 {
+    @apply text-2xl font-semibold text-blue-600 mt-6 mb-3;
+  }
+  
+  .markdown-content h4 {
+    @apply text-xl font-medium text-blue-500 mt-4 mb-2;
+  }
+  
+  .markdown-content p {
+    @apply mb-4 leading-7 text-gray-700;
+  }
+  
+  .markdown-content ul {
+    @apply mb-6 ml-6 space-y-2;
+  }
+  
+  .markdown-content ol {
+    @apply mb-6 ml-6 space-y-2;
+  }
+  
+  .markdown-content li {
+    @apply text-gray-700 leading-6;
+  }
+  
+  .markdown-content ul li {
+    @apply list-disc;
+  }
+  
+  .markdown-content ol li {
+    @apply list-decimal;
+  }
+  
+  .markdown-content strong {
+    @apply font-semibold text-gray-900;
+  }
+  
+  .markdown-content em {
+    @apply italic text-gray-600;
+  }
+  
+  .markdown-content code {
+    @apply bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono border;
+  }
+  
+  .markdown-content pre {
+    @apply bg-gray-900 text-gray-100 p-6 rounded-lg overflow-x-auto mb-6 shadow-lg;
+  }
+  
+  .markdown-content pre code {
+    @apply bg-transparent text-gray-100 p-0 border-none font-mono;
+  }
+  
+  .markdown-content blockquote {
+    @apply border-l-4 border-blue-500 pl-6 py-2 mb-6 bg-blue-50 italic text-blue-800;
+  }
+  
+  .markdown-content table {
+    @apply w-full border-collapse border border-gray-300 mb-6;
+  }
+  
+  .markdown-content th {
+    @apply border border-gray-300 bg-gray-100 px-4 py-2 font-semibold text-left;
+  }
+  
+  .markdown-content td {
+    @apply border border-gray-300 px-4 py-2;
+  }
+  
+  .markdown-content a {
+    @apply text-blue-600 hover:text-blue-800 underline transition-colors;
+  }
+  
+  .markdown-content hr {
+    @apply border-t-2 border-gray-200 my-8;
+  }
+  
+  /* Code language specific styling */
+  .markdown-content .language-python {
+    @apply text-green-300;
+  }
+  
+  .markdown-content .language-javascript {
+    @apply text-yellow-300;
+  }
+  
+  .markdown-content .language-html {
+    @apply text-blue-300;
+  }
+  
+  .markdown-content .language-css {
+    @apply text-pink-300;
+  }
+</style>

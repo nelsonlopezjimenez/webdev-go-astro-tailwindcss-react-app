@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Fetch course information
+const API_BASE = 'http://localhost:8080/api';
+let course = null;
+let lessons = [];
+
+try {
+  const courseRes = await fetch(`${API_BASE}/course`);
+  const lessonsRes = await fetch(`${API_BASE}/lessons`);
+  
+  if (courseRes.ok) {
+    course = await courseRes.json();
+  }
+  
+  if (lessonsRes.ok) {
+    lessons = await lessonsRes.json();
+  }
+} catch (error) {
+  console.error('Failed to fetch course data:', error);
+}
+---
+
+<Layout title="Course Portal - Home">
+  <div class="max-w-4xl mx-auto">
+    <!-- Hero Section -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">
+        {course?.title || 'Programming Course'}
+      </h1>
+      <p class="text-xl text-gray-600 mb-6">
+        {course?.description || 'Learn programming fundamentals in 10 weeks'}
+      </p>
+      
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-blue-50 p-6 rounded-lg">
+          <h3 class="text-lg font-semibold text-blue-800 mb-2">Duration</h3>
+          <p class="text-blue-700">{course?.duration || '10 weeks'}</p>
+        </div>
+        <div class="bg-green-50 p-6 rounded-lg">
+          <h3 class="text-lg font-semibold text-green-800 mb-2">Instructor</h3>
+          <p class="text-green-700">{course?.instructor || 'Course Instructor'}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Course Progress -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Course Progress</h2>
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {Array.from({length: 10}, (_, i) => i + 1).map(week => {
+          const hasLesson = lessons.some(lesson => lesson.week === week);
+          return (
+            <div class={`p-4 rounded-lg text-center ${
+              hasLesson 
+                ? 'bg-green-100 border-2 border-green-300' 
+                : 'bg-gray-100 border-2 border-gray-200'
+            }`}>
+              <div class={`w-8 h-8 mx-auto rounded-full flex items-center justify-center mb-2 ${
+                hasLesson 
+                  ? 'bg-green-500 text-white' 
+                  : 'bg-gray-300 text-gray-600'
+              }`}>
+                {week}
+              </div>
+              <p class={`text-sm ${
+                hasLesson 
+                  ? 'text-green-800 font-medium' 
+                  : 'text-gray-500'
+              }`}>
+                Week {week}
+              </p>
+              {hasLesson && (
+                <a 
+                  href={`/lessons/${week}`}
+                  class="text-xs text-green-600 hover:text-green-800 underline mt-1 block"
+                >
+                  View Lesson
+                </a>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Recent Lessons -->
+    {lessons.length > 0 && (
+      <div class="bg-white rounded-lg shadow-lg p-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Available Lessons</h2>
+        <div class="space-y-4">
+          {lessons.slice(0, 5).map(lesson => (
+            <div class="border-l-4 border-blue-500 pl-4 py-2">
+              <h3 class="font-semibold text-lg">
+                <a 
+                  href={`/lessons/${lesson.week}`}
+                  class="text-blue-800 hover:text-blue-600 transition-colors"
+                >
+                  Week {lesson.week}: {lesson.title}
+                </a>
+              </h3>
+              {lesson.description && (
+                <p class="text-gray-600 mt-1">{lesson.description}</p>
+              )}
+              <p class="text-sm text-gray-500 mt-2">
+                Updated: {new Date(lesson.created_at).toLocaleDateString()}
+              </p>
+            </div>
+          ))}
+        </div>
+        
+        {lessons.length > 5 && (
+          <div class="mt-6 text-center">
+            <a 
+              href="/lessons" 
+              class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+            >
+              View All Lessons
+            </a>
+          </div>
+        )}
+      </div>
+    )}
+
+    {lessons.length === 0 && (
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
+        <h3 class="text-lg font-semibold text-yellow-800 mb-2">No Lessons Available</h3>
+        <p class="text-yellow-700">
+          Lessons will appear here once they are added to the lessons directory.
+        </p>
+      </div>
+    )}
+  </div>
+</Layout>
