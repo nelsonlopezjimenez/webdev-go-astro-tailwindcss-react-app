@@ -2,6 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
 
+export const prerender = false; // Server-render this page
+
 export async function getStaticPaths() {
   // Generate paths for weeks 1-10
   return [
