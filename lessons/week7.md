@@ -1,8 +1,10 @@
 ---
-title: "This is week 6"
-description: "This is to test whether frontend needs to be up"
-week: 6
+title: "This is lesson week 7 created with the server down pending to restart and create lesson week8"
+description: "The test when frontend server is down is good on the go backend but it did not render on the frontend."
+week: 7
 ---
+# Week 7
+
 # Data Types and Variables WEEK 05
 
 ## Learning Objectives
