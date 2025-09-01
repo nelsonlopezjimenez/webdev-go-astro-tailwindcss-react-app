@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  /* Line clamp utility */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  /* Gradient animation */
+  .animate-gradient-x {
+    background-size: 200% 200%;
+    animation: gradient-x 3s ease infinite;
+  }
+}
+
+@layer components {
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #f1f5f9;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  
+  .markdown-content {
+    @apply max-w-none text-gray-800 leading-relaxed;
+  }
+  
+  .markdown-content h1 {
+    @apply text-4xl font-bold text-blue-800 mt-8 mb-6 border-b border-blue-200 pb-2;
+  }
+  
+  .markdown-content h2 {
+    @apply text-3xl font-semibold text-blue-700 mt-8 mb-4;
+  }
+  
+  .markdown-content h3 {
+    @apply text-2xl font-semibold text-blue-600 mt-6 mb-3;
+  }
+  
+  .markdown-content h4 {
+    @apply text-xl font-medium text-blue-500 mt-4 mb-2;
+  }
+  
+  .markdown-content p {
+    @apply mb-4 leading-7 text-gray-700;
+  }
+  
+  .markdown-content ul {
+    @apply mb-6 ml-6 space-y-2;
+  }
+  
+  .markdown-content ol {
+    @apply mb-6 ml-6 space-y-2;
+  }
+  
+  .markdown-content li {
+    @apply text-gray-700 leading-6;
+  }
+  
+  .markdown-content ul li {
+    @apply list-disc;
+  }
+  
+  .markdown-content ol li {
+    @apply list-decimal;
+  }
+  
+  .markdown-content strong {
+    @apply font-semibold text-gray-900;
+  }
+  
+  .markdown-content em {
+    @apply italic text-gray-600;
+  }
+  
+  .markdown-content code {
+    @apply bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono border;
+  }
+  
+  .markdown-content pre {
+    @apply bg-gray-900 text-gray-100 p-6 rounded-lg overflow-x-auto mb-6 shadow-lg;
+  }
+  
+  .markdown-content pre code {
+    @apply bg-transparent text-gray-100 p-0 border-none font-mono;
+  }
+  
+  .markdown-content blockquote {
+    @apply border-l-4 border-blue-500 pl-6 py-2 mb-6 bg-blue-50 italic text-blue-800;
+  }
+  
+  .markdown-content table {
+    @apply w-full border-collapse border border-gray-300 mb-6;
+  }
+  
+  .markdown-content th {
+    @apply border border-gray-300 bg-gray-100 px-4 py-2 font-semibold text-left;
+  }
+  
+  .markdown-content td {
+    @apply border border-gray-300 px-4 py-2;
+  }
+  
+  .markdown-content a {
+    @apply text-blue-600 hover:text-blue-800 underline transition-colors;
+  }
+  
+  .markdown-content hr {
+    @apply border-t-2 border-gray-200 my-8;
+  }
+  
+  /* Code language specific styling */
+  .markdown-content .language-python {
+    @apply text-green-300;
+  }
+  
+  .markdown-content .language-javascript {
+    @apply text-yellow-300;
+  }
+  
+  .markdown-content .language-html {
+    @apply text-blue-300;
+  }
+  
+  .markdown-content .language-css {
+    @apply text-pink-300;
+  }
+}
