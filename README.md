@@ -1,3 +1,3 @@
 # webdev-class-server-ver2-app
 
-![alt text](image.png)
+![alt text](./lessons/image.png)

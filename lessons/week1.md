@@ -15,6 +15,8 @@ By the end of this lesson, you will be able to:
 - Write and run your first program
 - Understand basic programming terminology
 
+![alt text](image.png)
+
 ## What is Programming?
 
 Programming is the process of creating instructions for computers to follow. These instructions, called **code**, tell the computer exactly what to do step by step.
