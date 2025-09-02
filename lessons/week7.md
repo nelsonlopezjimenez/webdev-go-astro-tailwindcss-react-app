@@ -4,32 +4,16 @@ description: "The test when frontend server is down is good on the go backend bu
 week: 7
 ---
 # Week 7
+Week 7 - Lesson 6 Web Forms
+    Assignments:
+    Discussion -- Lesson 6 Web Forms due by 11:59pm
+    Review Quiz : Lesson 6 Web Forms due by 11:59pm
+    Web Forms Assignment due by 11:59pm
+    Activity 6-1: Identifying HTML form elements and attributes
 
-# Data Types and Variables WEEK 05
-
-## Learning Objectives
-
-- Understand Python's basic data types
-- Learn how to work with variables effectively
-- Handle user input and output
-- Perform basic operations on different data types
-
-## Python Data Types
-
-### 1. Integers (int)
-Whole numbers without decimal points.
-
-```python
-age = 25
-year = 2024
-temperature = -5
-```
-
-### 2. Floating Point Numbers (float)
-Numbers with decimal points.
-
-```python
-price = 19.99
-pi = 3.14159
-temperature = 98.6
-```
+Week 8 - Lesson 7 Video, Audio, and Images Techniques
+    Assignments:
+    Activity 7-1: Reviewing video, audio and image map elements and attributes
+    Discussion -- Lesson 7 Video, Audio, and Images Techniques
+    Review Quiz : Lesson 7 Video, Audio, and Images Techniques
+    Video, Audio, and Images Assignment

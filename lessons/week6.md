@@ -3,31 +3,18 @@ title: "This is week 6"
 description: "This is to test whether frontend needs to be up"
 week: 6
 ---
-# Data Types and Variables WEEK 05
 
-## Learning Objectives
+Week 6 - Lesson 5 HTML Tables
+    Assignments:
+    Discussion -- Lesson 5 HTML Tables
+    HTML Tables Assignment
+    Programming Tool, Agent Ransack Assignment
+    Review Quiz : Lesson 5 HTML Tables
+    Activity 5-1: Identifying HTML table elements and attributes
 
-- Understand Python's basic data types
-- Learn how to work with variables effectively
-- Handle user input and output
-- Perform basic operations on different data types
-
-## Python Data Types
-
-### 1. Integers (int)
-Whole numbers without decimal points.
-
-```python
-age = 25
-year = 2024
-temperature = -5
-```
-
-### 2. Floating Point Numbers (float)
-Numbers with decimal points.
-
-```python
-price = 19.99
-pi = 3.14159
-temperature = 98.6
-```
+    Week 7 - Lesson 6 Web Forms
+    Assignments:
+    Discussion -- Lesson 6 Web Forms due by 11:59pm
+    Review Quiz : Lesson 6 Web Forms due by 11:59pm
+    Web Forms Assignment due by 11:59pm
+    Activity 6-1: Identifying HTML form elements and attributes

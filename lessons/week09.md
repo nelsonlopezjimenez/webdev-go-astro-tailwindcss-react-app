@@ -3,23 +3,17 @@ title: "Data Types and Variables WEEK 09"
 description: "Test adding new md files."
 week: 9
 ---
+Week 9 - Lesson 8 Extending HTML
+    Assignments:
+    Activity 8-1: Reviewing Web technology terms
+    Discussion -- Lesson 8 Extending HTML
+    Extending HTML Assignment
+    Review Quiz : Lesson 8 Extending HTML
 
-# Data Types and Variables WEEK 09
 
-## Learning Objectives
-
-- Understand Python's basic data types
-- Learn how to work with variables effectively
-- Handle user input and output
-- Perform basic operations on different data types
-
-## Python Data Types
-
-### 1. Integers (int)
-Whole numbers without decimal points.
-
-```python
-age = 25
-year = 2024
-temperature = -5
-```
+    Week 10 - Lesson 9 GUI HTML Editors & Mobile Web Sites
+    Assignments:
+    Activity 9-1: GUI HTML Editors & Mobile Web Sites
+    Discussion -- Lesson 9 GUI HTML Editors & Mobile Web Sites
+    GUI Editors & Mobile Web Sites Assignment
+    Review Quiz : Lesson 9 GUI HTML Editors & Mobile Web Sites
