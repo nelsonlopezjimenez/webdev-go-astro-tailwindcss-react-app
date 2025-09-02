@@ -13,6 +13,18 @@ try {
 } catch (error) {
   console.error('Failed to fetch syllabus data:', error);
 }
+
+// Default program outcomes
+const defaultOutcomes = [
+  "Build and maintain websites.",
+  "Work with stakeholders to create websites.",
+  "Research, assess, and appropriately apply emerging technology to support websites as needed in industry.",
+  "Comply with the ethics related to the use of copyrighted materials and intellectual property rights.",
+  "Demonstrate an entrepreneurial approach to web development sites and pages.",
+  "Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals."
+];
+
+const outcomes = syllabusData?.course?.requirements || defaultOutcomes;
 ---
 
 <Layout title="Course Syllabus">
@@ -50,57 +62,24 @@ try {
             Program Outcomes
           </h3>
           
-          {syllabusData?.course?.requirements && syllabusData.course.requirements.length > 0 ? (
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="space-y-4">
-                {syllabusData.course.requirements.slice(0, Math.ceil(syllabusData.course.requirements.length / 2)).map((requirement, index) => (
-                  <div class="flex items-start">
-                    <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">{index + 1}</div>
-                    <p class="text-gray-700">{requirement}</p>
-                  </div>
-                ))}
-              </div>
-              <div class="space-y-4">
-                {syllabusData.course.requirements.slice(Math.ceil(syllabusData.course.requirements.length / 2)).map((requirement, index) => (
-                  <div class="flex items-start">
-                    <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">{Math.ceil(syllabusData.course.requirements.length / 2) + index + 1}</div>
-                    <p class="text-gray-700">{requirement}</p>
-                  </div>
-                ))}
-              </div>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="space-y-4">
+              {outcomes.slice(0, Math.ceil(outcomes.length / 2)).map((outcome, index) => (
+                <div class="flex items-start">
+                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">{index + 1}</div>
+                  <p class="text-gray-700">{outcome}</p>
+                </div>
+              ))}
             </div>
-          ) : (
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="space-y-4">
+            <div class="space-y-4">
+              {outcomes.slice(Math.ceil(outcomes.length / 2)).map((outcome, index) => (
                 <div class="flex items-start">
-                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">1</div>
-                  <p class="text-gray-700">Build and maintain websites.</p>
+                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">{Math.ceil(outcomes.length / 2) + index + 1}</div>
+                  <p class="text-gray-700">{outcome}</p>
                 </div>
-                <div class="flex items-start">
-                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">2</div>
-                  <p class="text-gray-700">Work with stakeholders to create websites.</p>
-                </div>
-                <div class="flex items-start">
-                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">3</div>
-                  <p class="text-gray-700">Research, assess, and appropriately apply emerging technology to support websites as needed in industry.</p>
-                </div>
-              </div>
-              <div class="space-y-4">
-                <div class="flex items-start">
-                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">4</div>
-                  <p class="text-gray-700">Comply with the ethics related to the use of copyrighted materials and intellectual property rights.</p>
-                </div>
-                <div class="flex items-start">
-                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">5</div>
-                  <p class="text-gray-700">Demonstrate an entrepreneurial approach to web development sites and pages.</p>
-                </div>
-                <div class="flex items-start">
-                  <div class="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold mr-4 mt-1 flex-shrink-0">6</div>
-                  <p class="text-gray-700">Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals.</p>
-                </div>
-              </div>
+              ))}
             </div>
-          )}
+          </div>
         </div>
 
         <!-- Course Requirements -->
@@ -114,40 +93,113 @@ try {
           
           <div class="bg-gray-50 rounded-xl p-6">
             <ul class="space-y-3 text-gray-800">
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 241 - Web Development I</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 241 - Web Development I</strong>
+                  <button 
+                    data-course="cis241"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 242 - Web Development II: JavaScript and jQuery</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 242 - Web Development II: JavaScript and jQuery</strong>
+                  <button 
+                    data-course="cis242"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 243 - Web Development III: Introduction to PHP</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 243 - Web Development III: Server-Side Scripting</strong>
+                  <button 
+                    data-course="cis243"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 244 - Web Development IV: Intro to Joomla! and SEO</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 244 - Web Development IV: Introduction to JavaScript Frameworks</strong>
+                  <button 
+                    data-course="cis244"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 245 - Web Development V: Introduction to CSS</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 245 - Web Development V: Introduction to CSS</strong>
+                  <button 
+                    data-course="cis245"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 246 - Web Dev VI: JavaScript Frameworks</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 246 - Web Dev VI: JavaScript Frameworks</strong>
+                  <button 
+                    data-course="cis246"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CIS 291 - Technology Internship</strong> <em class="text-orange-600">Take 4 credits</em></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CIS 291 - Technology Internship</strong> 
+                  <em class="text-orange-600">Take 4 credits</em>
+                  <button 
+                    data-course="cis291"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">4.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>CS 115 - Introduction to Programming</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>CS 115 - Principles of Computer Science</strong>
+                  <button 
+                    data-course="cs115"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
-              <li class="flex justify-between items-center">
-                <span><strong>ART 225 - Introduction to Graphic Design</strong></span>
+              <li class="flex justify-between items-center hover:bg-white p-3 rounded-lg transition-colors">
+                <span>
+                  <strong>ART 225 - Introduction to Graphic Design</strong>
+                  <button 
+                    data-course="art225"
+                    class="course-detail-btn ml-3 text-blue-600 hover:text-blue-800 text-sm underline"
+                  >
+                    View Details
+                  </button>
+                </span>
                 <span class="font-semibold text-blue-600">5.0 Credits</span>
               </li>
             </ul>
@@ -247,6 +299,263 @@ try {
           )}
         </div>
       )}
+
+      <!-- Course Details Modal -->
+      <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+          <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 flex justify-between items-center">
+            <h2 id="modalTitle" class="text-2xl font-bold">Course Details</h2>
+            <button id="closeModalBtn" class="text-white hover:text-gray-200 text-2xl font-bold">&times;</button>
+          </div>
+          <div class="p-6 overflow-y-auto max-h-[calc(90vh-120px)]">
+            <div id="modalContent" class="space-y-6">
+              <!-- Course content will be inserted here -->
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-200 flex gap-4">
+              <button class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+                Add to Personal Catalog
+              </button>
+              <button class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
+                Add to My Favorites
+              </button>
+              <button class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">
+                Share this Page
+              </button>
+              <button id="printBtn" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors">
+                Print
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </Layout>
+
+<script>
+  // Course details data
+  const courseDetails = {
+    cis241: {
+      title: "CIS 241 - Web Development I",
+      credits: "5.0 Credits",
+      description: "Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting. Students will build multi-page websites using GUI editors, Git and GitHub.",
+      prerequisite: "CIS 100 or instructor permission",
+      objectives: [
+        "Perform content design and technical analysis on web applications and websites.",
+        "Use current HTML to develop, debug, maintain, and document web applications and websites.", 
+        "Compare and contrast different browsers' effects on current HTML documents.",
+        "Use current HTML forms, iframes, and tables.",
+        "Create current HTML style through inline, embedded, and Cascading Style Sheets."
+      ],
+      offered: "Fall"
+    },
+    cis242: {
+      title: "CIS 242 - Web Development II: JavaScript and jQuery",
+      credits: "5.0 Credits",
+      description: "Advanced client-side scripting using JavaScript and jQuery. Students will learn to create interactive web pages, handle events, manipulate the DOM, and implement AJAX functionality.",
+      prerequisite: "CIS 241 or instructor permission",
+      objectives: [
+        "Write JavaScript code to create interactive web pages.",
+        "Implement jQuery libraries for enhanced user interfaces.",
+        "Handle user events and form validation.",
+        "Use AJAX to create dynamic web applications.",
+        "Debug and troubleshoot client-side scripting issues."
+      ],
+      offered: "Winter, Spring"
+    },
+    cis243: {
+      title: "CIS 243 - Web Development III: Server-Side Scripting",
+      credits: "5.0 Credits", 
+      description: "Introduction to server-side web development using PHP and database integration. Students will learn to create dynamic web applications that interact with databases.",
+      prerequisite: "CIS 242 or instructor permission",
+      objectives: [
+        "Develop server-side applications using PHP.",
+        "Integrate databases with web applications.",
+        "Implement user authentication and session management.",
+        "Create secure web applications following best practices.",
+        "Deploy web applications to production servers."
+      ],
+      offered: "Fall, Spring"
+    },
+    cis244: {
+      title: "CIS 244 - Web Development IV: Introduction to JavaScript Frameworks",
+      credits: "5.0 Credits",
+      description: "Introduction to modern JavaScript frameworks and libraries. Students will learn to build single-page applications using popular frameworks like React or Vue.js.",
+      prerequisite: "CIS 242 or instructor permission",
+      objectives: [
+        "Build applications using modern JavaScript frameworks.",
+        "Understand component-based architecture.",
+        "Implement state management in applications.",
+        "Create responsive and accessible user interfaces.",
+        "Deploy and maintain modern web applications."
+      ],
+      offered: "Winter, Spring"
+    },
+    cis245: {
+      title: "CIS 245 - Web Development V: Introduction to CSS",
+      credits: "5.0 Credits",
+      description: "Advanced CSS techniques including responsive design, animations, and modern layout methods. Students will learn to create professional, mobile-first websites.",
+      prerequisite: "CIS 241 or instructor permission", 
+      objectives: [
+        "Create responsive layouts using CSS Grid and Flexbox.",
+        "Implement CSS animations and transitions.",
+        "Use CSS preprocessors like Sass or Less.",
+        "Apply modern CSS methodologies and best practices.",
+        "Optimize CSS for performance and maintainability."
+      ],
+      offered: "Fall, Winter"
+    },
+    cis246: {
+      title: "CIS 246 - Web Dev VI: JavaScript Frameworks",
+      credits: "5.0 Credits",
+      description: "Advanced JavaScript frameworks and full-stack development. Students will build complete web applications using modern development tools and practices.",
+      prerequisite: "CIS 244 or instructor permission",
+      objectives: [
+        "Build full-stack web applications.",
+        "Implement advanced framework features.",
+        "Use modern development tools and workflows.", 
+        "Apply testing strategies for web applications.",
+        "Deploy applications using cloud services."
+      ],
+      offered: "Spring"
+    },
+    cis291: {
+      title: "CIS 291 - Technology Internship",
+      credits: "1.0 to 10.0 Credits (Take 4 credits)",
+      description: "Supervised work experience in a technology-related field. Students apply classroom learning in real-world settings while gaining professional experience.",
+      prerequisite: "Completion of at least 15 credits in CIS courses and instructor approval",
+      objectives: [
+        "Apply technical skills in professional environments.",
+        "Develop workplace communication and collaboration skills.",
+        "Gain experience with industry tools and practices.",
+        "Build professional networks and references.",
+        "Reflect on career goals and professional development."
+      ],
+      offered: "All quarters by arrangement"
+    },
+    cs115: {
+      title: "CS 115 - Principles of Computer Science",
+      credits: "5.0 Credits",
+      description: "Introduction to fundamental concepts in computer science including problem-solving, algorithms, and programming logic. Foundation course for all computer science and information systems programs.",
+      prerequisite: "Math 098 or higher, or placement",
+      objectives: [
+        "Understand fundamental computer science concepts.",
+        "Develop problem-solving and algorithmic thinking skills.",
+        "Write basic programs using structured programming techniques.",
+        "Analyze algorithm efficiency and complexity.",
+        "Apply computer science principles to real-world problems."
+      ],
+      offered: "Fall, Winter, Spring"
+    },
+    art225: {
+      title: "ART 225 - Introduction to Graphic Design", 
+      credits: "5.0 Credits",
+      description: "Foundation course in graphic design principles, typography, color theory, and composition. Students will learn to create effective visual communications using industry-standard software.",
+      prerequisite: "None",
+      objectives: [
+        "Apply fundamental design principles to visual projects.",
+        "Demonstrate understanding of typography and type hierarchy.",
+        "Use color theory to create effective color schemes.",
+        "Create professional designs using Adobe Creative Suite.",
+        "Develop a portfolio of graphic design work."
+      ],
+      offered: "Fall, Winter, Spring"
+    }
+  };
+
+  function openCourseModal(courseId) {
+    console.log('Opening modal for:', courseId);
+    const modal = document.getElementById('courseModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalContent = document.getElementById('modalContent');
+    const course = courseDetails[courseId];
+
+    if (!course) {
+      console.error('Course not found:', courseId);
+      return;
+    }
+
+    modalTitle.textContent = course.title;
+    
+    modalContent.innerHTML = 
+      '<div class="space-y-6">' +
+        '<div class="flex justify-between items-start">' +
+          '<h3 class="text-2xl font-bold text-gray-800">' + course.title + '</h3>' +
+          '<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full font-semibold">' + course.credits + '</span>' +
+        '</div>' +
+        '<div class="bg-blue-50 p-4 rounded-lg">' +
+          '<p class="text-gray-700 leading-relaxed">' + course.description + '</p>' +
+        '</div>' +
+        '<div class="grid md:grid-cols-2 gap-6">' +
+          '<div class="bg-green-50 p-4 rounded-lg">' +
+            '<h4 class="font-bold text-green-800 mb-2">Prerequisite</h4>' +
+            '<p class="text-green-700">' + course.prerequisite + '</p>' +
+          '</div>' +
+          '<div class="bg-purple-50 p-4 rounded-lg">' +
+            '<h4 class="font-bold text-purple-800 mb-2">Course Typically Offered</h4>' +
+            '<p class="text-purple-700">' + course.offered + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<div class="bg-gray-50 p-6 rounded-lg">' +
+          '<h4 class="font-bold text-gray-800 mb-4">Course-level Learning Objectives (CLOs)</h4>' +
+          '<p class="text-gray-700 mb-4">Upon successful completion of this course, students will be able to:</p>' +
+          '<ol class="list-decimal list-inside space-y-2 text-gray-700">' +
+            course.objectives.map(function(obj) { return '<li>' + obj + '</li>'; }).join('') +
+          '</ol>' +
+        '</div>' +
+      '</div>';
+
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeCourseModal() {
+    const modal = document.getElementById('courseModal');
+    modal.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+  }
+
+  // Wait for DOM to load
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up event listeners');
+    
+    // Add event listeners to all course detail buttons
+    document.querySelectorAll('.course-detail-btn').forEach(function(button) {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const courseId = this.getAttribute('data-course');
+        console.log('Button clicked for course:', courseId);
+        openCourseModal(courseId);
+      });
+    });
+
+    // Close modal button
+    const closeBtn = document.getElementById('closeModalBtn');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeCourseModal);
+    }
+
+    // Print button
+    const printBtn = document.getElementById('printBtn');
+    if (printBtn) {
+      printBtn.addEventListener('click', function() { window.print(); });
+    }
+
+    // Close modal when clicking outside
+    const modal = document.getElementById('courseModal');
+    if (modal) {
+      modal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeCourseModal();
+        }
+      });
+    }
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeCourseModal();
+      }
+    });
+  });
+</script>
