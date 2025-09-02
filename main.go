@@ -383,7 +383,7 @@ func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	defer s.mutex.RUnlock()
 
 	syllabus := struct {
-		Course      Course          `json:"course"`
+		Co.urse      Course          `json:"course"`
 		Lessons     map[int]*Lesson `json:"lessons"`
 		Weeks       []int           `json:"weeks"`
 		LastUpdated time.Time       `json:"last_updated"`
