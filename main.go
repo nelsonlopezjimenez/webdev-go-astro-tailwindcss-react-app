@@ -21,10 +21,11 @@ import (
 )
 
 type Course struct {
-	Title       string `json:"title" yaml:"title"`
-	Description string `json:"description" yaml:"description"`
-	Duration    string `json:"duration" yaml:"duration"`
-	Instructor  string `json:"instructor" yaml:"instructor"`
+	Title        string `json:"title" yaml:"title"`
+	Description  string `json:"description" yaml:"description"`
+	Duration     string `json:"duration" yaml:"duration"`
+	Instructor   string `json:"instructor" yaml:"instructor"`
+	Requirements string `json:"requirements" yaml:"requirements"`
 }
 
 type Lesson struct {
