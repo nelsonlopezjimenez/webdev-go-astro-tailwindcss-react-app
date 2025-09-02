@@ -21,11 +21,11 @@ import (
 )
 
 type Course struct {
-	Title        string `json:"title" yaml:"title"`
-	Description  string `json:"description" yaml:"description"`
-	Duration     string `json:"duration" yaml:"duration"`
-	Instructor   string `json:"instructor" yaml:"instructor"`
-	Requirements string `json:"requirements" yaml:"requirements"`
+	Title        string   `json:"title" yaml:"title"`
+	Description  string   `json:"description" yaml:"description"`
+	Duration     string   `json:"duration" yaml:"duration"`
+	Instructor   string   `json:"instructor" yaml:"instructor"`
+	Requirements []string `json:"requirements" yaml:"requirements"`
 }
 
 type Lesson struct {
@@ -131,10 +131,18 @@ func (s *Server) loadCourseInfo() error {
 		if _, err := os.Stat(courseFile); os.IsNotExist(err) {
 			// Default course info if file doesn't exist
 			s.course = Course{
-				Title:       "Programming Fundamentals",
-				Description: "A comprehensive 10-week course covering programming fundamentals",
+				Title:       "Web Application Developer Certificate",
+				Description: "A comprehensive program covering web development fundamentals",
 				Duration:    "10 weeks",
 				Instructor:  "Course Instructor",
+				Requirements: []string{
+					"Build and maintain websites.",
+					"Work with stakeholders to create websites.",
+					"Research, assess, and appropriately apply emerging technology to support websites as needed in industry.",
+					"Comply with the ethics related to the use of copyrighted materials and intellectual property rights.",
+					"Demonstrate an entrepreneurial approach to web development sites and pages.",
+					"Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals.",
+				},
 			}
 			log.Printf("📄 Using default course info (no course.yaml found)")
 			return nil
@@ -383,7 +391,7 @@ func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	defer s.mutex.RUnlock()
 
 	syllabus := struct {
-		Co.urse      Course          `json:"course"`
+		Course      Course          `json:"course"`
 		Lessons     map[int]*Lesson `json:"lessons"`
 		Weeks       []int           `json:"weeks"`
 		LastUpdated time.Time       `json:"last_updated"`

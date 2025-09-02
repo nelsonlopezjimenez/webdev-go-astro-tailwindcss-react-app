@@ -1,0 +1,48 @@
+The issue is with the YAML syntax. The `requirements` field is using a JavaScript-style array instead of proper YAML array syntax. Here's what's wrong and how to fix it:
+
+## ❌ **Current (Incorrect) YAML:**
+```yaml
+requirements: ['Build and maintain websites.','Work with stakeholders to create websites.','Research, assess, and appropriately apply emerging technology to support websites as needed in industry.','Comply with the ethics related to the use of copyrighted materials and intellectual property rights.','Demonstrate an entrepreneurial approach to web development sites and pages.','Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals.']
+```
+
+## ✅ **Correct YAML Syntax (Option 1 - Block Style):**
+```yaml
+title: "Web Application Developer Certificate"
+description: "Students will develop effective websites using HTML, client-side scripting, and server-side scripting. Specific emphasis is placed on developing interactive web pages that are used to process data from the Internet or intranets. Topics are closely aligned with industry standards and certifications, such as the Certified Internet Web Professional (CIW). This certificate requires successful completion of a minimum of 44 credits as outlined."
+duration: "10 weeks"
+instructor: "Dr. Nelson Lopez"
+requirements:
+  - "Build and maintain websites."
+  - "Work with stakeholders to create websites."
+  - "Research, assess, and appropriately apply emerging technology to support websites as needed in industry."
+  - "Comply with the ethics related to the use of copyrighted materials and intellectual property rights."
+  - "Demonstrate an entrepreneurial approach to web development sites and pages."
+  - "Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals."
+```
+
+## ✅ **Correct YAML Syntax (Option 2 - Flow Style):**
+```yaml
+title: "Web Application Developer Certificate"
+description: "Students will develop effective websites using HTML, client-side scripting, and server-side scripting. Specific emphasis is placed on developing interactive web pages that are used to process data from the Internet or intranets. Topics are closely aligned with industry standards and certifications, such as the Certified Internet Web Professional (CIW). This certificate requires successful completion of a minimum of 44 credits as outlined."
+duration: "10 weeks"
+instructor: "Dr. Nelson Lopez"
+requirements:
+  [
+    "Build and maintain websites.",
+    "Work with stakeholders to create websites.", 
+    "Research, assess, and appropriately apply emerging technology to support websites as needed in industry.",
+    "Comply with the ethics related to the use of copyrighted materials and intellectual property rights.",
+    "Demonstrate an entrepreneurial approach to web development sites and pages.",
+    "Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals."
+  ]
+```
+
+## 🔧 **The Problem:**
+- **Missing proper indentation** for YAML arrays
+- **Using single quotes inside brackets** (JavaScript style) instead of YAML array syntax
+- **No line breaks** making it hard to read
+
+## 💡 **Recommendation:**
+Use **Option 1 (Block Style)** as it's more readable and standard for YAML files. Each requirement gets its own line with proper indentation.
+
+Update your `course.yaml` file with the corrected syntax and it should parse properly! 🎯
