@@ -1,6 +1,6 @@
 ---
-title: "Markup Language and Site Development Essentials"
-description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
+title: "WEEK 2 - Markup Language and Site Development Essentials"
+description: "WEEK 2 - Learn about different markup languages, development essentials"
 week: 2
 ---
 

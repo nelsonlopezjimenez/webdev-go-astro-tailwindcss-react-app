@@ -1,6 +1,6 @@
 ---
-title: "Data Types and Variables WEEK 04"
-description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
+title: "WEEK 4 - Cascading Style Sheets (CSS)"
+description: "WEEK 4 - Cascading Style Sheets (CSS) and graphical elements."
 week: 4
 ---
 Week 4 - Lesson 3 Cascading Style Sheets (CSS) and Graphical Elements
@@ -10,6 +10,13 @@ Week 4 - Lesson 3 Cascading Style Sheets (CSS) and Graphical Elements
     Discussion -- Lesson 3 Cascading Style Sheets (CSS) and Graphical Elements
     FTP Assignment
     Review Quiz : Lesson 3 Cascading Style Sheets (CSS) and Graphical Elements
+
+## Goals
+1. one
+1. two
+1. three
+1. four
+1. five
 
 Week 5 - Lesson 4 Hyperlinks
     Assignments:

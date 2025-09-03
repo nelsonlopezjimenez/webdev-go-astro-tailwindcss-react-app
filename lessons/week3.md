@@ -1,6 +1,6 @@
 ---
-title: "Data Types and Variables WEEK 03"
-description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
+title: "WEEK 3 - HTML Coding"
+description: "WEEK 3 - Identifying HTML elements and attributes"
 week: 3
 ---
 

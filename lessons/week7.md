@@ -1,6 +1,6 @@
 ---
-title: "This is lesson week 7 created with the server down pending to restart and create lesson week8"
-description: "The test when frontend server is down is good on the go backend but it did not render on the frontend."
+title: "WEEK 7 - Web Forms"
+description: "WEEK 7 - Identifying HTML forms and elementes and attributes."
 week: 7
 ---
 # Week 7

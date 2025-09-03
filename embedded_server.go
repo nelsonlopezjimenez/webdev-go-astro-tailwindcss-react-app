@@ -387,15 +387,23 @@ func (s *Server) handleStatic(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("❌ File not found: %s, serving index.html fallback", embedPath)
 		indexPath := embedPath + "/index.html"
+		// **************** to check whether index.html succeed or failed
+		log.Printf("🔍 Trying index path: %s", indexPath)
+
 		// If file not found, serve index.html (for SPA routing)
 		data, err = staticFiles.ReadFile(indexPath)
 		if err != nil {
+			log.Printf("❌ Index file not found: %s, serving root index.html fallback", indexPath)
+
 			// If still not found, serve root index.html (for SPA routing)
 			data, err = staticFiles.ReadFile("lessons/frontend/dist/index.html")
 			if err != nil {
 				http.NotFound(w, r)
 				return
 			}
+		} else {
+			log.Printf("✅ Index file found: %s", indexPath)
+
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.Write((data))

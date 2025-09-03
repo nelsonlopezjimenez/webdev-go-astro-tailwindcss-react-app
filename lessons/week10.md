@@ -1,6 +1,6 @@
 ---
-title: "Data Types and Variables WEEK 16"
-description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
+title: "WEEK 10 - GUI HTML Editors and Mobile Web Sites"
+description: "WEEK 10 - GUI HTML Editors and Mobile Web Sites"
 week: 10
 ---
 

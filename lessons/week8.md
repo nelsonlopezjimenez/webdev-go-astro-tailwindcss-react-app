@@ -1,6 +1,6 @@
 ---
-title: "This is week 11"
-description: "This is the first test after configuring tailwind correctly"
+title: "WEEK 8 - Video, Audio, and Images Techniques"
+description: "Video, Audio, and Images Techniques"
 week: 8
 ---
 # Week 8

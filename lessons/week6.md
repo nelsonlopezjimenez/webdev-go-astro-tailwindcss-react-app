@@ -1,6 +1,6 @@
 ---
-title: "This is week 6"
-description: "This is to test whether frontend needs to be up"
+title: "WEEK 6 - HTML Tables"
+description: "HTML Tables - Identifying HTML table elements and attributes"
 week: 6
 ---
 

@@ -1,6 +1,6 @@
 ---
-title: "Data Types and Variables WEEK 05"
-description: "Learn about different data types in Python, how to work with variables, and handle user input effectively."
+title: "WEEK 5 - Hyperlinks"
+description: "Hyperlinks."
 week: 5
 ---
 

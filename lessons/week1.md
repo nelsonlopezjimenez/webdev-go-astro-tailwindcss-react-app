@@ -1,6 +1,6 @@
 ---
 title: "CIS 241 - Web Development I"
-description: "Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting. Students will build multi-page websites using GUI editors, Git and GitHub."
+description: "WEEK 1 - Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting. Students will build multi-page websites using GUI editors, Git and GitHub."
 week: 1
 ---
 
