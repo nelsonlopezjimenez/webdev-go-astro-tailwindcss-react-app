@@ -5,13 +5,15 @@ import node from '@astrojs/node';
 
 export default defineConfig({
   integrations: [react(), tailwind()],
-  output: 'hybrid',
-  adapter: node ({
-    mode: 'standalone'
-  }),
-  server: {
-    proxy: {
-      '/api': 'http://localhost:8080'
-    }
-  }
+  output:'static',
+  outDir: 'dist'
+  // output: 'hybrid',
+  // adapter: node ({
+  //   mode: 'standalone'
+  // }),
+  // server: {
+  //   proxy: {
+  //     '/api': 'http://localhost:8080'
+  //   }
+  // }
 });

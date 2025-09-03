@@ -1,0 +1,180 @@
+@echo off
+setlocal
+
+echo 🏗️ Building Course Management System...
+
+REM Check if Node.js is installed
+node --version >nul 2>&1
+if errorlevel 1 (
+    echo [ERROR] Node.js is not installed. Please install Node.js first.
+    pause
+    exit /b 1
+)
+
+REM Check if Go is installed
+go version >nul 2>&1
+if errorlevel 1 (
+    echo [ERROR] Go is not installed. Please install Go first.
+    pause
+    exit /b 1
+)
+
+echo [INFO] Checking prerequisites...
+for /f "tokens=*" %%i in ('node --version') do echo [SUCCESS] Node.js version: %%i
+for /f "tokens=3" %%i in ('go version') do echo [SUCCESS] Go version: %%i
+
+REM Build Frontend
+echo [INFO] Building Astro frontend...
+cd frontend
+
+REM Install dependencies if node_modules doesn't exist
+if not exist "node_modules" (
+    echo [INFO] Installing frontend dependencies...
+    call npm install
+    if errorlevel 1 (
+        echo [ERROR] Failed to install frontend dependencies
+        pause
+        exit /b 1
+    )
+)
+
+REM Build the frontend
+echo [INFO] Building frontend for production...
+call npm run build
+if errorlevel 1 (
+    echo [ERROR] Frontend build failed
+    pause
+    exit /b 1
+)
+
+echo [SUCCESS] Frontend built successfully
+cd ..
+
+REM Build Go Backend with Embedded Frontend
+echo [INFO] Building Go backend with embedded frontend...
+
+REM Install Go dependencies
+echo [INFO] Installing Go dependencies...
+go mod tidy
+if errorlevel 1 (
+    echo [ERROR] Failed to install Go dependencies
+    pause
+    exit /b 1
+)
+
+REM Build for Windows
+echo [INFO] Building executable for Windows...
+go build -ldflags="-s -w" -o course-server.exe main-embedded.go
+if errorlevel 1 (
+    echo [ERROR] Go build failed
+    pause
+    exit /b 1
+)
+
+echo [SUCCESS] Built: course-server.exe
+
+REM Build for other platforms
+echo [INFO] Building for multiple platforms...
+
+REM Linux
+echo [INFO] Building for Linux...
+set GOOS=linux
+set GOARCH=amd64
+go build -ldflags="-s -w" -o course-server-linux main-embedded.go
+if not errorlevel 1 (
+    echo [SUCCESS] Built: course-server-linux
+) else (
+    echo [WARNING] Failed to build for Linux
+)
+
+REM macOS
+echo [INFO] Building for macOS...
+set GOOS=darwin
+set GOARCH=amd64
+go build -ldflags="-s -w" -o course-server-macos main-embedded.go
+if not errorlevel 1 (
+    echo [SUCCESS] Built: course-server-macos
+) else (
+    echo [WARNING] Failed to build for macOS
+)
+
+REM Reset environment variables
+set GOOS=
+set GOARCH=
+
+REM Create sample lessons if they don't exist
+echo [INFO] Setting up sample content...
+
+if not exist "lessons" (
+    mkdir lessons
+    echo [INFO] Created lessons directory
+)
+
+if not exist "lessons\course.yaml" (
+    (
+    echo title: "Web Application Developer Certificate"
+    echo description: "Students will develop effective websites using HTML, client-side scripting, and server-side scripting."
+    echo duration: "10 weeks"
+    echo instructor: "Dr. Nelson Lopez"
+    echo requirements:
+    echo   - "Build and maintain websites."
+    echo   - "Work with stakeholders to create websites."
+    echo   - "Research, assess, and appropriately apply emerging technology to support websites as needed in industry."
+    ) > lessons\course.yaml
+    echo [SUCCESS] Created sample course.yaml
+)
+
+if not exist "lessons\week1.md" (
+    (
+    echo ---
+    echo title: "Introduction to Web Development"
+    echo description: "Get started with web development fundamentals"
+    echo week: 1
+    echo ---
+    echo.
+    echo # Welcome to Web Development!
+    echo.
+    echo This is your first lesson in web development.
+    ) > lessons\week1.md
+    echo [SUCCESS] Created sample week1.md
+)
+
+REM Create distribution package
+echo [INFO] Creating distribution package...
+if not exist "dist" mkdir dist
+
+copy course-server*.exe dist\ >nul 2>&1
+copy course-server-linux dist\ >nul 2>&1
+copy course-server-macos dist\ >nul 2>&1
+
+(
+echo # Course Management System
+echo.
+echo ## Quick Start
+echo.
+echo 1. Run course-server.exe
+echo 2. Open http://localhost:8080 in your browser  
+echo 3. Add lessons by creating .md files in the lessons directory
+echo.
+echo ## Usage
+echo.
+echo ```
+echo # Run with default settings
+echo course-server.exe
+echo.
+echo # Specify lessons directory  
+echo course-server.exe C:\path\to\lessons
+echo.
+echo # Specify lessons directory and port
+echo course-server.exe C:\path\to\lessons 3000
+echo ```
+) > dist\README.md
+
+echo [SUCCESS] Created distribution package in dist\
+
+echo.
+echo 🎉 Build completed successfully!
+echo [INFO] Run 'course-server.exe' to start the server
+echo [INFO] Visit http://localhost:8080 to view your course
+
+pause
