@@ -54,7 +54,10 @@ Your current approach is actually optimal for production:
 
 The requirement to recompile for frontend changes is a reasonable trade-off for the benefits you get. Most web applications work this way - frontend builds are typically deployed as new versions rather than hot-swapped.
 
-1. ![embedded go with astro and dist flat file](image-3.png)
-1. ![syllabus modal](image-2.png)
-1. ![syllabusq](image-1.png)
+1. ![12 weeks course 1a](image-folder/image-4.png)
+1. ![12weeks syllabus](image-folder/image-5.png)
+1. ![12weeks lessons](image-folder/image-6.png)
+1. ![embedded go with astro and dist flat file](image-folder/image-3.png)
+1. ![syllabus modal](image-folder/image-2.png)
+1. ![syllabusq](image-folder/image-1.png)
 1. ![alt text](./lessons/image.png)
