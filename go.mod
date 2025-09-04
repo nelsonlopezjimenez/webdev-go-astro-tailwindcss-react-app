@@ -1,4 +1,4 @@
-module course-go-app
+module course-app
 
 go 1.24.4
 
