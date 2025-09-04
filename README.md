@@ -1,5 +1,10 @@
 # webdev-class-server-ver2-app
 
+## 9.4.2025
+1. tree from sourceforge binary tree.exe to ~/bin folder
+1. run tree -I "node_modules|.git|dist|from_claude|course-server|lessons-from-claude"
+1. 
+
 ## 9.3.2025
 
 ### Why Frontend Updates Require Recompiling

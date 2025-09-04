@@ -34,6 +34,8 @@ type Course struct {
 
 type Lesson struct {
 	Week        int       `json:"week"`
+	Section     string    `json:"section"`
+	SectionName string    `json:"section_name"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Content     string    `json:"content"`
@@ -46,14 +48,25 @@ type LessonMetadata struct {
 	Title       string `yaml:"title"`
 	Description string `yaml:"description"`
 	Week        int    `yaml:"week"`
+	Section     string `yaml:"section"`
 }
 
 type Server struct {
 	lessonsDir string
 	course     Course
-	lessons    map[int]*Lesson
+	lessons    map[int]*Lesson     //  keep existing week-based mapping
+	sections   map[string]*Section //  New section-based mapping
 	mutex      sync.RWMutex
 	watcher    *fsnotify.Watcher
+}
+
+type Section struct {
+	ID          string    `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	WeekStart   int       `json:"week_start"`
+	WeekEnd     int       `json:"week_end"`
+	Lessons     []*Lesson `json:"lessons"`
 }
 
 func NewServer(lessonsDir string) (*Server, error) {
@@ -65,6 +78,7 @@ func NewServer(lessonsDir string) (*Server, error) {
 	server := &Server{
 		lessonsDir: lessonsDir,
 		lessons:    make(map[int]*Lesson),
+		sections:   make(map[string]*Section),
 		watcher:    watcher,
 	}
 
@@ -173,11 +187,47 @@ func (s *Server) scanLessons() error {
 	log.Printf("🔍 Scanning lessons directory: %s", s.lessonsDir)
 
 	newLessons := make(map[int]*Lesson)
+	newSections := make(map[string]*Section)
+
+	// Initialize sections
+	sectionConfigs := map[string]struct {
+		name      string
+		weekStart int
+		WeekEnd   int
+	}{
+		"section1-html-css":   {"HTML/CSS Fundamentals", 1, 12},
+		"section2-javascript": {"JavaScript Programming", 13, 24},
+		"section3-backend":    {"Backend Developments", 25, 36},
+		"section4-react":      {"React and Frontend", 37, 48},
+	}
+
+	for sectionID, config := range sectionConfigs {
+		newSections[sectionID] = &Section{
+			ID:          sectionID,
+			Name:        config.name,
+			Description: fmt.Sprintf("Weeks %d-%d", config.weekStart, config.WeekEnd),
+			WeekStart:   config.weekStart,
+			WeekEnd:     config.WeekEnd,
+			Lessons:     []*Lesson{},
+		}
+	}
 
 	if _, err := os.Stat(s.lessonsDir); os.IsNotExist(err) {
 		log.Printf("📁 Lessons directory doesn't exist, skipping scan")
 		s.lessons = newLessons
+		s.sections = newSections
 		return nil
+	}
+
+	// Scan section directories
+	for sectionID, section := range newSections {
+		sectionPath := filepath.Join(s.lessonsDir, sectionID)
+
+		if _, err := os.Stat(sectionPath); os.IsNotExist(err) {
+			log.Printf("Section directory %s doesn't exist, skipping", sectionID)
+			continue
+		}
+
 	}
 
 	err := filepath.WalkDir(s.lessonsDir, func(path string, d fs.DirEntry, err error) error {
