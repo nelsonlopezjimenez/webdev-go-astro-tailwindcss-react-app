@@ -602,6 +602,76 @@ func (s *Server) handleStatic(w http.ResponseWriter, r *http.Request) {
 func (s *Server) setupRoutes() http.Handler {
 	r := mux.NewRouter()
 
+	// Create API subrouter FIRST
+	api := r.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/course", s.handleCourse).Methods("GET")
+	api.HandleFunc("/lessons", s.handleLessons).Methods("GET")
+	api.HandleFunc("/lessons/{week:[0-9]+}", s.handleLesson).Methods("GET")
+	api.HandleFunc("/syllabus", s.handleSyllabus).Methods("GET")
+	api.HandleFunc("/sections", s.handleSections).Methods("GET")
+	api.HandleFunc("/sections/{section}", s.handleSection).Methods("GET")
+	// ###### This would allow both URL patterns:
+	//       /api/sections/section1-html-css/week/5 (original)
+	// ##### /api/sections/section1-html-css/5 (shorter)
+
+	// api.HandleFunc("/sections/{section}/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
+	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
+
+	// Debug log
+	log.Println("API routes registered")
+
+	// Static files handler - MUST be after API routes
+	r.PathPrefix("/").HandlerFunc(s.handleStatic)
+
+	// CORS
+	corsHandler := handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"*"}),
+	)(r)
+
+	return corsHandler
+}
+func (s *Server) setupRoutesLegasy2() http.Handler {
+	r := mux.NewRouter()
+
+	// API routes MUST be first
+	api := r.PathPrefix("/api").Subrouter()
+	api.HandleFunc("/course", s.handleCourse).Methods("GET")
+	api.HandleFunc("/lessons", s.handleLessons).Methods("GET")
+	api.HandleFunc("/lessons/{week:[0-9]+}", s.handleLesson).Methods("GET")
+	api.HandleFunc("/syllabus", s.handleSyllabus).Methods("GET")
+	api.HandleFunc("/sections", s.handleSections).Methods("GET")
+	api.HandleFunc("/sections/{section}", s.handleSection).Methods("GET")
+	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
+
+	// DEBUG: Print registered routes
+	r.Walk(func(route *mux.Route, router *mux.Router, ancestors []*mux.Route) error {
+		pathTemplate, err := route.GetPathTemplate()
+		if err == nil {
+			log.Printf("🔗 Registered route: %s", pathTemplate)
+		}
+		return nil
+	})
+
+	// Static handler MUST be last
+	// r.PathPrefix("/").HandlerFunc(s.handleStatic)
+
+	// Static files - use a more specific pattern that excludes /api
+	r.PathPrefix("/static/").HandlerFunc(s.handleStatic)
+	// Root
+	r.PathPrefix("/").HandlerFunc(s.handleStatic) // Everything except /api
+
+	return handlers.CORS(
+		handlers.AllowedOrigins([]string{"*"}),
+		handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+		handlers.AllowedHeaders([]string{"*"}),
+	)(r)
+}
+
+func (s *Server) setupRoutesLegacy() http.Handler {
+	r := mux.NewRouter()
+
 	// API routes
 	api := r.PathPrefix("/api").Subrouter()
 
@@ -617,7 +687,8 @@ func (s *Server) setupRoutes() http.Handler {
 	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
 
 	// Serve static files and SPA routes
-	r.PathPrefix("/").HandlerFunc(s.handleStatic)
+	// r.PathPrefix("/").HandlerFunc(s.handleStatic)
+	r.PathPrefix("/").Handler(http.HandlerFunc(s.handleStatic))
 
 	// CORS middleware
 	corsHandler := handlers.CORS(

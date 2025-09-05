@@ -6,6 +6,7 @@
 
 1. ![Section API Test Page](image.png)
 1. End points /api/sections /api/sections/section1-2-3-4
+1. ![sections/sections-test astro](image-1.png)
 1. tree from sourceforge binary tree.exe to ~/bin folder
 1. run tree -I "node_modules|.git|dist|from_claude|course-server|lessons-from-claude"
 1. 
