@@ -30,287 +30,286 @@ try {
   error = 'Failed to connect to server';
 }
 
-// Simple metadata without complex objects
-const sectionInfo = {
-  "section1-html-css": {
-    name: "HTML/CSS Fundamentals",
-    icon: "🌐",
-    quarter: "Fall Quarter",
-    courseCode: "CIS 241"
-  },
-  "section2-javascript": {
-    name: "JavaScript Programming", 
-    icon: "⚡",
-    quarter: "Winter Quarter",
-    courseCode: "CIS 242"
-  },
-  "section3-backend": {
-    name: "Backend Development",
-    icon: "🚀", 
-    quarter: "Spring Quarter",
-    courseCode: "CIS 243"
-  },
-  "section4-react": {
-    name: "React & Frontend",
-    icon: "⚛️",
-    quarter: "Summer Quarter", 
-    courseCode: "CIS 244"
-  }
-};
+// Simple section info
+const sectionIcon = section === "section1-html-css" ? "🌐" : 
+                   section === "section2-javascript" ? "⚡" :
+                   section === "section3-backend" ? "🚀" : "⚛️";
 
-const currentInfo = sectionInfo[section] || sectionInfo["section1-html-css"];
+const courseCode = section === "section1-html-css" ? "CIS 241" : 
+                   section === "section2-javascript" ? "CIS 242" :
+                   section === "section3-backend" ? "CIS 243" : "CIS 244";
+
+const quarter = section === "section1-html-css" ? "Fall Quarter" : 
+                section === "section2-javascript" ? "Winter Quarter" :
+                section === "section3-backend" ? "Spring Quarter" : "Summer Quarter";
 ---
 
-<Layout title={sectionData ? `${sectionData.name} | Edmonds College` : 'Section Not Found'}>
+<Layout title="Section Page">
   <div class="min-h-screen bg-gray-50">
     
-    {error ? (
-      <div class="max-w-4xl mx-auto px-6 py-16">
-        <div class="bg-red-50 border border-red-200 rounded-xl p-12 text-center">
-          <h1 class="text-3xl font-bold text-red-800 mb-4">Section Not Available</h1>
-          <p class="text-red-700 mb-8">{error}</p>
-          <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-            Back to Home
-          </a>
+    <!-- Error handling -->
+    <div>
+      {error && (
+        <div class="max-w-4xl mx-auto px-6 py-16">
+          <div class="bg-red-50 border border-red-200 rounded-xl p-12 text-center">
+            <h1 class="text-3xl font-bold text-red-800 mb-4">Section Not Available</h1>
+            <p class="text-red-700 mb-8">{error}</p>
+            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
+              Back to Home
+            </a>
+          </div>
         </div>
-      </div>
-    ) : sectionData ? (
-      <>
-        <!-- Section Header -->
-        <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
-          <div class="max-w-7xl mx-auto px-6 py-16">
-            <nav class="mb-6">
-              <ol class="flex items-center space-x-2 text-sm">
-                <li><a href="/" class="text-white/80 hover:text-white">Home</a></li>
-                <li class="text-white/60">/</li>
-                <li class="text-white font-medium">{sectionData.name}</li>
-              </ol>
-            </nav>
-            
-            <div class="grid md:grid-cols-3 gap-8 items-center">
-              <div class="md:col-span-2">
-                <div class="flex items-center mb-4">
-                  <span class="text-5xl mr-4">{currentInfo.icon}</span>
-                  <div>
-                    <div class="flex items-center gap-3 mb-2">
-                      <h1 class="text-4xl md:text-5xl font-bold">{sectionData.name}</h1>
-                      <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                        {currentInfo.courseCode}
-                      </span>
-                    </div>
-                    <p class="text-xl text-white/90">{currentInfo.quarter}</p>
-                  </div>
-                </div>
-              </div>
+      )}
+    </div>
+
+    <!-- Main content when no error -->
+    <div>
+      {!error && sectionData && (
+        <div>
+          <!-- Section Header -->
+          <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+            <div class="max-w-7xl mx-auto px-6 py-16">
+              <nav class="mb-6">
+                <ol class="flex items-center space-x-2 text-sm">
+                  <li><a href="/" class="text-white opacity-80 hover:opacity-100">Home</a></li>
+                  <li class="text-white opacity-60">/</li>
+                  <li class="text-white font-medium">{sectionData.name}</li>
+                </ol>
+              </nav>
               
-              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
-                <h3 class="text-lg font-bold mb-4">Section Progress</h3>
-                <div class="space-y-4">
-                  <div class="flex justify-between text-sm">
-                    <span>Lessons Available</span>
-                    <span>{sectionData.lessons.length} of 12</span>
-                  </div>
-                  <div class="w-full bg-white/20 rounded-full h-3">
-                    <div 
-                      class="bg-white h-3 rounded-full transition-all duration-500"
-                      style={`width: ${(sectionData.lessons.length / 12) * 100}%`}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tab Navigation -->
-        <div class="bg-white shadow-sm sticky top-0 z-10">
-          <div class="max-w-7xl mx-auto px-6">
-            <nav class="flex space-x-8">
-              <button 
-                class="tab-btn py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium text-sm"
-                data-tab="lessons"
-              >
-                Lessons ({sectionData.lessons.length})
-              </button>
-              <button 
-                class="tab-btn py-4 px-2 border-b-2 border-transparent text-gray-500 font-medium text-sm"
-                data-tab="syllabus"
-              >
-                Syllabus
-              </button>
-              <button 
-                class="tab-btn py-4 px-2 border-b-2 border-transparent text-gray-500 font-medium text-sm"
-                data-tab="schedule"
-              >
-                Weekly Schedule
-              </button>
-            </nav>
-          </div>
-        </div>
-
-        <!-- Tab Content -->
-        <div class="max-w-7xl mx-auto px-6 py-8">
-          
-          <!-- Lessons Tab -->
-          <div id="lessons-tab" class="tab-content">
-            {sectionData.lessons.length > 0 ? (
-              <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {sectionData.lessons.map((lesson) => {
-                  const weekInSection = lesson.week - sectionData.week_start + 1;
-                  return (
-                    <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden">
-                      <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
-                        <div class="flex items-center justify-between">
-                          <span class="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                            Week {weekInSection}
-                          </span>
-                          <span class="text-2xl">{currentInfo.icon}</span>
-                        </div>
+              <div class="grid md:grid-cols-3 gap-8 items-center">
+                <div class="md:col-span-2">
+                  <div class="flex items-center mb-4">
+                    <span class="text-5xl mr-4">{sectionIcon}</span>
+                    <div>
+                      <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-4xl md:text-5xl font-bold">{sectionData.name}</h1>
+                        <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                          {courseCode}
+                        </span>
                       </div>
-                      
-                      <div class="p-6">
-                        <h3 class="text-xl font-bold text-gray-800 mb-3">
-                          {lesson.title}
-                        </h3>
-                        
-                        {lesson.description && (
-                          <p class="text-gray-600 mb-4">
-                            {lesson.description}
-                          </p>
-                        )}
-                        
-                        <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                          <span>Global Week {lesson.week}</span>
-                          <span>{new Date(lesson.created_at).toLocaleDateString()}</span>
-                        </div>
-                        
-                        <a 
-                          href={`/lessons/${lesson.week}`}
-                          class="block w-full text-center bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                        >
-                          Start Lesson
-                        </a>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div class="text-center py-16">
-                <div class="text-8xl mb-6">📚</div>
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Lessons Coming Soon</h2>
-                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                  This section is being prepared with amazing content. Check back soon for new lessons!
-                </p>
-              </div>
-            )}
-          </div>
-
-          <!-- Syllabus Tab -->
-          <div id="syllabus-tab" class="tab-content hidden">
-            <div class="bg-white rounded-xl shadow-lg p-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Information</h2>
-              <div class="grid md:grid-cols-2 gap-8">
-                <div>
-                  <h3 class="text-lg font-bold text-gray-700 mb-3">Course Details</h3>
-                  <div class="space-y-2">
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Course Code</span>
-                      <span class="font-semibold">{currentInfo.courseCode}</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Quarter</span>
-                      <span class="font-semibold">{currentInfo.quarter}</span>
-                    </div>
-                    <div class="flex justify-between">
-                      <span class="text-gray-600">Credits</span>
-                      <span class="font-semibold">5.0 Credits</span>
+                      <p class="text-xl text-white opacity-90">{quarter}</p>
                     </div>
                   </div>
                 </div>
                 
-                <div>
-                  <h3 class="text-lg font-bold text-gray-700 mb-3">Quick Facts</h3>
-                  <ul class="space-y-2 text-gray-600">
-                    <li>• 12 weeks of instruction</li>
-                    <li>• Hands-on coding projects</li>
-                    <li>• Industry-relevant skills</li>
-                    <li>• Portfolio development</li>
-                  </ul>
+                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6">
+                  <h3 class="text-lg font-bold mb-4">Section Progress</h3>
+                  <div class="space-y-4">
+                    <div class="flex justify-between text-sm">
+                      <span>Lessons Available</span>
+                      <span>{sectionData.lessons.length} of 12</span>
+                    </div>
+                    <div class="w-full bg-white bg-opacity-20 rounded-full h-3">
+                      <div 
+                        class="bg-white h-3 rounded-full transition-all duration-500"
+                        style={`width: ${(sectionData.lessons.length / 12) * 100}%`}
+                      ></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Schedule Tab -->
-          <div id="schedule-tab" class="tab-content hidden">
-            <div class="bg-white rounded-xl shadow-lg p-8">
-              <h2 class="text-2xl font-bold text-gray-800 mb-6">Weekly Schedule</h2>
-              
-              <div class="space-y-4">
-                {Array.from({length: 12}, (_, i) => {
-                  const weekNumber = i + 1;
-                  const globalWeek = sectionData.week_start + i;
-                  const lesson = sectionData.lessons.find(l => l.week === globalWeek);
-                  const isAvailable = !!lesson;
-                  
-                  return (
-                    <div class={`border rounded-lg p-6 ${
-                      isAvailable ? 'border-blue-200 bg-blue-50' : 'border-gray-200 bg-gray-50'
-                    }`}>
-                      <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                          <div class="flex items-center gap-4 mb-2">
-                            <span class={`font-bold text-lg ${
-                              isAvailable ? 'text-blue-800' : 'text-gray-500'
-                            }`}>
-                              Week {weekNumber}
-                            </span>
-                            <span class="text-sm text-gray-500">
-                              (Global Week {globalWeek})
-                            </span>
-                            {isAvailable && (
-                              <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                Available
+          <!-- Tab Navigation -->
+          <div class="bg-white shadow-sm sticky top-0 z-10">
+            <div class="max-w-7xl mx-auto px-6">
+              <nav class="flex space-x-8">
+                <button 
+                  class="tab-btn py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium text-sm"
+                  data-tab="lessons"
+                >
+                  Lessons ({sectionData.lessons.length})
+                </button>
+                <button 
+                  class="tab-btn py-4 px-2 border-b-2 border-transparent text-gray-500 font-medium text-sm"
+                  data-tab="syllabus"
+                >
+                  Syllabus
+                </button>
+                <button 
+                  class="tab-btn py-4 px-2 border-b-2 border-transparent text-gray-500 font-medium text-sm"
+                  data-tab="schedule"
+                >
+                  Weekly Schedule
+                </button>
+              </nav>
+            </div>
+          </div>
+
+          <!-- Tab Content -->
+          <div class="max-w-7xl mx-auto px-6 py-8">
+            
+            <!-- Lessons Tab -->
+            <div id="lessons-tab" class="tab-content">
+              <!-- Check if lessons exist -->
+              <div>
+                {sectionData.lessons.length > 0 && (
+                  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {sectionData.lessons.map((lesson) => {
+                      const weekInSection = lesson.week - sectionData.week_start + 1;
+                      return (
+                        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden">
+                          <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
+                            <div class="flex items-center justify-between">
+                              <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                                Week {weekInSection}
                               </span>
-                            )}
+                              <span class="text-2xl">{sectionIcon}</span>
+                            </div>
                           </div>
                           
-                          <h3 class={`text-lg font-semibold ${
-                            isAvailable ? 'text-gray-800' : 'text-gray-500'
-                          }`}>
-                            {lesson?.title || `Week ${weekNumber} - Coming Soon`}
-                          </h3>
-                          
-                          {lesson?.description && (
-                            <p class="text-gray-600 mt-2">{lesson.description}</p>
-                          )}
-                        </div>
-                        
-                        <div class="ml-6">
-                          {isAvailable ? (
-                            <a 
-                              href={`/lessons/${globalWeek}`}
-                              class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                            >
-                              View Lesson
-                            </a>
-                          ) : (
-                            <div class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg cursor-not-allowed font-medium">
-                              Not Available
+                          <div class="p-6">
+                            <h3 class="text-xl font-bold text-gray-800 mb-3">
+                              {lesson.title}
+                            </h3>
+                            
+                            <div>
+                              {lesson.description && (
+                                <p class="text-gray-600 mb-4">
+                                  {lesson.description}
+                                </p>
+                              )}
                             </div>
-                          )}
+                            
+                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                              <span>Global Week {lesson.week}</span>
+                              <span>{new Date(lesson.created_at).toLocaleDateString()}</span>
+                            </div>
+                            
+                            <a 
+                              href={`/lessons/${lesson.week}`}
+                              class="block w-full text-center bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                            >
+                              Start Lesson
+                            </a>
+                          </div>
                         </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {sectionData.lessons.length === 0 && (
+                  <div class="text-center py-16">
+                    <div class="text-8xl mb-6">📚</div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-4">Lessons Coming Soon</h2>
+                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                      This section is being prepared with amazing content. Check back soon for new lessons!
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <!-- Syllabus Tab -->
+            <div id="syllabus-tab" class="tab-content hidden">
+              <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Information</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Course Details</h3>
+                    <div class="space-y-2">
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Course Code</span>
+                        <span class="font-semibold">{courseCode}</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Quarter</span>
+                        <span class="font-semibold">{quarter}</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Credits</span>
+                        <span class="font-semibold">5.0 Credits</span>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                  
+                  <div>
+                    <h3 class="text-lg font-bold text-gray-700 mb-3">Quick Facts</h3>
+                    <ul class="space-y-2 text-gray-600">
+                      <li>• 12 weeks of instruction</li>
+                      <li>• Hands-on coding projects</li>
+                      <li>• Industry-relevant skills</li>
+                      <li>• Portfolio development</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Schedule Tab -->
+            <div id="schedule-tab" class="tab-content hidden">
+              <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Weekly Schedule</h2>
+                
+                <div class="space-y-4">
+                  {Array.from({length: 12}, (_, i) => {
+                    const weekNumber = i + 1;
+                    const globalWeek = sectionData.week_start + i;
+                    const lesson = sectionData.lessons.find(l => l.week === globalWeek);
+                    const isAvailable = lesson !== undefined;
+                    
+                    return (
+                      <div class="border rounded-lg p-6 border-gray-200 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                          <div class="flex-1">
+                            <div class="flex items-center gap-4 mb-2">
+                              <span class="font-bold text-lg text-gray-500">
+                                Week {weekNumber}
+                              </span>
+                              <span class="text-sm text-gray-500">
+                                (Global Week {globalWeek})
+                              </span>
+                              <div>
+                                {isAvailable && (
+                                  <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    Available
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            
+                            <h3 class="text-lg font-semibold text-gray-500">
+                              {lesson ? lesson.title : `Week ${weekNumber} - Coming Soon`}
+                            </h3>
+                            
+                            <div>
+                              {lesson && lesson.description && (
+                                <p class="text-gray-600 mt-2">{lesson.description}</p>
+                              )}
+                            </div>
+                          </div>
+                          
+                          <div class="ml-6">
+                            <div>
+                              {isAvailable && (
+                                <a 
+                                  href={`/lessons/${globalWeek}`}
+                                  class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                                >
+                                  View Lesson
+                                </a>
+                              )}
+                              {!isAvailable && (
+                                <div class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg cursor-not-allowed font-medium">
+                                  Not Available
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </>
-    )}
+      )}
+    </div>
   </div>
 </Layout>
 
@@ -320,12 +319,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const tabContents = document.querySelectorAll('.tab-content');
   
   function switchTab(targetTab) {
-    tabButtons.forEach(button => {
+    tabButtons.forEach(function(button) {
       button.classList.remove('border-blue-500', 'text-blue-600');
       button.classList.add('border-transparent', 'text-gray-500');
     });
     
-    tabContents.forEach(content => {
+    tabContents.forEach(function(content) {
       content.classList.add('hidden');
     });
     
@@ -334,14 +333,14 @@ document.addEventListener('DOMContentLoaded', function() {
       targetContent.classList.remove('hidden');
     }
     
-    const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
+    const targetButton = document.querySelector('[data-tab="' + targetTab + '"]');
     if (targetButton) {
       targetButton.classList.add('border-blue-500', 'text-blue-600');
       targetButton.classList.remove('border-transparent', 'text-gray-500');
     }
   }
   
-  tabButtons.forEach(button => {
+  tabButtons.forEach(function(button) {
     button.addEventListener('click', function() {
       const tabName = this.getAttribute('data-tab');
       switchTab(tabName);

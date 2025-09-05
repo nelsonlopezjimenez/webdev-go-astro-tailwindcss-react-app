@@ -10,7 +10,10 @@
 http://localhost:8080/sections-test
 ```
 1. worked perfectly
-
+1. Enhancing the app => /src/pages/sections/[section].astro: ternary operators with JSX prevented the app from building. Tried three iterations but none worked.
+1. Refactored with minimal content and if/else statements
+1. it built
+1. ![no ternary/jsx built](image-2.png)
 
 ## 9.4.2025
 
