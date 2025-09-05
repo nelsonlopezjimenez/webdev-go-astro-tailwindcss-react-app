@@ -1,6 +1,10 @@
 # webdev-class-server-ver2-app
 
-
+## 9.5.2025
+1. ![langind page](image-5.png)
+1. ![section1 landing](image-6.png)
+1. ![seation1 syllabus tab](image-7.png)
+1. ![section1 progress report](image-8.png)
 ## 9.5.2025
 1. Issues with my path /api/sections/section1-html-css/1
 1. it was wrong: it should be /api/sections/section1-html-css/week/1
@@ -14,6 +18,8 @@ http://localhost:8080/sections-test
 1. Refactored with minimal content and if/else statements
 1. it built
 1. ![no ternary/jsx built](image-2.png)
+1. ![syllabus per section](image-3.png)
+1. ![new syllabus per section](image-4.png)
 
 ## 9.4.2025
 

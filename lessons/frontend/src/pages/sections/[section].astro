@@ -14,200 +14,116 @@ export async function getStaticPaths() {
 
 const { section } = Astro.params;
 
-// Fetch both section data and syllabus data
+// Fetch section data and calculate comprehensive progress metrics
 const API_BASE = 'http://localhost:8080/api';
 let sectionData = null;
-let syllabusData = null;
+let allSections = [];
 let error = null;
 
 try {
-  // Fetch basic section data
-  const sectionResponse = await fetch(`${API_BASE}/sections/${section}`);
+  const [sectionResponse, allSectionsResponse] = await Promise.all([
+    fetch(`${API_BASE}/sections/${section}`),
+    fetch(`${API_BASE}/sections`)
+  ]);
+  
   if (sectionResponse.ok) {
     sectionData = await sectionResponse.json();
   } else {
     error = 'Section not found';
   }
-
-  // Try to fetch syllabus data (might not exist yet)
-  try {
-    const syllabusResponse = await fetch(`${API_BASE}/sections/${section}/syllabus`);
-    if (syllabusResponse.ok) {
-      syllabusData = await syllabusResponse.json();
-    }
-  } catch (syllabusError) {
-    console.log('Syllabus data not available yet');
+  
+  if (allSectionsResponse.ok) {
+    allSections = await allSectionsResponse.json();
   }
 } catch (err) {
   error = 'Failed to connect to server';
 }
 
-// Enhanced section metadata with fallback data
+// Enhanced metadata with progress calculations
 const sectionMeta = {
   "section1-html-css": {
     icon: "🌐",
     color: "blue",
     quarter: "Fall Quarter",
     courseCode: "CIS 241",
-    credits: "5.0 Credits",
-    description: "Learn the foundation of web development with HTML structure and CSS styling",
-    fallbackSyllabus: {
-      description: "Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting.",
-      objectives: [
-        "Perform content design and technical analysis on web applications and websites",
-        "Use current HTML to develop, debug, maintain, and document web applications and websites",
-        "Compare and contrast different browsers' effects on current HTML documents",
-        "Use current HTML forms, iframes, and tables",
-        "Create current HTML style through inline, embedded, and Cascading Style Sheets"
-      ],
-      topics: [
-        "HTML5 semantic elements and document structure",
-        "CSS fundamentals: selectors, properties, and values", 
-        "CSS layout techniques: Flexbox and Grid",
-        "Responsive web design and media queries",
-        "Web accessibility principles and best practices",
-        "Form creation and validation",
-        "CSS animations and transitions",
-        "Browser compatibility and testing"
-      ],
-      assessment: [
-        "Weekly coding assignments (40%)",
-        "Midterm project: Multi-page website (20%)",
-        "Final project: Responsive portfolio site (25%)",
-        "Lab exercises and participation (15%)"
-      ],
-      resources: [
-        "MDN Web Docs - HTML/CSS Reference",
-        "W3Schools - HTML/CSS Tutorials",
-        "CSS-Tricks - CSS techniques and guides",
-        "Can I Use - Browser compatibility tables"
-      ]
-    }
+    skills: ["HTML5", "CSS3", "Responsive Design", "Web Accessibility"],
+    difficulty: "Beginner",
+    estimatedHours: 120
   },
   "section2-javascript": {
     icon: "⚡",
-    color: "green",
-    quarter: "Winter Quarter", 
+    color: "green", 
+    quarter: "Winter Quarter",
     courseCode: "CIS 242",
-    credits: "5.0 Credits",
-    description: "Master JavaScript programming and DOM manipulation for interactive websites",
-    fallbackSyllabus: {
-      description: "Students will explore embedding, inline and external scripts, functions, form validation, loops, conditional statements, strings, numbers, and DHTML.",
-      objectives: [
-        "Use object-oriented client-side scripting with well-formed web pages",
-        "Recognize client-side variables and data types and operations",
-        "Write client-side functions, event handlers, and control structures",
-        "Verify form data through scripting validation",
-        "Save state information through hidden fields, query-strings, and cookies"
-      ],
-      topics: [
-        "JavaScript fundamentals: variables, data types, operators",
-        "Functions and scope",
-        "DOM manipulation and event handling", 
-        "Control structures: loops and conditionals",
-        "Arrays and objects",
-        "Form validation and user input handling",
-        "Asynchronous JavaScript: callbacks, promises, async/await"
-      ],
-      assessment: [
-        "Weekly programming exercises (35%)",
-        "Midterm exam: JavaScript fundamentals (20%)",
-        "Interactive web app project (30%)",
-        "Lab work and code reviews (15%)"
-      ],
-      resources: [
-        "MDN Web Docs - JavaScript Reference",
-        "JavaScript.info - Modern JavaScript tutorial",
-        "W3Schools - JavaScript tutorials and examples"
-      ]
-    }
+    skills: ["JavaScript ES6+", "DOM Manipulation", "Event Handling", "Async Programming"],
+    difficulty: "Intermediate",
+    estimatedHours: 140
   },
   "section3-backend": {
     icon: "🚀",
     color: "purple",
     quarter: "Spring Quarter",
-    courseCode: "CIS 243", 
-    credits: "5.0 Credits",
-    description: "Build server-side applications with Node.js and database integration",
-    fallbackSyllabus: {
-      description: "Server-side scripting fundamentals including functions, logical structure, database connectivity, Object-Oriented principles, relational databases, and web frameworks.",
-      objectives: [
-        "Understand difference between client-side and server-side scripting",
-        "Use appropriate script types to complete interactive websites with data repositories",
-        "Use Model, View, Controller (MVC) principles and architecture",
-        "Create procedures and reusable code in scripting language"
-      ],
-      topics: [
-        "Node.js runtime and npm package management",
-        "Express.js framework and routing",
-        "Database design and MongoDB integration", 
-        "RESTful API development",
-        "Authentication and authorization",
-        "Middleware and error handling"
-      ],
-      assessment: [
-        "API development assignments (40%)",
-        "Database design project (20%)",
-        "Full-stack application (25%)",
-        "Technical documentation and testing (15%)"
-      ],
-      resources: [
-        "Node.js Documentation",
-        "Express.js Official Guide",
-        "MongoDB University courses"
-      ]
-    }
+    courseCode: "CIS 243",
+    skills: ["Node.js", "Express", "Databases", "APIs"],
+    difficulty: "Intermediate",
+    estimatedHours: 160
   },
   "section4-react": {
     icon: "⚛️",
     color: "orange",
-    quarter: "Summer Quarter",
+    quarter: "Summer Quarter", 
     courseCode: "CIS 244",
-    credits: "5.0 Credits", 
-    description: "Create modern web applications with React framework and advanced concepts",
-    fallbackSyllabus: {
-      description: "Students learn to work with open-source JavaScript frameworks including React, AngularJS, Vue.js, and other commonly used frameworks.",
-      objectives: [
-        "Compare and contrast top JavaScript frameworks",
-        "Develop and implement content using JavaScript frameworks",
-        "Develop responsive and accessible websites using current technologies",
-        "Create ongoing plan to maintain and update websites"
-      ],
-      topics: [
-        "React fundamentals: components, JSX, props",
-        "State management with hooks",
-        "Component lifecycle and side effects",
-        "React Router for single-page applications",
-        "API integration and data fetching",
-        "Testing React components"
-      ],
-      assessment: [
-        "Component-building exercises (35%)",
-        "Mid-term project: Multi-page React app (25%)",
-        "Capstone project: Full-featured application (30%)",
-        "Code quality and documentation (10%)"
-      ],
-      resources: [
-        "React Official Documentation",
-        "Create React App - Development environment", 
-        "React Router documentation"
-      ]
-    }
+    skills: ["React", "State Management", "Routing", "Testing"],
+    difficulty: "Advanced",
+    estimatedHours: 150
   }
 };
 
 const meta = sectionMeta[section] || sectionMeta["section1-html-css"];
 
-// Use API syllabus data if available, otherwise use fallback
-const syllabus = syllabusData?.syllabus_info || meta.fallbackSyllabus;
-const courseInfo = {
-  courseCode: syllabusData?.syllabus_info?.course_code || meta.courseCode,
-  credits: syllabusData?.syllabus_info?.credits || meta.credits,
-  prerequisites: syllabusData?.syllabus_info?.prerequisites || "See course catalog"
-};
+// Calculate progress metrics
+function calculateProgress() {
+  if (!sectionData) return { completion: 0, nextLesson: null, timeEstimate: 0 };
+  
+  const completion = (sectionData.lessons.length / 12) * 100;
+  const nextWeek = sectionData.lessons.length + 1;
+  const nextLesson = nextWeek <= 12 ? nextWeek : null;
+  const hoursCompleted = Math.round((completion / 100) * meta.estimatedHours);
+  const hoursRemaining = meta.estimatedHours - hoursCompleted;
+  
+  return {
+    completion: Math.round(completion),
+    nextLesson,
+    hoursCompleted,
+    hoursRemaining,
+    averageWeeklyHours: Math.round(meta.estimatedHours / 12)
+  };
+}
+
+const progress = calculateProgress();
+
+// Calculate overall program progress
+function calculateOverallProgress() {
+  if (!allSections.length) return { totalLessons: 0, totalSections: 4, completedSections: 0 };
+  
+  const totalLessons = allSections.reduce((sum, section) => sum + section.lessons.length, 0);
+  const completedSections = allSections.filter(section => section.lessons.length === 12).length;
+  const totalPossibleLessons = 48; // 4 sections × 12 lessons
+  const overallCompletion = Math.round((totalLessons / totalPossibleLessons) * 100);
+  
+  return {
+    totalLessons,
+    totalSections: 4,
+    completedSections,
+    overallCompletion,
+    currentSection: allSections.findIndex(s => s.id === section) + 1
+  };
+}
+
+const overallProgress = calculateOverallProgress();
 ---
 
-<Layout title="Section Page">
+<Layout title={sectionData ? `${sectionData.name} | Edmonds College` : 'Section Not Found'}>
   <div class="min-h-screen bg-gray-50">
     
     <!-- Error handling -->
@@ -229,73 +145,207 @@ const courseInfo = {
     <div>
       {!error && sectionData && (
         <div>
-          <!-- Section Header -->
-          <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+          <!-- Enhanced Section Header with Progress -->
+          <div class={`bg-gradient-to-r from-${meta.color}-600 to-${meta.color}-700 text-white`}>
             <div class="max-w-7xl mx-auto px-6 py-16">
-              <nav class="mb-6">
-                <ol class="flex items-center space-x-2 text-sm">
-                  <li><a href="/" class="text-white opacity-80 hover:opacity-100">Home</a></li>
-                  <li class="text-white opacity-60">/</li>
-                  <li class="text-white font-medium">{sectionData.name}</li>
-                </ol>
-              </nav>
               
-              <div class="grid md:grid-cols-3 gap-8 items-center">
-                <div class="md:col-span-2">
-                  <div class="flex items-center mb-4">
+              <!-- Progress Breadcrumb -->
+              <div class="flex items-center justify-between mb-6">
+                <nav>
+                  <ol class="flex items-center space-x-2 text-sm">
+                    <li><a href="/" class="text-white opacity-80 hover:opacity-100">Home</a></li>
+                    <li class="text-white opacity-60">/</li>
+                    <li class="text-white font-medium">{sectionData.name}</li>
+                  </ol>
+                </nav>
+                
+                <!-- Overall Program Progress Indicator -->
+                <div class="bg-white bg-opacity-20 backdrop-blur-sm rounded-lg px-4 py-2">
+                  <div class="flex items-center space-x-2 text-sm">
+                    <span>Program Progress:</span>
+                    <span class="font-bold">{overallProgress.overallCompletion}%</span>
+                    <div class="w-16 bg-white bg-opacity-30 rounded-full h-2">
+                      <div 
+                        class="bg-white h-2 rounded-full transition-all duration-500"
+                        style={`width: ${overallProgress.overallCompletion}%`}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="grid lg:grid-cols-4 gap-8">
+                <!-- Main Section Info -->
+                <div class="lg:col-span-2">
+                  <div class="flex items-center mb-6">
                     <span class="text-5xl mr-4">{meta.icon}</span>
                     <div>
                       <div class="flex items-center gap-3 mb-2">
                         <h1 class="text-4xl md:text-5xl font-bold">{sectionData.name}</h1>
                         <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                          {courseInfo.courseCode}
+                          {meta.courseCode}
                         </span>
                       </div>
-                      <p class="text-xl text-white opacity-90">{meta.quarter}</p>
+                      <div class="flex items-center gap-4 text-lg">
+                        <span class="text-white opacity-90">{meta.quarter}</span>
+                        <span class="bg-white bg-opacity-20 px-2 py-1 rounded text-sm">{meta.difficulty}</span>
+                      </div>
                     </div>
                   </div>
                   
-                  <p class="text-lg text-white opacity-80 mb-6 max-w-2xl">
-                    {meta.description}
-                  </p>
-                  
-                  <div class="flex items-center gap-4 text-white opacity-90">
-                    <span class="flex items-center">
-                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"></path>
-                      </svg>
-                      {courseInfo.credits}
-                    </span>
-                    <span class="text-sm">
-                      Prerequisite: {courseInfo.prerequisites}
-                    </span>
+                  <!-- Skills Preview -->
+                  <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Skills You'll Learn</h3>
+                    <div class="flex flex-wrap gap-2">
+                      {meta.skills.map((skill) => (
+                        <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
                 
-                <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6">
-                  <h3 class="text-lg font-bold mb-4">Section Progress</h3>
-                  <div class="space-y-4">
-                    <div class="flex justify-between text-sm">
-                      <span>Lessons Available</span>
-                      <span>{sectionData.lessons.length} of 12</span>
+                <!-- Enhanced Progress Card -->
+                <div class="lg:col-span-2 grid md:grid-cols-2 gap-4">
+                  
+                  <!-- Section Progress -->
+                  <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4">Section Progress</h3>
+                    <div class="space-y-4">
+                      <div class="text-center">
+                        <div class="text-3xl font-bold mb-2">{progress.completion}%</div>
+                        <div class="text-sm opacity-80">Complete</div>
+                      </div>
+                      
+                      <div class="w-full bg-white bg-opacity-20 rounded-full h-3">
+                        <div 
+                          class="bg-white h-3 rounded-full transition-all duration-500"
+                          style={`width: ${progress.completion}%`}
+                        ></div>
+                      </div>
+                      
+                      <div class="flex justify-between text-sm">
+                        <span>{sectionData.lessons.length} of 12 lessons</span>
+                        <span>{progress.hoursCompleted}h completed</span>
+                      </div>
+                      
+                      <div>
+                        {progress.nextLesson && (
+                          <div class="bg-white bg-opacity-20 rounded-lg p-3 text-center">
+                            <div class="text-sm opacity-80">Up Next</div>
+                            <div class="font-semibold">Week {progress.nextLesson}</div>
+                          </div>
+                        )}
+                        {!progress.nextLesson && (
+                          <div class="bg-green-500 bg-opacity-20 rounded-lg p-3 text-center">
+                            <div class="font-semibold text-green-100">Section Complete!</div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div class="w-full bg-white bg-opacity-20 rounded-full h-3">
-                      <div 
-                        class="bg-white h-3 rounded-full transition-all duration-500"
-                        style={`width: ${(sectionData.lessons.length / 12) * 100}%`}
-                      ></div>
-                    </div>
-                    
-                    <div>
-                      {sectionData.lessons.length > 0 && (
-                        <div class="text-sm">
-                          <p>Latest: Week {Math.max(...sectionData.lessons.map(l => l.week - sectionData.week_start + 1))}</p>
-                          <p class="text-white opacity-80 truncate">{sectionData.lessons[sectionData.lessons.length - 1]?.title}</p>
+                  </div>
+                  
+                  <!-- Time Tracking -->
+                  <div class="bg-white bg-opacity-10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="text-lg font-bold mb-4">Time Tracking</h3>
+                    <div class="space-y-4">
+                      <div class="flex justify-between">
+                        <span class="text-sm opacity-80">Estimated Total</span>
+                        <span class="font-semibold">{meta.estimatedHours}h</span>
+                      </div>
+                      
+                      <div class="flex justify-between">
+                        <span class="text-sm opacity-80">Hours Completed</span>
+                        <span class="font-semibold text-green-200">{progress.hoursCompleted}h</span>
+                      </div>
+                      
+                      <div class="flex justify-between">
+                        <span class="text-sm opacity-80">Hours Remaining</span>
+                        <span class="font-semibold">{progress.hoursRemaining}h</span>
+                      </div>
+                      
+                      <div class="border-t border-white border-opacity-20 pt-3">
+                        <div class="flex justify-between">
+                          <span class="text-sm opacity-80">Avg per Week</span>
+                          <span class="font-semibold">{progress.averageWeeklyHours}h</span>
                         </div>
-                      )}
+                      </div>
+                      
+                      <div>
+                        {progress.hoursRemaining > 0 && (
+                          <div class="bg-white bg-opacity-20 rounded-lg p-3 text-center">
+                            <div class="text-xs opacity-80">At current pace</div>
+                            <div class="font-semibold">{Math.ceil(progress.hoursRemaining / progress.averageWeeklyHours)} weeks remaining</div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Navigation with Progress -->
+          <div class="bg-white border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-6 py-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-lg font-semibold text-gray-800">All Sections</h3>
+                <span class="text-sm text-gray-500">
+                  Section {overallProgress.currentSection} of {overallProgress.totalSections}
+                </span>
+              </div>
+              
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+                {allSections.map((sect, index) => {
+                  const sectMeta = sectionMeta[sect.id];
+                  const isCurrentSection = sect.id === section;
+                  const sectProgress = Math.round((sect.lessons.length / 12) * 100);
+                  const isComplete = sect.lessons.length === 12;
+                  
+                  return (
+                    <a 
+                      href={isCurrentSection ? '#' : `/sections/${sect.id}`}
+                      class={`relative p-4 rounded-lg transition-all duration-200 ${
+                        isCurrentSection 
+                          ? `bg-${sectMeta.color}-100 border-2 border-${sectMeta.color}-300` 
+                          : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                      }`}
+                    >
+                      <div class="flex items-center justify-between mb-2">
+                        <span class="text-2xl">{sectMeta.icon}</span>
+                        <div>
+                          {isComplete && (
+                            <span class="text-green-600 text-xs font-bold">✓ COMPLETE</span>
+                          )}
+                          {isCurrentSection && !isComplete && (
+                            <span class={`text-${sectMeta.color}-600 text-xs font-bold`}>CURRENT</span>
+                          )}
+                        </div>
+                      </div>
+                      
+                      <div class={`text-sm font-medium mb-2 ${
+                        isCurrentSection ? `text-${sectMeta.color}-800` : 'text-gray-700'
+                      }`}>
+                        Section {index + 1}
+                      </div>
+                      
+                      <div class="mb-3">
+                        <div class="flex justify-between text-xs text-gray-600 mb-1">
+                          <span>{sect.lessons.length}/12</span>
+                          <span>{sectProgress}%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            class={`bg-${sectMeta.color}-500 h-2 rounded-full transition-all duration-300`}
+                            style={`width: ${sectProgress}%`}
+                          ></div>
+                        </div>
+                      </div>
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -305,7 +355,7 @@ const courseInfo = {
             <div class="max-w-7xl mx-auto px-6">
               <nav class="flex space-x-8">
                 <button 
-                  class="tab-btn py-4 px-2 border-b-2 border-blue-500 text-blue-600 font-medium text-sm"
+                  class={`tab-btn py-4 px-2 border-b-2 border-${meta.color}-500 text-${meta.color}-600 font-medium text-sm`}
                   data-tab="lessons"
                 >
                   Lessons ({sectionData.lessons.length})
@@ -322,6 +372,12 @@ const courseInfo = {
                 >
                   Weekly Schedule
                 </button>
+                <button 
+                  class="tab-btn py-4 px-2 border-b-2 border-transparent text-gray-500 font-medium text-sm"
+                  data-tab="progress"
+                >
+                  Progress Report
+                </button>
               </nav>
             </div>
           </div>
@@ -329,52 +385,105 @@ const courseInfo = {
           <!-- Tab Content -->
           <div class="max-w-7xl mx-auto px-6 py-8">
             
-            <!-- Lessons Tab -->
+            <!-- Enhanced Lessons Tab -->
             <div id="lessons-tab" class="tab-content">
               <div>
                 {sectionData.lessons.length > 0 && (
-                  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {sectionData.lessons.map((lesson) => {
-                      const weekInSection = lesson.week - sectionData.week_start + 1;
-                      return (
-                        <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden">
-                          <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4">
-                            <div class="flex items-center justify-between">
-                              <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                                Week {weekInSection}
-                              </span>
-                              <span class="text-2xl">{meta.icon}</span>
+                  <div>
+                    <!-- Lessons Grid -->
+                    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                      {sectionData.lessons.map((lesson, index) => {
+                        const weekInSection = lesson.week - sectionData.week_start + 1;
+                        const isRecent = index >= sectionData.lessons.length - 3;
+                        
+                        return (
+                          <div class={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 overflow-hidden ${
+                            isRecent ? `border-${meta.color}-200` : 'border-gray-200'
+                          }`}>
+                            
+                            <!-- Enhanced Lesson Header -->
+                            <div class={`bg-gradient-to-r from-${meta.color}-500 to-${meta.color}-600 text-white p-4`}>
+                              <div class="flex items-center justify-between">
+                                <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                                  Week {weekInSection}
+                                </span>
+                                <div class="flex items-center space-x-2">
+                                  <span class="text-2xl">{meta.icon}</span>
+                                  {isRecent && (
+                                    <span class="bg-yellow-400 text-yellow-900 px-2 py-1 rounded-full text-xs font-bold">
+                                      NEW
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <!-- Enhanced Lesson Content -->
+                            <div class="p-6">
+                              <h3 class="text-xl font-bold text-gray-800 mb-3">
+                                {lesson.title}
+                              </h3>
+                              
+                              <div>
+                                {lesson.description && (
+                                  <p class="text-gray-600 mb-4">
+                                    {lesson.description}
+                                  </p>
+                                )}
+                              </div>
+                              
+                              <!-- Lesson Metadata -->
+                              <div class="space-y-2 mb-4">
+                                <div class="flex items-center justify-between text-sm text-gray-500">
+                                  <span>Global Week {lesson.week}</span>
+                                  <span>{new Date(lesson.created_at).toLocaleDateString()}</span>
+                                </div>
+                                
+                                <div class="flex items-center text-sm text-gray-600">
+                                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                  </svg>
+                                  <span>Est. {progress.averageWeeklyHours} hours</span>
+                                </div>
+                              </div>
+                              
+                              <a 
+                                href={`/lessons/${lesson.week}`}
+                                class={`block w-full text-center bg-${meta.color}-600 text-white px-4 py-3 rounded-lg hover:bg-${meta.color}-700 transform hover:scale-105 transition-all duration-200 font-medium`}
+                              >
+                                Start Lesson
+                              </a>
                             </div>
                           </div>
-                          
-                          <div class="p-6">
-                            <h3 class="text-xl font-bold text-gray-800 mb-3">
-                              {lesson.title}
-                            </h3>
-                            
+                        );
+                      })}
+                    </div>
+                    
+                    <!-- Next Lesson Preview -->
+                    <div>
+                      {progress.nextLesson && progress.nextLesson <= 12 && (
+                        <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-8 text-center">
+                          <h3 class="text-2xl font-bold text-gray-800 mb-4">Up Next</h3>
+                          <div class="flex items-center justify-center mb-4">
+                            <span class="text-4xl mr-4">{meta.icon}</span>
                             <div>
-                              {lesson.description && (
-                                <p class="text-gray-600 mb-4">
-                                  {lesson.description}
-                                </p>
-                              )}
+                              <div class="text-lg font-semibold text-gray-700">
+                                Week {progress.nextLesson}
+                              </div>
+                              <div class="text-sm text-gray-500">
+                                Coming soon...
+                              </div>
                             </div>
-                            
-                            <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
-                              <span>Global Week {lesson.week}</span>
-                              <span>{new Date(lesson.created_at).toLocaleDateString()}</span>
-                            </div>
-                            
-                            <a 
-                              href={`/lessons/${lesson.week}`}
-                              class="block w-full text-center bg-blue-600 text-white px-4 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                            >
-                              Start Lesson
-                            </a>
                           </div>
+                          <p class="text-gray-600 mb-6">
+                            The next lesson will be available soon. Keep checking back for updates!
+                          </p>
+                          <button class="bg-gray-400 text-white px-6 py-2 rounded-lg cursor-not-allowed">
+                            Lesson Not Available
+                          </button>
                         </div>
-                      );
-                    })}
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -390,186 +499,71 @@ const courseInfo = {
               </div>
             </div>
 
-            <!-- Enhanced Syllabus Tab -->
+            <!-- Syllabus Tab (placeholder) -->
             <div id="syllabus-tab" class="tab-content hidden">
-              <div class="grid lg:grid-cols-3 gap-8">
-                <!-- Course Overview -->
-                <div class="lg:col-span-2 space-y-8">
-                  
-                  <!-- Course Description -->
-                  <div class="bg-white rounded-xl shadow-lg p-8">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Description</h2>
-                    <p class="text-gray-700 leading-relaxed">
-                      {syllabus.description}
-                    </p>
-                  </div>
-
-                  <!-- Learning Objectives -->
-                  <div class="bg-white rounded-xl shadow-lg p-8">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Learning Objectives</h2>
-                    <p class="text-gray-600 mb-4">Upon successful completion of this course, students will be able to:</p>
-                    <ul class="space-y-3">
-                      {syllabus.objectives && syllabus.objectives.map((objective, index) => (
-                        <li class="flex items-start">
-                          <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5 flex-shrink-0">
-                            {index + 1}
-                          </span>
-                          <span class="text-gray-700">{objective}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <!-- Course Topics -->
-                  <div class="bg-white rounded-xl shadow-lg p-8">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Course Topics</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                      {syllabus.topics && syllabus.topics.map((topic) => (
-                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                          <div class="w-2 h-2 bg-blue-500 rounded-full mr-3 flex-shrink-0"></div>
-                          <span class="text-gray-700 text-sm">{topic}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Sidebar Information -->
-                <div class="space-y-6">
-                  
-                  <!-- Course Details -->
-                  <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Course Details</h3>
-                    <div class="space-y-3">
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Course Code</span>
-                        <span class="font-semibold">{courseInfo.courseCode}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Credits</span>
-                        <span class="font-semibold">{courseInfo.credits}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Quarter</span>
-                        <span class="font-semibold">{meta.quarter}</span>
-                      </div>
-                      <div class="pt-3 border-t border-gray-200">
-                        <span class="text-gray-600 text-sm">Prerequisites</span>
-                        <p class="text-sm text-gray-800 mt-1">{courseInfo.prerequisites}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Assessment -->
-                  <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Assessment</h3>
-                    <div class="space-y-3">
-                      {syllabus.assessment && syllabus.assessment.map((item) => (
-                        <div class="text-sm text-gray-700">{item}</div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <!-- Resources -->
-                  <div class="bg-white rounded-xl shadow-lg p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Resources</h3>
-                    <div class="space-y-2">
-                      {syllabus.resources && syllabus.resources.map((resource) => (
-                        <div class="flex items-start text-sm">
-                          <div class="w-2 h-2 bg-blue-500 rounded-full mr-2 mt-2 flex-shrink-0"></div>
-                          <span class="text-gray-700">{resource}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <!-- Data Source Indicator -->
-                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <div class="flex items-center">
-                      <svg class="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                      </svg>
-                      <span class="text-xs text-blue-700">
-                        {syllabusData ? 'Live course data' : 'Sample course data'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+              <div class="bg-white rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Syllabus</h2>
+                <p class="text-gray-600">Detailed syllabus content will be displayed here...</p>
+                <slot />
               </div>
             </div>
 
-            <!-- Schedule Tab -->
+            <!-- Schedule Tab (placeholder) -->
             <div id="schedule-tab" class="tab-content hidden">
               <div class="bg-white rounded-xl shadow-lg p-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Weekly Schedule</h2>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Weekly Schedule</h2>
+                <p class="text-gray-600">Schedule content will be displayed here...</p>
+              </div>
+            </div>
+
+            <!-- New Progress Report Tab -->
+            <div id="progress-tab" class="tab-content hidden">
+              <div class="space-y-8">
                 
-                <div class="space-y-4">
-                  {Array.from({length: 12}, (_, i) => {
-                    const weekNumber = i + 1;
-                    const globalWeek = sectionData.week_start + i;
-                    const lesson = sectionData.lessons.find(l => l.week === globalWeek);
-                    const isAvailable = lesson !== undefined;
+                <!-- Progress Summary -->
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                  <h2 class="text-2xl font-bold text-gray-800 mb-6">Progress Summary</h2>
+                  
+                  <div class="grid md:grid-cols-3 gap-6">
+                    <div class={`bg-${meta.color}-50 border border-${meta.color}-200 rounded-lg p-6 text-center`}>
+                      <div class={`text-3xl font-bold text-${meta.color}-600 mb-2`}>{progress.completion}%</div>
+                      <div class="text-gray-700">Section Complete</div>
+                    </div>
                     
-                    return (
-                      <div class="border rounded-lg p-6 border-gray-200 bg-gray-50">
-                        <div class="flex items-center justify-between">
-                          <div class="flex-1">
-                            <div class="flex items-center gap-4 mb-2">
-                              <span class="font-bold text-lg text-gray-500">
-                                Week {weekNumber}
-                              </span>
-                              <span class="text-sm text-gray-500">
-                                (Global Week {globalWeek})
-                              </span>
-                              <div>
-                                {isAvailable && (
-                                  <span class="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                                    Available
-                                  </span>
-                                )}
-                              </div>
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                      <div class="text-3xl font-bold text-green-600 mb-2">{progress.hoursCompleted}</div>
+                      <div class="text-gray-700">Hours Completed</div>
+                    </div>
+                    
+                    <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 text-center">
+                      <div class="text-3xl font-bold text-purple-600 mb-2">{overallProgress.overallCompletion}%</div>
+                      <div class="text-gray-700">Program Complete</div>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Skills Progress -->
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                  <h3 class="text-xl font-bold text-gray-800 mb-6">Skills Development</h3>
+                  <div class="grid md:grid-cols-2 gap-4">
+                    {meta.skills.map((skill, index) => {
+                      const skillProgress = Math.min(100, progress.completion + (index * 10));
+                      return (
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                          <span class="font-medium text-gray-700">{skill}</span>
+                          <div class="flex items-center space-x-3">
+                            <div class="w-20 bg-gray-200 rounded-full h-2">
+                              <div 
+                                class={`bg-${meta.color}-500 h-2 rounded-full transition-all duration-500`}
+                                style={`width: ${skillProgress}%`}
+                              ></div>
                             </div>
-                            
-                            <h3 class="text-lg font-semibold text-gray-500">
-                              {lesson ? lesson.title : `Week ${weekNumber} - Coming Soon`}
-                            </h3>
-                            
-                            <div>
-                              {lesson && lesson.description && (
-                                <p class="text-gray-600 mt-2">{lesson.description}</p>
-                              )}
-                            </div>
-                            
-                            <div>
-                              {lesson && lesson.created_at && (
-                                <p class="text-sm text-gray-500 mt-2">
-                                  Published: {new Date(lesson.created_at).toLocaleDateString()}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-                          
-                          <div class="ml-6">
-                            <div>
-                              {isAvailable && (
-                                <a 
-                                  href={`/lessons/${globalWeek}`}
-                                  class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                                >
-                                  View Lesson
-                                </a>
-                              )}
-                              {!isAvailable && (
-                                <div class="bg-gray-300 text-gray-500 px-6 py-2 rounded-lg cursor-not-allowed font-medium">
-                                  Not Available
-                                </div>
-                              )}
-                            </div>
+                            <span class="text-sm text-gray-600 w-12">{skillProgress}%</span>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
@@ -587,7 +581,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   function switchTab(targetTab) {
     tabButtons.forEach(function(button) {
-      button.classList.remove('border-blue-500', 'text-blue-600');
+      button.classList.remove('border-blue-500', 'text-blue-600', 'border-green-500', 'text-green-600', 'border-purple-500', 'text-purple-600', 'border-orange-500', 'text-orange-600');
       button.classList.add('border-transparent', 'text-gray-500');
     });
     
@@ -602,7 +596,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const targetButton = document.querySelector('[data-tab="' + targetTab + '"]');
     if (targetButton) {
-      targetButton.classList.add('border-blue-500', 'text-blue-600');
+      // Get the section color from the first tab button (lessons tab)
+      const firstTabButton = document.querySelector('[data-tab="lessons"]');
+      const colorClasses = firstTabButton.className.match(/(border-\w+-\d+|text-\w+-\d+)/g);
+      
+      if (colorClasses) {
+        colorClasses.forEach(function(colorClass) {
+          targetButton.classList.add(colorClass);
+        });
+      }
+      
       targetButton.classList.remove('border-transparent', 'text-gray-500');
     }
   }
