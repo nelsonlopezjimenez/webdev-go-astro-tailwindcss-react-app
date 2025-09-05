@@ -1,0 +1,133 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Fetch sections data to test the new API
+const API_BASE = 'http://localhost:8080/api';
+let sections = [];
+let section1 = null;
+let error = null;
+
+try {
+  const sectionsRes = await fetch(`${API_BASE}/sections`);
+  if (sectionsRes.ok) {
+    sections = await sectionsRes.json();
+  }
+  
+  const section1Res = await fetch(`${API_BASE}/sections/section1-html-css`);
+  if (section1Res.ok) {
+    section1 = await section1Res.json();
+  }
+} catch (err) {
+  console.error('Failed to fetch sections data:', err);
+  error = err.message;
+}
+---
+
+<Layout title="Section API Test">
+  <div class="max-w-7xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8">Section API Test Page</h1>
+    
+    {error && (
+      <div class="bg-red-50 border border-red-200 rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-bold text-red-800 mb-2">Error</h2>
+        <p class="text-red-700">{error}</p>
+      </div>
+    )}
+
+    <!-- All Sections -->
+    <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">All Sections</h2>
+      <div class="space-y-4">
+        {sections.length > 0 ? (
+          sections.map(section => (
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h3 class="text-lg font-semibold text-blue-600">{section.name}</h3>
+              <p class="text-gray-600">{section.description}</p>
+              <p class="text-sm text-gray-500">
+                ID: {section.id} | Lessons: {section.lessons.length}
+              </p>
+            </div>
+          ))
+        ) : (
+          <p class="text-gray-500">No sections found</p>
+        )}
+      </div>
+    </div>
+
+    <!-- Section 1 Details -->
+    {section1 && (
+      <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6">Section 1: {section1.name}</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-3">Section Info</h3>
+            <ul class="space-y-2 text-gray-600">
+              <li><strong>ID:</strong> {section1.id}</li>
+              <li><strong>Name:</strong> {section1.name}</li>
+              <li><strong>Description:</strong> {section1.description}</li>
+              <li><strong>Week Range:</strong> {section1.week_start}-{section1.week_end}</li>
+              <li><strong>Total Lessons:</strong> {section1.lessons.length}</li>
+            </ul>
+          </div>
+          
+          <div>
+            <h3 class="text-lg font-semibold text-gray-700 mb-3">Available Lessons</h3>
+            <div class="space-y-2">
+              {section1.lessons.length > 0 ? (
+                section1.lessons.map(lesson => (
+                  <div class="bg-gray-50 p-3 rounded">
+                    <p class="font-medium">Week {lesson.week}: {lesson.title}</p>
+                    <p class="text-sm text-gray-600">{lesson.description || 'No description'}</p>
+                    <div class="text-xs text-gray-500 mt-1">
+                      Section: {lesson.section} | File: {lesson.file_path}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p class="text-gray-500">No lessons found</p>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    )}
+
+    <!-- API Test Links -->
+    <div class="bg-white rounded-lg shadow-lg p-8">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">API Test Links</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div>
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">Legacy API (Still Works)</h3>
+          <ul class="space-y-2">
+            <li><a href="/api/lessons" class="text-blue-600 hover:underline" target="_blank">/api/lessons</a></li>
+            <li><a href="/api/lessons/1" class="text-blue-600 hover:underline" target="_blank">/api/lessons/1</a></li>
+            <li><a href="/api/lessons/2" class="text-blue-600 hover:underline" target="_blank">/api/lessons/2</a></li>
+            <li><a href="/api/course" class="text-blue-600 hover:underline" target="_blank">/api/course</a></li>
+            <li><a href="/api/syllabus" class="text-blue-600 hover:underline" target="_blank">/api/syllabus</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">New Section API</h3>
+          <ul class="space-y-2">
+            <li><a href="/api/sections" class="text-blue-600 hover:underline" target="_blank">/api/sections</a></li>
+            <li><a href="/api/sections/section1-html-css" class="text-blue-600 hover:underline" target="_blank">/api/sections/section1-html-css</a></li>
+            <li><a href="/api/sections/section1-html-css/week/1" class="text-blue-600 hover:underline" target="_blank">/api/sections/section1-html-css/week/1</a></li>
+            <li><a href="/api/sections/section1-html-css/week/2" class="text-blue-600 hover:underline" target="_blank">/api/sections/section1-html-css/week/2</a></li>
+            <li><a href="/api/sections/section2-javascript" class="text-blue-600 hover:underline" target="_blank">/api/sections/section2-javascript</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+        <h4 class="font-semibold text-yellow-800 mb-2">Testing Instructions:</h4>
+        <ol class="text-sm text-yellow-700 space-y-1">
+          <li>1. Click the API links above to test endpoints in new browser tabs</li>
+          <li>2. Verify that section1-html-css shows your week1.md, week2.md, etc. files</li>
+          <li>3. Check that legacy /api/lessons still works for backward compatibility</li>
+          <li>4. Look at the console logs in your Go server for debugging info</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</Layout>

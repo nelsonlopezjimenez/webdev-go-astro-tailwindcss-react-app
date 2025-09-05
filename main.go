@@ -34,8 +34,8 @@ type Course struct {
 
 type Lesson struct {
 	Week        int       `json:"week"`
-	Section     string    `json:"section"`
-	SectionName string    `json:"section_name"`
+	Section     string    `json:"section"`      // New field
+	SectionName string    `json:"section_name"` // New field
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	Content     string    `json:"content"`
@@ -51,15 +51,6 @@ type LessonMetadata struct {
 	Section     string `yaml:"section"`
 }
 
-type Server struct {
-	lessonsDir string
-	course     Course
-	lessons    map[int]*Lesson     //  keep existing week-based mapping
-	sections   map[string]*Section //  New section-based mapping
-	mutex      sync.RWMutex
-	watcher    *fsnotify.Watcher
-}
-
 type Section struct {
 	ID          string    `json:"id"`
 	Name        string    `json:"name"`
@@ -67,6 +58,15 @@ type Section struct {
 	WeekStart   int       `json:"week_start"`
 	WeekEnd     int       `json:"week_end"`
 	Lessons     []*Lesson `json:"lessons"`
+}
+
+type Server struct {
+	lessonsDir string
+	course     Course
+	lessons    map[int]*Lesson     // Keep existing week-based mapping
+	sections   map[string]*Section // New section-based mapping
+	mutex      sync.RWMutex
+	watcher    *fsnotify.Watcher
 }
 
 func NewServer(lessonsDir string) (*Server, error) {
@@ -111,20 +111,20 @@ func (s *Server) startFileWatcher() {
 						strings.HasSuffix(strings.ToLower(event.Name), ".yaml") ||
 						strings.HasSuffix(strings.ToLower(event.Name), ".yml") {
 
-						log.Printf("🔍 Detected file change: %s", event.Name)
+						log.Printf("Detected file change: %s", event.Name)
 						time.Sleep(100 * time.Millisecond)
 
 						if strings.Contains(event.Name, "course.yaml") || strings.Contains(event.Name, "course.yml") {
 							if err := s.loadCourseInfo(); err != nil {
-								log.Printf("❌ Error reloading course info: %v", err)
+								log.Printf("Error reloading course info: %v", err)
 							}
 						}
 
 						if strings.HasSuffix(strings.ToLower(event.Name), ".md") {
 							if err := s.scanLessons(); err != nil {
-								log.Printf("❌ Error rescanning lessons: %v", err)
+								log.Printf("Error rescanning lessons: %v", err)
 							} else {
-								log.Printf("✅ Lessons updated. Found %d lessons", len(s.lessons))
+								log.Printf("Lessons updated. Found %d lessons in %d sections", len(s.lessons), len(s.sections))
 							}
 						}
 					}
@@ -134,7 +134,7 @@ func (s *Server) startFileWatcher() {
 				if !ok {
 					return
 				}
-				log.Printf("❌ File watcher error: %v", err)
+				log.Printf("File watcher error: %v", err)
 			}
 		}
 	}()
@@ -151,7 +151,7 @@ func (s *Server) loadCourseInfo() error {
 			s.course = Course{
 				Title:       "Web Application Developer Certificate",
 				Description: "A comprehensive program covering web development fundamentals",
-				Duration:    "10 weeks",
+				Duration:    "48 weeks (4 sections)",
 				Instructor:  "Course Instructor",
 				Requirements: []string{
 					"Build and maintain websites.",
@@ -162,7 +162,7 @@ func (s *Server) loadCourseInfo() error {
 					"Manage career goals through creating effective resumes/CVs, developing interviewing skills, and setting goals.",
 				},
 			}
-			log.Printf("📄 Using default course info (no course.yaml found)")
+			log.Printf("Using default course info (no course.yaml found)")
 			return nil
 		}
 	}
@@ -176,7 +176,7 @@ func (s *Server) loadCourseInfo() error {
 		return fmt.Errorf("failed to parse course file: %w", err)
 	}
 
-	log.Printf("📚 Course info loaded: %s", s.course.Title)
+	log.Printf("Course info loaded: %s", s.course.Title)
 	return nil
 }
 
@@ -184,7 +184,7 @@ func (s *Server) scanLessons() error {
 	s.mutex.Lock()
 	defer s.mutex.Unlock()
 
-	log.Printf("🔍 Scanning lessons directory: %s", s.lessonsDir)
+	log.Printf("Scanning lessons directory: %s", s.lessonsDir)
 
 	newLessons := make(map[int]*Lesson)
 	newSections := make(map[string]*Section)
@@ -193,27 +193,27 @@ func (s *Server) scanLessons() error {
 	sectionConfigs := map[string]struct {
 		name      string
 		weekStart int
-		WeekEnd   int
+		weekEnd   int
 	}{
 		"section1-html-css":   {"HTML/CSS Fundamentals", 1, 12},
 		"section2-javascript": {"JavaScript Programming", 13, 24},
-		"section3-backend":    {"Backend Developments", 25, 36},
-		"section4-react":      {"React and Frontend", 37, 48},
+		"section3-backend":    {"Backend Development", 25, 36},
+		"section4-react":      {"React & Frontend", 37, 48},
 	}
 
 	for sectionID, config := range sectionConfigs {
 		newSections[sectionID] = &Section{
 			ID:          sectionID,
 			Name:        config.name,
-			Description: fmt.Sprintf("Weeks %d-%d", config.weekStart, config.WeekEnd),
+			Description: fmt.Sprintf("Weeks %d-%d", config.weekStart, config.weekEnd),
 			WeekStart:   config.weekStart,
-			WeekEnd:     config.WeekEnd,
+			WeekEnd:     config.weekEnd,
 			Lessons:     []*Lesson{},
 		}
 	}
 
 	if _, err := os.Stat(s.lessonsDir); os.IsNotExist(err) {
-		log.Printf("📁 Lessons directory doesn't exist, skipping scan")
+		log.Printf("Lessons directory doesn't exist, skipping scan")
 		s.lessons = newLessons
 		s.sections = newSections
 		return nil
@@ -228,41 +228,73 @@ func (s *Server) scanLessons() error {
 			continue
 		}
 
+		err := filepath.WalkDir(sectionPath, func(path string, d fs.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+
+			if d.IsDir() || !strings.HasSuffix(strings.ToLower(d.Name()), ".md") {
+				return nil
+			}
+
+			lesson, err := s.parseLesson(path, sectionID, section.Name, section.WeekStart)
+			if err != nil {
+				log.Printf("Error parsing lesson %s: %v", path, err)
+				return nil
+			}
+
+			if lesson.Week >= section.WeekStart && lesson.Week <= section.WeekEnd {
+				newLessons[lesson.Week] = lesson
+				section.Lessons = append(section.Lessons, lesson)
+				log.Printf("Added lesson for week %d in %s: %s", lesson.Week, sectionID, lesson.Title)
+			}
+
+			return nil
+		})
+
+		if err != nil {
+			log.Printf("Error scanning section %s: %v", sectionID, err)
+		}
+
+		// Sort lessons within section
+		sort.Slice(section.Lessons, func(i, j int) bool {
+			return section.Lessons[i].Week < section.Lessons[j].Week
+		})
 	}
 
-	err := filepath.WalkDir(s.lessonsDir, func(path string, d fs.DirEntry, err error) error {
-		if err != nil {
-			return err
+	// Also scan for legacy lessons (week1.md, week2.md, etc. in root lessons dir)
+	legacyFiles, err := filepath.Glob(filepath.Join(s.lessonsDir, "week*.md"))
+	if err == nil {
+		for _, filePath := range legacyFiles {
+			lesson, err := s.parseLesson(filePath, "", "", 1)
+			if err != nil {
+				log.Printf("Error parsing legacy lesson %s: %v", filePath, err)
+				continue
+			}
+
+			if lesson.Week >= 1 && lesson.Week <= 48 {
+				// Determine which section this lesson belongs to
+				for sectionID, section := range newSections {
+					if lesson.Week >= section.WeekStart && lesson.Week <= section.WeekEnd {
+						lesson.Section = sectionID
+						lesson.SectionName = section.Name
+						newLessons[lesson.Week] = lesson
+						section.Lessons = append(section.Lessons, lesson)
+						log.Printf("Added legacy lesson for week %d: %s", lesson.Week, lesson.Title)
+						break
+					}
+				}
+			}
 		}
-
-		if d.IsDir() || !strings.HasSuffix(strings.ToLower(d.Name()), ".md") {
-			return nil
-		}
-
-		lesson, err := s.parseLesson(path)
-		if err != nil {
-			log.Printf("❌ Error parsing lesson %s: %v", path, err)
-			return nil
-		}
-
-		if lesson.Week >= 1 && lesson.Week <= 100 {
-			newLessons[lesson.Week] = lesson
-			log.Printf("✅ Added lesson for week %d: %s", lesson.Week, lesson.Title)
-		}
-
-		return nil
-	})
-
-	if err != nil {
-		return err
 	}
 
-	log.Printf("📊 Found %d valid lessons", len(newLessons))
+	log.Printf("Found %d valid lessons across %d sections", len(newLessons), len(newSections))
 	s.lessons = newLessons
+	s.sections = newSections
 	return nil
 }
 
-func (s *Server) parseLesson(filePath string) (*Lesson, error) {
+func (s *Server) parseLesson(filePath, sectionID, sectionName string, weekOffset int) (*Lesson, error) {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
 		return nil, err
@@ -275,9 +307,11 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 
 	contentStr := string(content)
 	lesson := &Lesson{
-		FilePath:  filePath,
-		CreatedAt: fileInfo.ModTime(),
-		FileSize:  fileInfo.Size(),
+		FilePath:    filePath,
+		CreatedAt:   fileInfo.ModTime(),
+		FileSize:    fileInfo.Size(),
+		Section:     sectionID,
+		SectionName: sectionName,
 	}
 
 	if strings.HasPrefix(contentStr, "---") {
@@ -289,6 +323,9 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 				lesson.Description = metadata.Description
 				lesson.Week = metadata.Week
 				lesson.Content = strings.TrimSpace(parts[2])
+				if metadata.Section != "" {
+					lesson.Section = metadata.Section
+				}
 			}
 		}
 	}
@@ -296,7 +333,12 @@ func (s *Server) parseLesson(filePath string) (*Lesson, error) {
 	if lesson.Week == 0 {
 		filename := filepath.Base(filePath)
 		if weekNum := extractWeekFromFilename(filename); weekNum > 0 {
-			lesson.Week = weekNum
+			// For section files, adjust week number based on section
+			if sectionID != "" && weekOffset > 1 {
+				lesson.Week = weekOffset + weekNum - 1
+			} else {
+				lesson.Week = weekNum
+			}
 		}
 	}
 
@@ -325,7 +367,7 @@ func extractWeekFromFilename(filename string) int {
 					num += string(char)
 				}
 			}
-			if weekNum, err := strconv.Atoi(num); err == nil && weekNum >= 1 && weekNum <= 100 {
+			if weekNum, err := strconv.Atoi(num); err == nil && weekNum >= 1 && weekNum <= 48 {
 				return weekNum
 			}
 		}
@@ -349,7 +391,7 @@ func (s *Server) handleLessons(w http.ResponseWriter, r *http.Request) {
 	defer s.mutex.RUnlock()
 
 	var lessons []*Lesson
-	for i := 1; i <= 100; i++ {
+	for i := 1; i <= 48; i++ {
 		if lesson, exists := s.lessons[i]; exists {
 			lessons = append(lessons, lesson)
 		}
@@ -364,7 +406,7 @@ func (s *Server) handleLesson(w http.ResponseWriter, r *http.Request) {
 	weekStr := vars["week"]
 
 	week, err := strconv.Atoi(weekStr)
-	if err != nil || week < 1 || week > 100 {
+	if err != nil || week < 1 || week > 48 {
 		http.Error(w, "Invalid week number", http.StatusBadRequest)
 		return
 	}
@@ -382,19 +424,92 @@ func (s *Server) handleLesson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(lesson)
 }
 
+// New section-based handlers
+func (s *Server) handleSections(w http.ResponseWriter, r *http.Request) {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
+	var sections []*Section
+	sectionOrder := []string{"section1-html-css", "section2-javascript", "section3-backend", "section4-react"}
+
+	for _, sectionID := range sectionOrder {
+		if section, exists := s.sections[sectionID]; exists {
+			sections = append(sections, section)
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(sections)
+}
+
+func (s *Server) handleSection(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sectionID := vars["section"]
+
+	s.mutex.RLock()
+	section, exists := s.sections[sectionID]
+	s.mutex.RUnlock()
+
+	if !exists {
+		http.Error(w, "Section not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(section)
+}
+
+func (s *Server) handleSectionLesson(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sectionID := vars["section"]
+	weekStr := vars["week"]
+
+	week, err := strconv.Atoi(weekStr)
+	if err != nil || week < 1 || week > 12 {
+		http.Error(w, "Invalid week number", http.StatusBadRequest)
+		return
+	}
+
+	s.mutex.RLock()
+	section, exists := s.sections[sectionID]
+	s.mutex.RUnlock()
+
+	if !exists {
+		http.Error(w, "Section not found", http.StatusNotFound)
+		return
+	}
+
+	// Convert section week (1-12) to global week
+	globalWeek := section.WeekStart + week - 1
+
+	s.mutex.RLock()
+	lesson, exists := s.lessons[globalWeek]
+	s.mutex.RUnlock()
+
+	if !exists {
+		http.Error(w, "Lesson not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(lesson)
+}
+
 func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
 
 	syllabus := struct {
-		Course      Course          `json:"course"`
-		Lessons     map[int]*Lesson `json:"lessons"`
-		Weeks       []int           `json:"weeks"`
-		LastUpdated time.Time       `json:"last_updated"`
-		TotalFiles  int             `json:"total_files"`
+		Course      Course              `json:"course"`
+		Lessons     map[int]*Lesson     `json:"lessons"`
+		Sections    map[string]*Section `json:"sections"`
+		Weeks       []int               `json:"weeks"`
+		LastUpdated time.Time           `json:"last_updated"`
+		TotalFiles  int                 `json:"total_files"`
 	}{
 		Course:      s.course,
 		Lessons:     s.lessons,
+		Sections:    s.sections,
 		Weeks:       make([]int, 0),
 		LastUpdated: time.Now(),
 		TotalFiles:  len(s.lessons),
@@ -411,7 +526,7 @@ func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(syllabus)
 }
 
-// Serve embedded static files
+// Keep your existing handleStatic function as-is
 func (s *Server) handleStatic(w http.ResponseWriter, r *http.Request) {
 	// Remove /static prefix
 	path := strings.TrimPrefix(r.URL.Path, "/static/")
@@ -428,22 +543,21 @@ func (s *Server) handleStatic(w http.ResponseWriter, r *http.Request) {
 	embedPath := "lessons/frontend/dist/" + path
 
 	// DEBUG: Log what we're trying to serve
-	log.Printf("🔍 Requested path: %s", r.URL.Path)
-	log.Printf("🔍 Cleaned path: %s", path)
-	log.Printf("🔍 Embed path: %s", embedPath)
+	log.Printf("Requested path: %s", r.URL.Path)
+	log.Printf("Cleaned path: %s", path)
+	log.Printf("Embed path: %s", embedPath)
 
 	// Try to read the file from embedded filesystem
 	data, err := staticFiles.ReadFile(embedPath)
 	if err != nil {
-		log.Printf("❌ File not found: %s, serving index.html fallback", embedPath)
+		log.Printf("File not found: %s, serving index.html fallback", embedPath)
 		indexPath := embedPath + "/index.html"
-		// **************** to check whether index.html succeed or failed
-		log.Printf("🔍 Trying index path: %s", indexPath)
+		log.Printf("Trying index path: %s", indexPath)
 
 		// If file not found, serve index.html (for SPA routing)
 		data, err = staticFiles.ReadFile(indexPath)
 		if err != nil {
-			log.Printf("❌ Index file not found: %s, serving root index.html fallback", indexPath)
+			log.Printf("Index file not found: %s, serving root index.html fallback", indexPath)
 
 			// If still not found, serve root index.html (for SPA routing)
 			data, err = staticFiles.ReadFile("lessons/frontend/dist/index.html")
@@ -452,16 +566,16 @@ func (s *Server) handleStatic(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 		} else {
-			log.Printf("✅ Index file found: %s", indexPath)
-
+			log.Printf("Index file found: %s", indexPath)
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write((data))
+		w.Write(data)
 		return
 	}
+
 	// Set appropriate content type
 	if strings.HasSuffix(path, ".css") {
-		log.Printf("🎨 Setting CSS content type")
+		log.Printf("Setting CSS content type")
 		w.Header().Set("Content-Type", "text/css; charset=utf-8")
 	} else if strings.HasSuffix(path, ".js") {
 		w.Header().Set("Content-Type", "application/javascript; charset=utf-8")
@@ -484,39 +598,25 @@ func (s *Server) handleStatic(w http.ResponseWriter, r *http.Request) {
 
 	w.Write(data)
 }
-func (s *Server) handleSPAFallback(w http.ResponseWriter, r *http.Request) {
-	// For SPA routes, always serve index.html
-	data, err := staticFiles.ReadFile("lessons/frontend/dist/index.html")
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Write(data)
-}
 
 func (s *Server) setupRoutes() http.Handler {
 	r := mux.NewRouter()
 
 	// API routes
 	api := r.PathPrefix("/api").Subrouter()
+
+	// Legacy routes (maintain backward compatibility)
 	api.HandleFunc("/course", s.handleCourse).Methods("GET")
 	api.HandleFunc("/lessons", s.handleLessons).Methods("GET")
 	api.HandleFunc("/lessons/{week:[0-9]+}", s.handleLesson).Methods("GET")
 	api.HandleFunc("/syllabus", s.handleSyllabus).Methods("GET")
 
-	// Static assets with specific prefix
-	r.PathPrefix("/static/").HandlerFunc(s.handleStatic)
+	// New section-based routes
+	api.HandleFunc("/sections", s.handleSections).Methods("GET")
+	api.HandleFunc("/sections/{section}", s.handleSection).Methods("GET")
+	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
 
-	// Specific static files (if you have any at root)
-	r.HandleFunc("/favicon.ico", s.handleStatic)
-	r.HandleFunc("/robots.txt", s.handleStatic)
-
-	// Static files and SPA routes - this should be last
-	// Serve static files and handle SPA routing
-	// This catches all paths and determines whether to serve static assets
-	// or fall back to index.html for client-side routing
+	// Serve static files and SPA routes
 	r.PathPrefix("/").HandlerFunc(s.handleStatic)
 
 	// CORS middleware
@@ -547,18 +647,18 @@ func main() {
 		port = ":" + os.Args[2]
 	}
 
-	log.Println("🔍 Checking embedded files:")
+	log.Println("Checking embedded files:")
 	err := fs.WalkDir(staticFiles, ".", func(path string, d fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		if !d.IsDir() {
-			log.Printf("📁 Embedded file: %s", path)
+			log.Printf("Embedded file: %s", path)
 		}
 		return nil
 	})
 	if err != nil {
-		log.Printf("❌ Error walking embedded files: %v", err)
+		log.Printf("Error walking embedded files: %v", err)
 	}
 
 	// Create lessons directory if it doesn't exist
@@ -584,12 +684,13 @@ func main() {
 	// Start file watcher
 	server.startFileWatcher()
 
-	log.Printf("🚀 Course Management System Server")
-	log.Printf("📁 Lessons directory: %s", lessonsDir)
-	log.Printf("📚 Found %d lessons", len(server.lessons))
-	log.Printf("🌐 Server starting on http://localhost%s", port)
-	log.Printf("📖 Frontend: http://localhost%s", port)
-	log.Printf("🔗 API: http://localhost%s/api", port)
+	log.Printf("Course Management System Server")
+	log.Printf("Lessons directory: %s", lessonsDir)
+	log.Printf("Found %d lessons in %d sections", len(server.lessons), len(server.sections))
+	log.Printf("Server starting on http://localhost%s", port)
+	log.Printf("Frontend: http://localhost%s", port)
+	log.Printf("API: http://localhost%s/api", port)
+	log.Printf("New Section API: http://localhost%s/api/sections", port)
 
 	handler := server.setupRoutes()
 	log.Fatal(http.ListenAndServe(port, handler))
