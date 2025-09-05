@@ -14,34 +14,197 @@ export async function getStaticPaths() {
 
 const { section } = Astro.params;
 
-// Fetch section data
+// Fetch both section data and syllabus data
 const API_BASE = 'http://localhost:8080/api';
 let sectionData = null;
+let syllabusData = null;
 let error = null;
 
 try {
-  const response = await fetch(`${API_BASE}/sections/${section}`);
-  if (response.ok) {
-    sectionData = await response.json();
+  // Fetch basic section data
+  const sectionResponse = await fetch(`${API_BASE}/sections/${section}`);
+  if (sectionResponse.ok) {
+    sectionData = await sectionResponse.json();
   } else {
     error = 'Section not found';
+  }
+
+  // Try to fetch syllabus data (might not exist yet)
+  try {
+    const syllabusResponse = await fetch(`${API_BASE}/sections/${section}/syllabus`);
+    if (syllabusResponse.ok) {
+      syllabusData = await syllabusResponse.json();
+    }
+  } catch (syllabusError) {
+    console.log('Syllabus data not available yet');
   }
 } catch (err) {
   error = 'Failed to connect to server';
 }
 
-// Simple section info
-const sectionIcon = section === "section1-html-css" ? "🌐" : 
-                   section === "section2-javascript" ? "⚡" :
-                   section === "section3-backend" ? "🚀" : "⚛️";
+// Enhanced section metadata with fallback data
+const sectionMeta = {
+  "section1-html-css": {
+    icon: "🌐",
+    color: "blue",
+    quarter: "Fall Quarter",
+    courseCode: "CIS 241",
+    credits: "5.0 Credits",
+    description: "Learn the foundation of web development with HTML structure and CSS styling",
+    fallbackSyllabus: {
+      description: "Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting.",
+      objectives: [
+        "Perform content design and technical analysis on web applications and websites",
+        "Use current HTML to develop, debug, maintain, and document web applications and websites",
+        "Compare and contrast different browsers' effects on current HTML documents",
+        "Use current HTML forms, iframes, and tables",
+        "Create current HTML style through inline, embedded, and Cascading Style Sheets"
+      ],
+      topics: [
+        "HTML5 semantic elements and document structure",
+        "CSS fundamentals: selectors, properties, and values", 
+        "CSS layout techniques: Flexbox and Grid",
+        "Responsive web design and media queries",
+        "Web accessibility principles and best practices",
+        "Form creation and validation",
+        "CSS animations and transitions",
+        "Browser compatibility and testing"
+      ],
+      assessment: [
+        "Weekly coding assignments (40%)",
+        "Midterm project: Multi-page website (20%)",
+        "Final project: Responsive portfolio site (25%)",
+        "Lab exercises and participation (15%)"
+      ],
+      resources: [
+        "MDN Web Docs - HTML/CSS Reference",
+        "W3Schools - HTML/CSS Tutorials",
+        "CSS-Tricks - CSS techniques and guides",
+        "Can I Use - Browser compatibility tables"
+      ]
+    }
+  },
+  "section2-javascript": {
+    icon: "⚡",
+    color: "green",
+    quarter: "Winter Quarter", 
+    courseCode: "CIS 242",
+    credits: "5.0 Credits",
+    description: "Master JavaScript programming and DOM manipulation for interactive websites",
+    fallbackSyllabus: {
+      description: "Students will explore embedding, inline and external scripts, functions, form validation, loops, conditional statements, strings, numbers, and DHTML.",
+      objectives: [
+        "Use object-oriented client-side scripting with well-formed web pages",
+        "Recognize client-side variables and data types and operations",
+        "Write client-side functions, event handlers, and control structures",
+        "Verify form data through scripting validation",
+        "Save state information through hidden fields, query-strings, and cookies"
+      ],
+      topics: [
+        "JavaScript fundamentals: variables, data types, operators",
+        "Functions and scope",
+        "DOM manipulation and event handling", 
+        "Control structures: loops and conditionals",
+        "Arrays and objects",
+        "Form validation and user input handling",
+        "Asynchronous JavaScript: callbacks, promises, async/await"
+      ],
+      assessment: [
+        "Weekly programming exercises (35%)",
+        "Midterm exam: JavaScript fundamentals (20%)",
+        "Interactive web app project (30%)",
+        "Lab work and code reviews (15%)"
+      ],
+      resources: [
+        "MDN Web Docs - JavaScript Reference",
+        "JavaScript.info - Modern JavaScript tutorial",
+        "W3Schools - JavaScript tutorials and examples"
+      ]
+    }
+  },
+  "section3-backend": {
+    icon: "🚀",
+    color: "purple",
+    quarter: "Spring Quarter",
+    courseCode: "CIS 243", 
+    credits: "5.0 Credits",
+    description: "Build server-side applications with Node.js and database integration",
+    fallbackSyllabus: {
+      description: "Server-side scripting fundamentals including functions, logical structure, database connectivity, Object-Oriented principles, relational databases, and web frameworks.",
+      objectives: [
+        "Understand difference between client-side and server-side scripting",
+        "Use appropriate script types to complete interactive websites with data repositories",
+        "Use Model, View, Controller (MVC) principles and architecture",
+        "Create procedures and reusable code in scripting language"
+      ],
+      topics: [
+        "Node.js runtime and npm package management",
+        "Express.js framework and routing",
+        "Database design and MongoDB integration", 
+        "RESTful API development",
+        "Authentication and authorization",
+        "Middleware and error handling"
+      ],
+      assessment: [
+        "API development assignments (40%)",
+        "Database design project (20%)",
+        "Full-stack application (25%)",
+        "Technical documentation and testing (15%)"
+      ],
+      resources: [
+        "Node.js Documentation",
+        "Express.js Official Guide",
+        "MongoDB University courses"
+      ]
+    }
+  },
+  "section4-react": {
+    icon: "⚛️",
+    color: "orange",
+    quarter: "Summer Quarter",
+    courseCode: "CIS 244",
+    credits: "5.0 Credits", 
+    description: "Create modern web applications with React framework and advanced concepts",
+    fallbackSyllabus: {
+      description: "Students learn to work with open-source JavaScript frameworks including React, AngularJS, Vue.js, and other commonly used frameworks.",
+      objectives: [
+        "Compare and contrast top JavaScript frameworks",
+        "Develop and implement content using JavaScript frameworks",
+        "Develop responsive and accessible websites using current technologies",
+        "Create ongoing plan to maintain and update websites"
+      ],
+      topics: [
+        "React fundamentals: components, JSX, props",
+        "State management with hooks",
+        "Component lifecycle and side effects",
+        "React Router for single-page applications",
+        "API integration and data fetching",
+        "Testing React components"
+      ],
+      assessment: [
+        "Component-building exercises (35%)",
+        "Mid-term project: Multi-page React app (25%)",
+        "Capstone project: Full-featured application (30%)",
+        "Code quality and documentation (10%)"
+      ],
+      resources: [
+        "React Official Documentation",
+        "Create React App - Development environment", 
+        "React Router documentation"
+      ]
+    }
+  }
+};
 
-const courseCode = section === "section1-html-css" ? "CIS 241" : 
-                   section === "section2-javascript" ? "CIS 242" :
-                   section === "section3-backend" ? "CIS 243" : "CIS 244";
+const meta = sectionMeta[section] || sectionMeta["section1-html-css"];
 
-const quarter = section === "section1-html-css" ? "Fall Quarter" : 
-                section === "section2-javascript" ? "Winter Quarter" :
-                section === "section3-backend" ? "Spring Quarter" : "Summer Quarter";
+// Use API syllabus data if available, otherwise use fallback
+const syllabus = syllabusData?.syllabus_info || meta.fallbackSyllabus;
+const courseInfo = {
+  courseCode: syllabusData?.syllabus_info?.course_code || meta.courseCode,
+  credits: syllabusData?.syllabus_info?.credits || meta.credits,
+  prerequisites: syllabusData?.syllabus_info?.prerequisites || "See course catalog"
+};
 ---
 
 <Layout title="Section Page">
@@ -80,16 +243,32 @@ const quarter = section === "section1-html-css" ? "Fall Quarter" :
               <div class="grid md:grid-cols-3 gap-8 items-center">
                 <div class="md:col-span-2">
                   <div class="flex items-center mb-4">
-                    <span class="text-5xl mr-4">{sectionIcon}</span>
+                    <span class="text-5xl mr-4">{meta.icon}</span>
                     <div>
                       <div class="flex items-center gap-3 mb-2">
                         <h1 class="text-4xl md:text-5xl font-bold">{sectionData.name}</h1>
                         <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
-                          {courseCode}
+                          {courseInfo.courseCode}
                         </span>
                       </div>
-                      <p class="text-xl text-white opacity-90">{quarter}</p>
+                      <p class="text-xl text-white opacity-90">{meta.quarter}</p>
                     </div>
+                  </div>
+                  
+                  <p class="text-lg text-white opacity-80 mb-6 max-w-2xl">
+                    {meta.description}
+                  </p>
+                  
+                  <div class="flex items-center gap-4 text-white opacity-90">
+                    <span class="flex items-center">
+                      <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"></path>
+                      </svg>
+                      {courseInfo.credits}
+                    </span>
+                    <span class="text-sm">
+                      Prerequisite: {courseInfo.prerequisites}
+                    </span>
                   </div>
                 </div>
                 
@@ -105,6 +284,15 @@ const quarter = section === "section1-html-css" ? "Fall Quarter" :
                         class="bg-white h-3 rounded-full transition-all duration-500"
                         style={`width: ${(sectionData.lessons.length / 12) * 100}%`}
                       ></div>
+                    </div>
+                    
+                    <div>
+                      {sectionData.lessons.length > 0 && (
+                        <div class="text-sm">
+                          <p>Latest: Week {Math.max(...sectionData.lessons.map(l => l.week - sectionData.week_start + 1))}</p>
+                          <p class="text-white opacity-80 truncate">{sectionData.lessons[sectionData.lessons.length - 1]?.title}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -143,7 +331,6 @@ const quarter = section === "section1-html-css" ? "Fall Quarter" :
             
             <!-- Lessons Tab -->
             <div id="lessons-tab" class="tab-content">
-              <!-- Check if lessons exist -->
               <div>
                 {sectionData.lessons.length > 0 && (
                   <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -156,7 +343,7 @@ const quarter = section === "section1-html-css" ? "Fall Quarter" :
                               <span class="bg-white bg-opacity-20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
                                 Week {weekInSection}
                               </span>
-                              <span class="text-2xl">{sectionIcon}</span>
+                              <span class="text-2xl">{meta.icon}</span>
                             </div>
                           </div>
                           
@@ -203,37 +390,109 @@ const quarter = section === "section1-html-css" ? "Fall Quarter" :
               </div>
             </div>
 
-            <!-- Syllabus Tab -->
+            <!-- Enhanced Syllabus Tab -->
             <div id="syllabus-tab" class="tab-content hidden">
-              <div class="bg-white rounded-xl shadow-lg p-8">
-                <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Information</h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h3 class="text-lg font-bold text-gray-700 mb-3">Course Details</h3>
-                    <div class="space-y-2">
+              <div class="grid lg:grid-cols-3 gap-8">
+                <!-- Course Overview -->
+                <div class="lg:col-span-2 space-y-8">
+                  
+                  <!-- Course Description -->
+                  <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Course Description</h2>
+                    <p class="text-gray-700 leading-relaxed">
+                      {syllabus.description}
+                    </p>
+                  </div>
+
+                  <!-- Learning Objectives -->
+                  <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Learning Objectives</h2>
+                    <p class="text-gray-600 mb-4">Upon successful completion of this course, students will be able to:</p>
+                    <ul class="space-y-3">
+                      {syllabus.objectives && syllabus.objectives.map((objective, index) => (
+                        <li class="flex items-start">
+                          <span class="bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold mr-3 mt-0.5 flex-shrink-0">
+                            {index + 1}
+                          </span>
+                          <span class="text-gray-700">{objective}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <!-- Course Topics -->
+                  <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Course Topics</h2>
+                    <div class="grid md:grid-cols-2 gap-4">
+                      {syllabus.topics && syllabus.topics.map((topic) => (
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                          <div class="w-2 h-2 bg-blue-500 rounded-full mr-3 flex-shrink-0"></div>
+                          <span class="text-gray-700 text-sm">{topic}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sidebar Information -->
+                <div class="space-y-6">
+                  
+                  <!-- Course Details -->
+                  <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Course Details</h3>
+                    <div class="space-y-3">
                       <div class="flex justify-between">
                         <span class="text-gray-600">Course Code</span>
-                        <span class="font-semibold">{courseCode}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span class="text-gray-600">Quarter</span>
-                        <span class="font-semibold">{quarter}</span>
+                        <span class="font-semibold">{courseInfo.courseCode}</span>
                       </div>
                       <div class="flex justify-between">
                         <span class="text-gray-600">Credits</span>
-                        <span class="font-semibold">5.0 Credits</span>
+                        <span class="font-semibold">{courseInfo.credits}</span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-gray-600">Quarter</span>
+                        <span class="font-semibold">{meta.quarter}</span>
+                      </div>
+                      <div class="pt-3 border-t border-gray-200">
+                        <span class="text-gray-600 text-sm">Prerequisites</span>
+                        <p class="text-sm text-gray-800 mt-1">{courseInfo.prerequisites}</p>
                       </div>
                     </div>
                   </div>
-                  
-                  <div>
-                    <h3 class="text-lg font-bold text-gray-700 mb-3">Quick Facts</h3>
-                    <ul class="space-y-2 text-gray-600">
-                      <li>• 12 weeks of instruction</li>
-                      <li>• Hands-on coding projects</li>
-                      <li>• Industry-relevant skills</li>
-                      <li>• Portfolio development</li>
-                    </ul>
+
+                  <!-- Assessment -->
+                  <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Assessment</h3>
+                    <div class="space-y-3">
+                      {syllabus.assessment && syllabus.assessment.map((item) => (
+                        <div class="text-sm text-gray-700">{item}</div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <!-- Resources -->
+                  <div class="bg-white rounded-xl shadow-lg p-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Resources</h3>
+                    <div class="space-y-2">
+                      {syllabus.resources && syllabus.resources.map((resource) => (
+                        <div class="flex items-start text-sm">
+                          <div class="w-2 h-2 bg-blue-500 rounded-full mr-2 mt-2 flex-shrink-0"></div>
+                          <span class="text-gray-700">{resource}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <!-- Data Source Indicator -->
+                  <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                    <div class="flex items-center">
+                      <svg class="w-4 h-4 text-blue-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                      </svg>
+                      <span class="text-xs text-blue-700">
+                        {syllabusData ? 'Live course data' : 'Sample course data'}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -278,6 +537,14 @@ const quarter = section === "section1-html-css" ? "Fall Quarter" :
                             <div>
                               {lesson && lesson.description && (
                                 <p class="text-gray-600 mt-2">{lesson.description}</p>
+                              )}
+                            </div>
+                            
+                            <div>
+                              {lesson && lesson.created_at && (
+                                <p class="text-sm text-gray-500 mt-2">
+                                  Published: {new Date(lesson.created_at).toLocaleDateString()}
+                                </p>
                               )}
                             </div>
                           </div>
