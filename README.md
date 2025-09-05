@@ -1,5 +1,17 @@
 # webdev-class-server-ver2-app
 
+
+## 9.5.2025
+1. Issues with my path /api/sections/section1-html-css/1
+1. it was wrong: it should be /api/sections/section1-html-css/week/1
+1. Claude suggested a path where /week/1 and /1 would render same but it was not the case: /week/1 rendered the root html not the json response
+1. Finally the URL
+```
+http://localhost:8080/sections-test
+```
+1. worked perfectly
+
+
 ## 9.4.2025
 
 ### refactoring to include four sections
