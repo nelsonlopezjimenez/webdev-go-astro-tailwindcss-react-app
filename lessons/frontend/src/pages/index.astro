@@ -1,8 +1,9 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
+import edmondsLogo from '../assets/edmonds-college-logo.svg';
 
 // Fetch course and sections data
-const API_BASE = 'http://localhost:8080/api';
+const API_BASE = "http://localhost:8080/api";
 let course = null;
 let sections = [];
 let error = null;
@@ -10,50 +11,83 @@ let error = null;
 try {
   const courseRes = await fetch(`${API_BASE}/course`);
   const sectionsRes = await fetch(`${API_BASE}/sections`);
-  
+
   if (courseRes.ok) {
     course = await courseRes.json();
   }
-  
+
   if (sectionsRes.ok) {
     sections = await sectionsRes.json();
   }
 } catch (err) {
-  console.error('Failed to fetch course data:', err);
+  console.error("Failed to fetch course data:", err);
   error = err.message;
 }
 
 // Calculate overall progress
-const totalLessons = sections.reduce((sum, section) => sum + section.lessons.length, 0);
+const totalLessons = sections.reduce(
+  (sum, section) => sum + section.lessons.length,
+  0,
+);
 const totalPossible = 48; // 4 sections × 12 weeks each
 ---
 
 <Layout title="Edmonds College - Web Development Certificate">
-  <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50">
-    
+  <div
+    class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50"
+  >
     <!-- Header with Edmonds College Branding -->
     <header class="bg-white shadow-sm border-b-4 border-blue-600">
       <div class="max-w-7xl mx-auto px-6 py-4">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
             <!-- Placeholder for Edmonds Logo -->
-            <div class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center">
-              <span class="text-white font-bold text-lg">E</span>
+
+            <div>
+              <a href="/" class="mr-auto">
+                <svg
+                  class="w-52 h-auto"
+                  width="300"
+                  height="72"
+                  viewBox="0 0 300 72"
+                >
+                  <!-- Paste your SVG content here -->
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 242 58"
+                    ><path d="M0 0h53.7v58H0Z" fill="none"></path><path
+                      d="M53.07 4.65c-3.49 1.67-12.7 6.62-15.83 13.52 0 0 1.83-.76 3.4-1.06.32-.06.58.25.49.56a41.63 41.63 0 0 0-.56 21.32.44.44 0 0 1-.42.55h-7.4l-.92 6.62-.7-6.62L26.83 0l-4.28 39.54h-9.03a.44.44 0 0 1-.42-.55 41.71 41.71 0 0 0-.55-21.32.43.43 0 0 1 .49-.56c1.56.3 3.4 1.06 3.4 1.06C13.3 11.27 4.08 6.32.6 4.65c-.4-.2-.78.25-.55.62 11.32 18.2 4.33 38.13 2.87 41.8-.11.28.1.6.41.6h18.33l-1.06 9.76c-.03.3.2.57.51.57h11.45a.5.5 0 0 0 .5-.57l-1.05-9.77h18.33c.3 0 .52-.3.4-.6-1.44-3.66-8.44-23.58 2.89-41.79.23-.37-.17-.81-.56-.62"
+                      fill="#004d71"></path><path
+                      d="M228.45 55.2v-6.62h10.85v-2.44h-10.85V39.7h12.13v-2.44h-14.76v20.4h14.9V55.2h-12.27m-21.86-6.22h6.05v4.7a9.15 9.15 0 0 1-5.55 1.9c-4.6 0-7.68-3.28-7.68-8.16 0-4.51 3.24-8.04 7.37-8.04 2.96 0 4.6 1.07 5.92 2.24l.15.12 1.7-2-.15-.13a10.63 10.63 0 0 0-7.54-2.7c-5.7 0-10.16 4.64-10.16 10.57 0 6.19 4.24 10.5 10.3 10.5 4.05 0 6.82-1.94 8.11-3.1l.07-.06v-8.25h-8.6v2.41m-31.38-.4h10.86v-2.44H175.2V39.7h12.13v-2.44h-14.75v20.4h14.9V55.2H175.2v-6.62m-23.55-11.33h-2.62v20.4h13.81v-2.47h-11.19V37.25m-23.55 0h-2.63v20.4h13.82v-2.47h-11.2V37.25m-15.66 10.23c0 4.58-3.26 8.04-7.6 8.04-4.35 0-7.64-3.48-7.64-8.1 0-4.59 3.26-8.04 7.6-8.04 4.35 0 7.64 3.48 7.64 8.1zm-7.6-10.57c-5.8 0-10.35 4.64-10.35 10.57 0 5.99 4.43 10.5 10.3 10.5 5.81 0 10.36-4.63 10.36-10.56 0-6-4.43-10.51-10.3-10.51zm-20.2 15.77c-1.77 1.7-3.52 2.84-6.29 2.84-4.28 0-7.5-3.48-7.5-8.1 0-4.59 3.22-8.04 7.5-8.04 2.31 0 4.14.8 6.12 2.69l.14.13 1.8-1.94-.15-.13a10.5 10.5 0 0 0-7.88-3.22c-5.84 0-10.25 4.54-10.25 10.57 0 5.99 4.37 10.5 10.16 10.5 4.05 0 6.36-1.8 8.1-3.57l.13-.13-1.75-1.72-.13.12m144.9-32.1c0 1.51 1.72 2.27 3.47 2.27 1.63 0 3.35-.76 3.35-2.08 0-2.1-2.44-2.2-4.04-2.3-4-.25-8-1.85-8-6.45 0-4.78 4.03-7.2 8.5-7.2 4.23 0 8.51 2.42 8.42 7.2h-5.35c-.03-1.5-1.44-2.14-2.97-2.14-1.28 0-2.97.35-2.97 2.02 0 1.48 1.25 1.82 3.34 2.04 4.66.41 8.73 1.51 8.73 6.86 0 4.63-4.47 7.05-8.95 7.05-4.62 0-9.07-2.33-8.97-7.27h5.44m-20.74 1.58c3.47 0 5.13-2.93 5.13-5.86 0-2.9-1.75-5.79-5.13-5.79h-2.57v11.65Zm.06-16.81c7.13 0 10.79 5.48 10.79 10.89.1 5.54-3.53 11.11-10.79 11.11h-8.35v-22ZM180.6 15.99v11.36h-5.72V5.22h1.78l11.42 10.86V5.32h5.72v22.1h-1.69L180.6 15.99m-22.46 6.32c2.72 0 5.5-2.04 5.5-5.98 0-3.93-2.72-5.98-5.44-5.98-2.85 0-5.57 1.96-5.57 5.98 0 3.94 2.7 5.98 5.5 5.98zm-.03 5.45c-5.8 0-11.2-3.78-11.2-11.43 0-7.61 5.6-11.45 11.29-11.45 5.6 0 11.16 3.84 11.16 11.45 0 6.74-4.63 11.43-11.26 11.43zm-18.75-22.5h2.04v22.09h-5.73V17.18L131 22.1h-.65l-4.66-4.9v10.16h-5.73V5.25H122l8.69 9.54 8.66-9.53m-35.78 16.9c3.47 0 5.13-2.93 5.13-5.86 0-2.9-1.76-5.79-5.13-5.79H101v11.65zm.06-16.81c7.13 0 10.79 5.48 10.79 10.89.1 5.54-3.54 11.11-10.8 11.11h-8.34v-22Zm-16.06 4.97H74.71v3.15h9.95v5.04h-9.95v3.58h13.14v5.26H69V5.32h18.58v5"
+                      fill="#55565a"></path></svg
+                  >
+                </svg>
+              </a>
             </div>
             <div>
-              <h1 class="text-2xl font-bold text-gray-800">Edmonds College</h1>
-              <p class="text-sm text-blue-600">Web Application Developer Certificate</p>
+              <p class="text-sm text-blue-600">
+                Web Application Developer Certificate
+              </p>
             </div>
           </div>
-          
+
           <nav class="hidden md:flex space-x-6">
-            <a href="https://www.edmonds.edu" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">
+            <a
+              href="https://www.edmonds.edu"
+              class="text-blue-600 hover:text-blue-800 font-medium"
+              target="_blank"
+            >
               Edmonds College
             </a>
-            <a href="https://www.edmonds.edu/programs/computer-information-systems.html" class="text-blue-600 hover:text-blue-800 font-medium" target="_blank">
+            <a
+              href="https://www.edmonds.edu/programs/computer-information-systems.html"
+              class="text-blue-600 hover:text-blue-800 font-medium"
+              target="_blank"
+            >
               CIS Program
             </a>
-            <a href="#support" class="text-blue-600 hover:text-blue-800 font-medium">
+            <a
+              href="#support"
+              class="text-blue-600 hover:text-blue-800 font-medium"
+            >
               Student Support
             </a>
           </nav>
@@ -65,52 +99,61 @@ const totalPossible = 48; // 4 sections × 12 weeks each
     <section class="bg-gradient-to-r from-blue-600 to-green-600 text-white">
       <div class="max-w-7xl mx-auto px-6 py-16">
         <div class="text-center">
-          <div class="inline-flex items-center bg-white/20 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full mb-6">
+          <div
+            class="inline-flex items-center bg-white/20 backdrop-blur-sm text-white text-sm font-medium px-4 py-2 rounded-full mb-6"
+          >
             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-              <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"></path>
+              <path
+                d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"
+              ></path>
             </svg>
             Your Path to Web Development Excellence
           </div>
-          
+
           <h1 class="text-4xl md:text-6xl font-bold mb-6">
             Web Application Developer Certificate
           </h1>
-          
+
           <p class="text-xl md:text-2xl mb-8 max-w-4xl mx-auto opacity-90">
-            Master web development from HTML fundamentals to React applications through hands-on learning and industry-focused curriculum
+            Master web development from HTML fundamentals to React applications
+            through hands-on learning and industry-focused curriculum
           </p>
-          
+
           <div class="flex flex-wrap justify-center gap-4 mb-8">
-            <a 
-              href="#sections" 
+            <a
+              href="#sections"
               class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg"
             >
               Start Learning
             </a>
-            <a 
-              href="/syllabus" 
+            <a
+              href="/syllabus"
               class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-all duration-200"
             >
               View Syllabus
             </a>
           </div>
-          
+
           <!-- Progress Overview -->
-          {totalLessons > 0 && (
-            <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-md mx-auto">
-              <h3 class="font-semibold mb-3">Your Progress</h3>
-              <div class="flex justify-between text-sm mb-2">
-                <span>Lessons Available</span>
-                <span>{totalLessons} of {totalPossible}</span>
+          {
+            totalLessons > 0 && (
+              <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6 max-w-md mx-auto">
+                <h3 class="font-semibold mb-3">Your Progress</h3>
+                <div class="flex justify-between text-sm mb-2">
+                  <span>Lessons Available</span>
+                  <span>
+                    {totalLessons} of {totalPossible}
+                  </span>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-2">
+                  <div
+                    class="bg-white h-2 rounded-full transition-all duration-500"
+                    style={`width: ${(totalLessons / totalPossible) * 100}%`}
+                  />
+                </div>
               </div>
-              <div class="w-full bg-white/20 rounded-full h-2">
-                <div 
-                  class="bg-white h-2 rounded-full transition-all duration-500"
-                  style={`width: ${(totalLessons / totalPossible) * 100}%`}
-                ></div>
-              </div>
-            </div>
-          )}
+            )
+          }
         </div>
       </div>
     </section>
@@ -120,43 +163,77 @@ const totalPossible = 48; // 4 sections × 12 weeks each
       <div class="max-w-7xl mx-auto px-6">
         <div class="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">Why Choose Edmonds College?</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">
+              Why Choose Edmonds College?
+            </h2>
             <div class="space-y-4 text-gray-600">
               <p>
-                Located north of Seattle in Lynnwood, Edmonds College provides a unique on-campus student experience while meeting the needs of students at every level.
+                Located north of Seattle in Lynnwood, Edmonds College provides a
+                unique on-campus student experience while meeting the needs of
+                students at every level.
               </p>
               <p>
-                Whether you want to earn a technical degree to enter the workforce or transfer to a four-year university, you can invent – or reinvent – your future at Edmonds College.
+                Whether you want to earn a technical degree to enter the
+                workforce or transfer to a four-year university, you can invent
+                – or reinvent – your future at Edmonds College.
               </p>
               <div class="grid grid-cols-1 gap-4 mt-6">
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
                   </svg>
                   <span>Industry-aligned curriculum and certifications</span>
                 </div>
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
                   </svg>
                   <span>Hands-on learning with expert faculty</span>
                 </div>
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
                   </svg>
                   <span>Flexible scheduling for working students</span>
                 </div>
                 <div class="flex items-center">
-                  <svg class="w-5 h-5 text-green-600 mr-3" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                  <svg
+                    class="w-5 h-5 text-green-600 mr-3"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                      clip-rule="evenodd"></path>
                   </svg>
                   <span>Career support and internship opportunities</span>
                 </div>
               </div>
             </div>
           </div>
-          
+
           <div class="bg-gray-50 rounded-xl p-8">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Quick Facts</h3>
             <div class="space-y-4">
@@ -177,16 +254,26 @@ const totalPossible = 48; // 4 sections × 12 weeks each
                 <span class="font-semibold">Internship Included</span>
               </div>
             </div>
-            
+
             <div class="mt-6 pt-6 border-t border-gray-200">
-              <a 
-                href="https://www.edmonds.edu/programs/computer-information-systems.html" 
+              <a
+                href="https://www.edmonds.edu/programs/computer-information-systems.html"
                 target="_blank"
                 class="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
               >
                 Learn More About CIS Program
-                <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                <svg
+                  class="w-4 h-4 ml-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                  ></path>
                 </svg>
               </a>
             </div>
@@ -200,72 +287,110 @@ const totalPossible = 48; // 4 sections × 12 weeks each
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-12">
           <h2 class="text-4xl font-bold text-gray-800 mb-4">Course Sections</h2>
-          <p class="text-xl text-gray-600">Progress through four comprehensive sections, from beginner to advanced</p>
+          <p class="text-xl text-gray-600">
+            Progress through four comprehensive sections, from beginner to
+            advanced
+          </p>
         </div>
-        
+
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {sections.map((section, index) => {
-            const sectionColors = [
-              { bg: 'bg-blue-500', border: 'border-blue-200', text: 'text-blue-600' },
-              { bg: 'bg-green-500', border: 'border-green-200', text: 'text-green-600' },
-              { bg: 'bg-purple-500', border: 'border-purple-200', text: 'text-purple-600' },
-              { bg: 'bg-orange-500', border: 'border-orange-200', text: 'text-orange-600' }
-            ];
-            const colors = sectionColors[index] || sectionColors[0];
-            
-            return (
-              <div class={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-t-4 ${colors.border}`}>
-                <div class="p-6">
-                  <div class="flex items-center mb-4">
-                    <div class={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4`}>
-                      {index + 1}
-                    </div>
-                    <div>
-                      <h3 class="text-lg font-bold text-gray-800">{section.name}</h3>
-                      <p class="text-sm text-gray-500">{section.description}</p>
-                    </div>
-                  </div>
-                  
-                  <div class="mb-4">
-                    <div class="flex justify-between text-sm text-gray-600 mb-2">
-                      <span>Progress</span>
-                      <span>{section.lessons.length} of 12 lessons</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        class={`h-2 rounded-full transition-all duration-500 ${colors.bg.replace('bg-', 'bg-')}`}
-                        style={`width: ${(section.lessons.length / 12) * 100}%`}
-                      ></div>
-                    </div>
-                  </div>
-                  
-                  <div class="space-y-2 mb-6">
-                    {section.lessons.length > 0 ? (
-                      <div class="text-sm text-gray-600">
-                        <p>Latest: Week {Math.max(...section.lessons.map(l => l.week - section.week_start + 1))}</p>
-                        <p class="truncate">{section.lessons[section.lessons.length - 1]?.title}</p>
+          {
+            sections.map((section, index) => {
+              const sectionColors = [
+                {
+                  bg: "bg-blue-500",
+                  border: "border-blue-200",
+                  text: "text-blue-600",
+                },
+                {
+                  bg: "bg-green-500",
+                  border: "border-green-200",
+                  text: "text-green-600",
+                },
+                {
+                  bg: "bg-purple-500",
+                  border: "border-purple-200",
+                  text: "text-purple-600",
+                },
+                {
+                  bg: "bg-orange-500",
+                  border: "border-orange-200",
+                  text: "text-orange-600",
+                },
+              ];
+              const colors = sectionColors[index] || sectionColors[0];
+
+              return (
+                <div
+                  class={`bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-t-4 ${colors.border}`}
+                >
+                  <div class="p-6">
+                    <div class="flex items-center mb-4">
+                      <div
+                        class={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4`}
+                      >
+                        {index + 1}
                       </div>
+                      <div>
+                        <h3 class="text-lg font-bold text-gray-800">
+                          {section.name}
+                        </h3>
+                        <p class="text-sm text-gray-500">
+                          {section.description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div class="mb-4">
+                      <div class="flex justify-between text-sm text-gray-600 mb-2">
+                        <span>Progress</span>
+                        <span>{section.lessons.length} of 12 lessons</span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          class={`h-2 rounded-full transition-all duration-500 ${colors.bg.replace("bg-", "bg-")}`}
+                          style={`width: ${(section.lessons.length / 12) * 100}%`}
+                        />
+                      </div>
+                    </div>
+
+                    <div class="space-y-2 mb-6">
+                      {section.lessons.length > 0 ? (
+                        <div class="text-sm text-gray-600">
+                          <p>
+                            Latest: Week{" "}
+                            {Math.max(
+                              ...section.lessons.map(
+                                (l) => l.week - section.week_start + 1,
+                              ),
+                            )}
+                          </p>
+                          <p class="truncate">
+                            {section.lessons[section.lessons.length - 1]?.title}
+                          </p>
+                        </div>
+                      ) : (
+                        <p class="text-sm text-gray-500 italic">Coming soon</p>
+                      )}
+                    </div>
+
+                    {section.lessons.length > 0 ? (
+                      <a
+                        href={`/sections/${section.id}`}
+                        class={`block w-full text-center ${colors.text} border ${colors.border} px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium`}
+                      >
+                        View Section
+                      </a>
                     ) : (
-                      <p class="text-sm text-gray-500 italic">Coming soon</p>
+                      <div class="block w-full text-center text-gray-400 border border-gray-200 px-4 py-2 rounded-lg cursor-not-allowed">
+                        Not Available
+                      </div>
                     )}
                   </div>
-                  
-                  {section.lessons.length > 0 ? (
-                    <a 
-                      href={`/sections/${section.id}`}
-                      class={`block w-full text-center ${colors.text} border ${colors.border} px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors font-medium`}
-                    >
-                      View Section
-                    </a>
-                  ) : (
-                    <div class="block w-full text-center text-gray-400 border border-gray-200 px-4 py-2 rounded-lg cursor-not-allowed">
-                      Not Available
-                    </div>
-                  )}
                 </div>
-              </div>
-            );
-          })}
+              );
+            })
+          }
         </div>
       </div>
     </section>
@@ -275,38 +400,88 @@ const totalPossible = 48; // 4 sections × 12 weeks each
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center mb-12">
           <h2 class="text-3xl font-bold text-gray-800 mb-4">Student Support</h2>
-          <p class="text-xl text-gray-600">We're here to support your success every step of the way</p>
+          <p class="text-xl text-gray-600">
+            We're here to support your success every step of the way
+          </p>
         </div>
-        
+
         <div class="grid md:grid-cols-3 gap-8">
           <div class="text-center p-6">
-            <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <div
+              class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
               </svg>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Academic Support</h3>
-            <p class="text-gray-600">Tutoring, study groups, and academic coaching available</p>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">
+              Academic Support
+            </h3>
+            <p class="text-gray-600">
+              Tutoring, study groups, and academic coaching available
+            </p>
           </div>
-          
+
           <div class="text-center p-6">
-            <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"></path>
+            <div
+              class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6"
+                ></path>
               </svg>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Career Services</h3>
-            <p class="text-gray-600">Resume help, interview prep, and job placement assistance</p>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">
+              Career Services
+            </h3>
+            <p class="text-gray-600">
+              Resume help, interview prep, and job placement assistance
+            </p>
           </div>
-          
+
           <div class="text-center p-6">
-            <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+            <div
+              class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4"
+            >
+              <svg
+                class="w-8 h-8 text-purple-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"
+                ></path>
               </svg>
             </div>
-            <h3 class="text-lg font-bold text-gray-800 mb-2">Student Resources</h3>
-            <p class="text-gray-600">Food pantry, emergency funding, and counseling services</p>
+            <h3 class="text-lg font-bold text-gray-800 mb-2">
+              Student Resources
+            </h3>
+            <p class="text-gray-600">
+              Food pantry, emergency funding, and counseling services
+            </p>
           </div>
         </div>
       </div>
@@ -318,29 +493,48 @@ const totalPossible = 48; // 4 sections × 12 weeks each
         <div class="grid md:grid-cols-3 gap-8">
           <div>
             <div class="flex items-center space-x-3 mb-4">
-              <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
-                <span class="text-white font-bold">E</span>
+              <div>
+
+<a href="/" class="mr-auto">
+  <img class="w-52" src="/edmonds-college-logo.svg" alt="Edmonds College Logo" width="300" height="72">
+</a>
               </div>
-              <span class="text-xl font-bold">Edmonds College</span>
+   
+
             </div>
             <p class="text-gray-300 mb-4">
-              Empowering students with skills, support, and confidence for success in web development and beyond.
+              Empowering students with skills, support, and confidence for
+              success in web development and beyond.
             </p>
             <p class="text-sm text-gray-400">
               Located on a 50-acre campus north of Seattle
             </p>
           </div>
-          
+
           <div>
             <h4 class="text-lg font-bold mb-4">Quick Links</h4>
             <ul class="space-y-2 text-gray-300">
-              <li><a href="https://www.edmonds.edu" target="_blank" class="hover:text-white">Edmonds College</a></li>
-              <li><a href="https://www.edmonds.edu/programs/computer-information-systems.html" target="_blank" class="hover:text-white">CIS Program</a></li>
-              <li><a href="/syllabus" class="hover:text-white">Course Syllabus</a></li>
-              <li><a href="#support" class="hover:text-white">Student Support</a></li>
+              <li>
+                <a
+                  href="https://www.edmonds.edu"
+                  target="_blank"
+                  class="hover:text-white">Edmonds College</a>
+              </li>
+              <li>
+                <a
+                  href="https://www.edmonds.edu/programs/computer-information-systems.html"
+                  target="_blank"
+                  class="hover:text-white">CIS Program</a>
+              </li>
+              <li>
+                <a href="/syllabus" class="hover:text-white">Course Syllabus</a>
+              </li>
+              <li>
+                <a href="#support" class="hover:text-white">Student Support</a>
+              </li>
             </ul>
           </div>
-          
+
           <div>
             <h4 class="text-lg font-bold mb-4">Contact & Support</h4>
             <ul class="space-y-2 text-gray-300">
@@ -358,9 +552,14 @@ const totalPossible = 48; // 4 sections × 12 weeks each
             </ul>
           </div>
         </div>
-        
-        <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-          <p>&copy; 2024 Edmonds College. All rights reserved. | Web Application Developer Certificate Program</p>
+
+        <div
+          class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400"
+        >
+          <p>
+            &copy; 2024 Edmonds College. All rights reserved. | Web Application
+            Developer Certificate Program
+          </p>
         </div>
       </div>
     </footer>
@@ -372,7 +571,7 @@ const totalPossible = 48; // 4 sections × 12 weeks each
   html {
     scroll-behavior: smooth;
   }
-  
+
   /* Ensure section cards have consistent height */
   .section-card {
     height: 100%;
