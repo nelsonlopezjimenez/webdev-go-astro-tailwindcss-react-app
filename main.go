@@ -495,6 +495,214 @@ func (s *Server) handleSectionLesson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(lesson)
 }
 
+// Add this new handler to your main.go
+
+func (s *Server) handleSectionSyllabus(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sectionID := vars["section"]
+
+	s.mutex.RLock()
+	section, exists := s.sections[sectionID]
+	s.mutex.RUnlock()
+
+	if !exists {
+		http.Error(w, "Section not found", http.StatusNotFound)
+		return
+	}
+
+	// Section-specific course information
+	sectionInfo := map[string]struct {
+		CourseCode    string   `json:"course_code"`
+		Credits       string   `json:"credits"`
+		Prerequisites string   `json:"prerequisites"`
+		Description   string   `json:"description"`
+		Objectives    []string `json:"objectives"`
+		Topics        []string `json:"topics"`
+		Assessment    []string `json:"assessment"`
+		Resources     []string `json:"resources"`
+	}{
+		"section1-html-css": {
+			CourseCode:    "CIS 241",
+			Credits:       "5.0 Credits",
+			Prerequisites: "CIS 100 or instructor permission",
+			Description:   "Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting.",
+			Objectives: []string{
+				"Perform content design and technical analysis on web applications and websites",
+				"Use current HTML to develop, debug, maintain, and document web applications and websites",
+				"Compare and contrast different browsers' effects on current HTML documents",
+				"Use current HTML forms, iframes, and tables",
+				"Create current HTML style through inline, embedded, and Cascading Style Sheets",
+			},
+			Topics: []string{
+				"HTML5 semantic elements and document structure",
+				"CSS fundamentals: selectors, properties, and values",
+				"CSS layout techniques: Flexbox and Grid",
+				"Responsive web design and media queries",
+				"Web accessibility principles and best practices",
+				"Form creation and validation",
+				"CSS animations and transitions",
+				"Browser compatibility and testing",
+				"Version control with Git and GitHub",
+				"Web development tools and workflow",
+				"Performance optimization basics",
+				"Final project: Complete responsive website",
+			},
+			Assessment: []string{
+				"Weekly coding assignments (40%)",
+				"Midterm project: Multi-page website (20%)",
+				"Final project: Responsive portfolio site (25%)",
+				"Lab exercises and participation (15%)",
+			},
+			Resources: []string{
+				"MDN Web Docs - HTML/CSS Reference",
+				"W3Schools - HTML/CSS Tutorials",
+				"Can I Use - Browser compatibility tables",
+				"CSS-Tricks - CSS techniques and guides",
+				"GitHub - Version control and project hosting",
+			},
+		},
+		"section2-javascript": {
+			CourseCode:    "CIS 242",
+			Credits:       "5.0 Credits",
+			Prerequisites: "CIS 241 with a minimum grade of 2.5 or instructor permission",
+			Description:   "Students will explore embedding, inline and external scripts, functions, form validation, loops, conditional statements, strings, numbers, and DHTML. Introduction to JavaScript Frameworks.",
+			Objectives: []string{
+				"Use object-oriented client-side scripting with well-formed web pages",
+				"Recognize client-side variables and data types and operations",
+				"Write client-side functions, event handlers, and control structures",
+				"Verify form data through scripting validation",
+				"Save state information through hidden fields, query-strings, and cookies",
+				"List concepts of server-side programming and Node.js",
+			},
+			Topics: []string{
+				"JavaScript fundamentals: variables, data types, operators",
+				"Functions and scope",
+				"DOM manipulation and event handling",
+				"Control structures: loops and conditionals",
+				"Arrays and objects",
+				"Form validation and user input handling",
+				"Asynchronous JavaScript: callbacks, promises, async/await",
+				"ES6+ features: arrow functions, destructuring, modules",
+				"Local storage and session management",
+				"Introduction to JavaScript frameworks",
+				"Debugging and testing techniques",
+				"Final project: Interactive web application",
+			},
+			Assessment: []string{
+				"Weekly programming exercises (35%)",
+				"Midterm exam: JavaScript fundamentals (20%)",
+				"Interactive web app project (30%)",
+				"Lab work and code reviews (15%)",
+			},
+			Resources: []string{
+				"MDN Web Docs - JavaScript Reference",
+				"JavaScript.info - Modern JavaScript tutorial",
+				"W3Schools - JavaScript tutorials and examples",
+				"CodePen - JavaScript code playground",
+				"Chrome DevTools - Debugging and testing",
+			},
+		},
+		"section3-backend": {
+			CourseCode:    "CIS 243",
+			Credits:       "5.0 Credits",
+			Prerequisites: "CIS 242 with a minimum grade of 2.5 or instructor permission",
+			Description:   "Server-side scripting fundamentals including functions, logical structure, database connectivity, Object-Oriented principles, relational databases, and web frameworks.",
+			Objectives: []string{
+				"Understand difference between client-side and server-side scripting",
+				"Use appropriate script types to complete interactive websites with data repositories",
+				"Use Model, View, Controller (MVC) principles and architecture",
+				"Use operators including logical operators and variables in scripting language",
+				"Create procedures and reusable code in scripting language",
+				"Create websites using web frameworks",
+			},
+			Topics: []string{
+				"Node.js runtime and npm package management",
+				"Express.js framework and routing",
+				"Database design and MongoDB integration",
+				"RESTful API development",
+				"Authentication and authorization",
+				"Middleware and error handling",
+				"Data validation and sanitization",
+				"File uploads and processing",
+				"Environment configuration and deployment",
+				"Testing strategies for backend applications",
+				"Security best practices",
+				"Final project: Full-stack CRUD application",
+			},
+			Assessment: []string{
+				"API development assignments (40%)",
+				"Database design project (20%)",
+				"Full-stack application (25%)",
+				"Technical documentation and testing (15%)",
+			},
+			Resources: []string{
+				"Node.js Documentation",
+				"Express.js Official Guide",
+				"MongoDB University courses",
+				"Postman - API testing and documentation",
+				"Heroku/Netlify - Deployment platforms",
+			},
+		},
+		"section4-react": {
+			CourseCode:    "CIS 244",
+			Credits:       "5.0 Credits",
+			Prerequisites: "CIS 241 with a minimum grade of 2.5 or instructor permission",
+			Description:   "Students learn to work with open-source JavaScript frameworks including React, AngularJS, Vue.js, and other commonly used frameworks to create and update website content.",
+			Objectives: []string{
+				"Determine business model of websites (B2B, B2C, e-commerce, social networking)",
+				"Compare and contrast top JavaScript frameworks",
+				"Develop and implement content using JavaScript frameworks",
+				"Develop responsive and accessible websites using current technologies",
+				"Create ongoing plan to maintain and update websites",
+			},
+			Topics: []string{
+				"React fundamentals: components, JSX, props",
+				"State management with hooks (useState, useEffect, useContext)",
+				"Component lifecycle and side effects",
+				"Event handling and forms in React",
+				"React Router for single-page applications",
+				"State management with Redux or Context API",
+				"API integration and data fetching",
+				"Testing React components",
+				"Performance optimization techniques",
+				"Deployment and build optimization",
+				"Modern React patterns and best practices",
+				"Capstone project: Production-ready React application",
+			},
+			Assessment: []string{
+				"Component-building exercises (35%)",
+				"Mid-term project: Multi-page React app (25%)",
+				"Capstone project: Full-featured application (30%)",
+				"Code quality and documentation (10%)",
+			},
+			Resources: []string{
+				"React Official Documentation",
+				"Create React App - Development environment",
+				"React Router documentation",
+				"Redux Toolkit - State management",
+				"Vercel/Netlify - React deployment platforms",
+			},
+		},
+	}
+
+	info, exists := sectionInfo[sectionID]
+	if !exists {
+		info = sectionInfo["section1-html-css"] // Default fallback
+	}
+
+	// Combine section data with syllabus info
+	response := struct {
+		*Section
+		SyllabusInfo interface{} `json:"syllabus_info"`
+	}{
+		Section:      section,
+		SyllabusInfo: info,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
 func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	s.mutex.RLock()
 	defer s.mutex.RUnlock()
@@ -610,6 +818,9 @@ func (s *Server) setupRoutes() http.Handler {
 	api.HandleFunc("/syllabus", s.handleSyllabus).Methods("GET")
 	api.HandleFunc("/sections", s.handleSections).Methods("GET")
 	api.HandleFunc("/sections/{section}", s.handleSection).Methods("GET")
+	// Add this route in your setupRoutes function
+	api.HandleFunc("/sections/{section}/syllabus", s.handleSectionSyllabus).Methods("GET")
+
 	// ###### This would allow both URL patterns:
 	//       /api/sections/section1-html-css/week/5 (original)
 	// ##### /api/sections/section1-html-css/5 (shorter)
