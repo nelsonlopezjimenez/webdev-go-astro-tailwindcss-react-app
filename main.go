@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"embed"
 	"encoding/json"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -23,6 +25,15 @@ import (
 
 //go:embed all:lessons/frontend/dist
 var staticFiles embed.FS
+
+type Website struct {
+	Name        string    `json:"name"`
+	Path        string    `json:"path"`
+	IndexFile   string    `json:"index_file"`
+	LastScanned time.Time `json:"last_scanned"`
+	Size        int64     `json:"size"`
+	URL         string    `json:"url"` // Original URL if found in HTTrack logs
+}
 
 type Course struct {
 	Title        string   `json:"title" yaml:"title"`
@@ -61,25 +72,29 @@ type Section struct {
 }
 
 type Server struct {
-	lessonsDir string
-	course     Course
-	lessons    map[int]*Lesson     // Keep existing week-based mapping
-	sections   map[string]*Section // New section-based mapping
-	mutex      sync.RWMutex
-	watcher    *fsnotify.Watcher
+	lessonsDir  string
+	websitesDir string // New field
+	course      Course
+	lessons     map[int]*Lesson     // Keep existing week-based mapping
+	sections    map[string]*Section // New section-based mapping
+	websites    map[string]*Website // New field
+	mutex       sync.RWMutex
+	watcher     *fsnotify.Watcher
 }
 
-func NewServer(lessonsDir string) (*Server, error) {
+func NewServer(lessonsDir, websitesDir string) (*Server, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		return nil, fmt.Errorf("failed to create file watcher: %w", err)
 	}
 
 	server := &Server{
-		lessonsDir: lessonsDir,
-		lessons:    make(map[int]*Lesson),
-		sections:   make(map[string]*Section),
-		watcher:    watcher,
+		lessonsDir:  lessonsDir,
+		websitesDir: websitesDir,
+		lessons:     make(map[int]*Lesson),
+		sections:    make(map[string]*Section),
+		websites:    make(map[string]*Website),
+		watcher:     watcher,
 	}
 
 	// Add the lessons directory to the watcher if it exists
@@ -95,6 +110,213 @@ func NewServer(lessonsDir string) (*Server, error) {
 	}
 
 	return server, nil
+}
+
+// Add this new function to scan HTTrack websites
+func (s *Server) scanWebsites() error {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	log.Printf("Scanning websites directory: %s", s.websitesDir)
+
+	if _, err := os.Stat(s.websitesDir); os.IsNotExist(err) {
+		log.Printf("Websites directory doesn't exist: %s", s.websitesDir)
+		return nil
+	}
+
+	newWebsites := make(map[string]*Website)
+
+	err := filepath.WalkDir(s.websitesDir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return nil // Continue on errors
+		}
+
+		// Look for website directories (typically contain index.html)
+		if d.IsDir() && path != s.websitesDir {
+			websiteName := filepath.Base(path)
+
+			// Skip common HTTrack directories
+			if websiteName == "hts-cache" || websiteName == "backblue.gif" || websiteName == "fade.gif" {
+				return nil
+			}
+
+			// Look for index file
+			indexFile := s.findIndexFile(path)
+			if indexFile == "" {
+				return nil // No index file found, skip this directory
+			}
+
+			// Get directory size
+			size, err := s.getDirSize(path)
+			if err != nil {
+				size = 0
+			}
+
+			// Try to extract original URL from HTTrack logs
+			originalURL := s.extractOriginalURL(path)
+
+			website := &Website{
+				Name:        websiteName,
+				Path:        path,
+				IndexFile:   indexFile,
+				LastScanned: time.Now(),
+				Size:        size,
+				URL:         originalURL,
+			}
+
+			newWebsites[websiteName] = website
+			log.Printf("Found website: %s (%.2f MB)", websiteName, float64(size)/1024/1024)
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	log.Printf("Found %d websites", len(newWebsites))
+	s.websites = newWebsites
+	return nil
+}
+
+// Helper function to find index file
+func (s *Server) findIndexFile(dirPath string) string {
+	indexFiles := []string{"index.html", "index.htm", "default.html", "default.htm", "home.html"}
+
+	for _, indexFile := range indexFiles {
+		fullPath := filepath.Join(dirPath, indexFile)
+		if _, err := os.Stat(fullPath); err == nil {
+			return indexFile
+		}
+	}
+
+	return ""
+}
+
+// Helper function to get directory size
+func (s *Server) getDirSize(path string) (int64, error) {
+	var size int64
+	err := filepath.Walk(path, func(_ string, info os.FileInfo, err error) error {
+		if err != nil {
+			return nil // Continue on errors
+		}
+		if !info.IsDir() {
+			size += info.Size()
+		}
+		return nil
+	})
+	return size, err
+}
+
+// Helper function to extract original URL from HTTrack logs
+func (s *Server) extractOriginalURL(dirPath string) string {
+	logFiles := []string{"hts-log.txt", "logfile.txt", filepath.Join(dirPath, "hts-cache", "logfile.txt")}
+
+	for _, logFile := range logFiles {
+		fullPath := filepath.Join(dirPath, logFile)
+		if _, err := os.Stat(fullPath); err == nil {
+			if url := s.parseHTTrackLog(fullPath); url != "" {
+				return url
+			}
+		}
+	}
+
+	return ""
+}
+
+// Parse HTTrack log to find original URL
+func (s *Server) parseHTTrackLog(logPath string) string {
+	file, err := os.Open(logPath)
+	if err != nil {
+		return ""
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		line := scanner.Text()
+		// Look for lines that contain URLs
+		if strings.Contains(line, "http://") || strings.Contains(line, "https://") {
+			// Extract URL using regex
+			re := regexp.MustCompile(`https?://[^\s]+`)
+			if match := re.FindString(line); match != "" {
+				// Clean up common HTTrack log formatting
+				return strings.TrimRight(match, ".,;:")
+			}
+		}
+	}
+
+	return ""
+}
+
+// API handler for websites
+func (s *Server) handleWebsites(w http.ResponseWriter, r *http.Request) {
+	s.mutex.RLock()
+	defer s.mutex.RUnlock()
+
+	var websites []*Website
+	for _, website := range s.websites {
+		websites = append(websites, website)
+	}
+
+	// Sort by name
+	sort.Slice(websites, func(i, j int) bool {
+		return websites[i].Name < websites[j].Name
+	})
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(websites)
+}
+
+// Handler to serve website content
+func (s *Server) handleWebsiteContent(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	websiteName := vars["website"]
+
+	s.mutex.RLock()
+	website, exists := s.websites[websiteName]
+	s.mutex.RUnlock()
+
+	if !exists {
+		http.Error(w, "Website not found", http.StatusNotFound)
+		return
+	}
+
+	// Get the requested file path
+	requestedPath := strings.TrimPrefix(r.URL.Path, "/websites/"+websiteName)
+	if requestedPath == "" || requestedPath == "/" {
+		requestedPath = "/" + website.IndexFile
+	}
+
+	// Security check - prevent directory traversal
+	if strings.Contains(requestedPath, "..") {
+		http.Error(w, "Invalid path", http.StatusBadRequest)
+		return
+	}
+
+	fullPath := filepath.Join(website.Path, requestedPath)
+
+	// Check if file exists
+	fileInfo, err := os.Stat(fullPath)
+	if err != nil {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
+
+	// If it's a directory, try to serve index file
+	if fileInfo.IsDir() {
+		indexPath := filepath.Join(fullPath, website.IndexFile)
+		if _, err := os.Stat(indexPath); err == nil {
+			fullPath = indexPath
+		} else {
+			http.Error(w, "Directory listing not allowed", http.StatusForbidden)
+			return
+		}
+	}
+
+	// Serve the file
+	http.ServeFile(w, r, fullPath)
 }
 
 func (s *Server) startFileWatcher() {
@@ -820,6 +1042,10 @@ func (s *Server) setupRoutes() http.Handler {
 	api.HandleFunc("/sections/{section}", s.handleSection).Methods("GET")
 	// Add this route in your setupRoutes function
 	api.HandleFunc("/sections/{section}/syllabus", s.handleSectionSyllabus).Methods("GET")
+	// New website routes
+	api.HandleFunc("/websites", s.handleWebsites).Methods("GET")
+	// Website content routes - these must come BEFORE the static handler
+	r.PathPrefix("/websites/{website}").HandlerFunc(s.handleWebsiteContent)
 
 	// ###### This would allow both URL patterns:
 	//       /api/sections/section1-html-css/week/5 (original)
@@ -920,6 +1146,7 @@ func (s *Server) close() error {
 
 func main() {
 	lessonsDir := "./lessons"
+	websitesDir := "c:/websites" // Default to your HTTrack directory
 	port := ":8080"
 
 	if len(os.Args) > 1 {
@@ -927,6 +1154,9 @@ func main() {
 	}
 	if len(os.Args) > 2 {
 		port = ":" + os.Args[2]
+	}
+	if len(os.Args) > 3 {
+		port = ":" + os.Args[3]
 	}
 
 	log.Println("Checking embedded files:")
@@ -948,7 +1178,7 @@ func main() {
 		log.Printf("Warning: failed to create lessons directory: %v", err)
 	}
 
-	server, err := NewServer(lessonsDir)
+	server, err := NewServer(lessonsDir, websitesDir)
 	if err != nil {
 		log.Fatal("Failed to create server:", err)
 	}
@@ -963,16 +1193,24 @@ func main() {
 		log.Printf("Warning: failed to scan lessons: %v", err)
 	}
 
+	// Scan websites at startup
+	if err := server.scanWebsites(); err != nil {
+		log.Printf("Warning: failed to scan websites: %v", err)
+	}
+
 	// Start file watcher
 	server.startFileWatcher()
 
 	log.Printf("Course Management System Server")
 	log.Printf("Lessons directory: %s", lessonsDir)
+	log.Printf("Websites directory: %s", websitesDir)
 	log.Printf("Found %d lessons in %d sections", len(server.lessons), len(server.sections))
+	log.Printf("Found %d offline websites", len(server.websites))
 	log.Printf("Server starting on http://localhost%s", port)
 	log.Printf("Frontend: http://localhost%s", port)
 	log.Printf("API: http://localhost%s/api", port)
 	log.Printf("New Section API: http://localhost%s/api/sections", port)
+	log.Printf("Websites available at: http://localhost%s/websites/", port)
 
 	handler := server.setupRoutes()
 	log.Fatal(http.ListenAndServe(port, handler))
