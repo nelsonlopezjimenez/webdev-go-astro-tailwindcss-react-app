@@ -1,6 +1,17 @@
 # webdev-class-server-ver2-app
 
 ## 9.5.2025
+
+1. ```js
+// ✅ SAFE - Simple ternary
+{error ? <ErrorComponent /> : <MainContent />}
+
+// ✅ SAFE - Pre-calculated classes  
+const cardClasses = isActive ? 'bg-blue-100' : 'bg-gray-50';
+
+// ❌ AVOID - Complex nested ternary
+{condition ? (nested ? <Complex /> : <Other />) : <Default />}
+```
 1. ![langind page](image-5.png)
 1. ![section1 landing](image-6.png)
 1. ![seation1 syllabus tab](image-7.png)

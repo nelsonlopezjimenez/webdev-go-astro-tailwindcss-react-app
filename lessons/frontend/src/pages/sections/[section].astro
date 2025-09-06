@@ -166,6 +166,194 @@ const currentSectionIndex = allSections.findIndex(s => s.id === section) + 1;
               </div>
             </div>
           </div>
+
+          {/* Progress Report Tab */}
+          <div id="progress-tab" class="tab-content hidden">
+            <div class="space-y-8">
+              
+              {/* Progress Summary Cards */}
+              <div class="grid md:grid-cols-4 gap-6">
+                <div class={`bg-${meta.color}-50 border border-${meta.color}-200 rounded-lg p-6 text-center`}>
+                  <div class={`text-3xl font-bold text-${meta.color}-600 mb-2`}>{completion}%</div>
+                  <div class="text-gray-700 text-sm">Section Complete</div>
+                </div>
+                
+                <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+                  <div class="text-3xl font-bold text-green-600 mb-2">{hoursCompleted}</div>
+                  <div class="text-gray-700 text-sm">Hours Completed</div>
+                </div>
+                
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-6 text-center">
+                  <div class="text-3xl font-bold text-purple-600 mb-2">{Math.round(meta.estimatedHours / 12)}</div>
+                  <div class="text-gray-700 text-sm">Avg Hours/Week</div>
+                </div>
+                
+                <div class="bg-orange-50 border border-orange-200 rounded-lg p-6 text-center">
+                  <div class="text-3xl font-bold text-orange-600 mb-2">{overallCompletion}%</div>
+                  <div class="text-gray-700 text-sm">Program Complete</div>
+                </div>
+              </div>
+              
+              {/* Skills Progress */}
+              <div class="bg-white rounded-xl shadow-lg p-8">
+                <h3 class="text-xl font-bold text-gray-800 mb-6">Skills Development</h3>
+                <div class="space-y-4">
+                  {section === "section1-html-css" && [
+                    { skill: "HTML5 Elements", progress: Math.min(100, completion + 10) },
+                    { skill: "CSS Styling", progress: Math.min(100, completion + 5) },
+                    { skill: "Responsive Design", progress: Math.min(100, completion - 10) },
+                    { skill: "Web Accessibility", progress: Math.min(100, completion - 15) }
+                  ].map(({ skill, progress: skillProgress }) => (
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span class="font-medium text-gray-700">{skill}</span>
+                      <div class="flex items-center space-x-3">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                          <div 
+                            class={`bg-${meta.color}-500 h-2 rounded-full transition-all duration-500`}
+                            style={`width: ${Math.max(0, skillProgress)}%`}
+                          ></div>
+                        </div>
+                        <span class="text-sm text-gray-600 w-12">{Math.max(0, skillProgress)}%</span>
+                      </div>
+                    </div>
+                  ))}
+                  {section === "section2-javascript" && [
+                    { skill: "JavaScript Fundamentals", progress: Math.min(100, completion + 15) },
+                    { skill: "DOM Manipulation", progress: Math.min(100, completion + 5) },
+                    { skill: "Event Handling", progress: Math.min(100, completion - 5) },
+                    { skill: "Async Programming", progress: Math.min(100, completion - 20) }
+                  ].map(({ skill, progress: skillProgress }) => (
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span class="font-medium text-gray-700">{skill}</span>
+                      <div class="flex items-center space-x-3">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                          <div 
+                            class={`bg-${meta.color}-500 h-2 rounded-full transition-all duration-500`}
+                            style={`width: ${Math.max(0, skillProgress)}%`}
+                          ></div>
+                        </div>
+                        <span class="text-sm text-gray-600 w-12">{Math.max(0, skillProgress)}%</span>
+                      </div>
+                    </div>
+                  ))}
+                  {section === "section3-backend" && [
+                    { skill: "Node.js & Express", progress: Math.min(100, completion + 10) },
+                    { skill: "Database Design", progress: Math.min(100, completion) },
+                    { skill: "API Development", progress: Math.min(100, completion - 10) },
+                    { skill: "Authentication", progress: Math.min(100, completion - 25) }
+                  ].map(({ skill, progress: skillProgress }) => (
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span class="font-medium text-gray-700">{skill}</span>
+                      <div class="flex items-center space-x-3">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                          <div 
+                            class={`bg-${meta.color}-500 h-2 rounded-full transition-all duration-500`}
+                            style={`width: ${Math.max(0, skillProgress)}%`}
+                          ></div>
+                        </div>
+                        <span class="text-sm text-gray-600 w-12">{Math.max(0, skillProgress)}%</span>
+                      </div>
+                    </div>
+                  ))}
+                  {section === "section4-react" && [
+                    { skill: "React Components", progress: Math.min(100, completion + 20) },
+                    { skill: "State Management", progress: Math.min(100, completion + 5) },
+                    { skill: "React Router", progress: Math.min(100, completion - 15) },
+                    { skill: "Testing & Deployment", progress: Math.min(100, completion - 30) }
+                  ].map(({ skill, progress: skillProgress }) => (
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <span class="font-medium text-gray-700">{skill}</span>
+                      <div class="flex items-center space-x-3">
+                        <div class="w-32 bg-gray-200 rounded-full h-2">
+                          <div 
+                            class={`bg-${meta.color}-500 h-2 rounded-full transition-all duration-500`}
+                            style={`width: ${Math.max(0, skillProgress)}%`}
+                          ></div>
+                        </div>
+                        <span class="text-sm text-gray-600 w-12">{Math.max(0, skillProgress)}%</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Time Analysis */}
+              <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                  <h3 class="text-xl font-bold text-gray-800 mb-6">Time Analysis</h3>
+                  <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Total Estimated Hours</span>
+                      <span class="font-bold text-gray-800">{meta.estimatedHours}h</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Hours Completed</span>
+                      <span class="font-bold text-green-600">{hoursCompleted}h</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                      <span class="text-gray-600">Hours Remaining</span>
+                      <span class="font-bold text-orange-600">{hoursRemaining}h</span>
+                    </div>
+                    <div class="border-t pt-4">
+                      <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Weekly Pace</span>
+                        <span class="font-bold text-purple-600">{Math.round(meta.estimatedHours / 12)}h/week</span>
+                      </div>
+                    </div>
+                    {completion < 100 && (
+                      <div class="bg-blue-50 rounded-lg p-4 mt-4">
+                        <div class="text-sm text-blue-800">
+                          <strong>Estimated completion:</strong> {Math.ceil(hoursRemaining / (meta.estimatedHours / 12))} weeks remaining
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                  <h3 class="text-xl font-bold text-gray-800 mb-6">Learning Path</h3>
+                  <div class="space-y-3">
+                    {Array.from({length: 4}, (_, i) => {
+                      const sectionNames = ["HTML/CSS", "JavaScript", "Backend", "React"];
+                      const sectionIds = ["section1-html-css", "section2-javascript", "section3-backend", "section4-react"];
+                      const currentSectionIdx = sectionIds.indexOf(section);
+                      const isCompleted = i < currentSectionIdx;
+                      const isCurrent = i === currentSectionIdx;
+                      const isUpcoming = i > currentSectionIdx;
+                      
+                      return (
+                        <div class={`flex items-center p-3 rounded-lg ${
+                          isCompleted ? 'bg-green-50 border border-green-200' :
+                          isCurrent ? `bg-${meta.color}-50 border border-${meta.color}-200` :
+                          'bg-gray-50 border border-gray-200'
+                        }`}>
+                          <div class={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold mr-3 ${
+                            isCompleted ? 'bg-green-500 text-white' :
+                            isCurrent ? `bg-${meta.color}-500 text-white` :
+                            'bg-gray-300 text-gray-600'
+                          }`}>
+                            {isCompleted ? '✓' : i + 1}
+                          </div>
+                          <div class="flex-1">
+                            <div class={`font-medium ${
+                              isCompleted ? 'text-green-800' :
+                              isCurrent ? `text-${meta.color}-800` :
+                              'text-gray-600'
+                            }`}>
+                              Section {i + 1}: {sectionNames[i]}
+                            </div>
+                            <div class="text-xs text-gray-500">
+                              {isCompleted ? 'Completed' : isCurrent ? 'In Progress' : 'Upcoming'}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Section Navigation */}
@@ -367,33 +555,60 @@ document.addEventListener('DOMContentLoaded', () => {
   const tabButtons = document.querySelectorAll('.tab-btn');
   const tabContents = document.querySelectorAll('.tab-content');
   
+  // Get the section color from the page
+  const getColorFromFirstTab = () => {
+    const firstTabButton = document.querySelector('[data-tab="lessons"]');
+    if (firstTabButton.className.includes('border-blue-500')) return 'blue';
+    if (firstTabButton.className.includes('border-green-500')) return 'green';
+    if (firstTabButton.className.includes('border-purple-500')) return 'purple';
+    if (firstTabButton.className.includes('border-orange-500')) return 'orange';
+    return 'blue'; // fallback
+  };
+  
+  const sectionColor = getColorFromFirstTab();
+  
   const switchTab = (targetTab) => {
+    // Reset all buttons
     tabButtons.forEach(button => {
-      button.classList.remove('border-blue-500', 'text-blue-600', 'border-green-500', 'text-green-600', 'border-purple-500', 'text-purple-600', 'border-orange-500', 'text-orange-600');
+      button.classList.remove(
+        'border-blue-500', 'text-blue-600',
+        'border-green-500', 'text-green-600', 
+        'border-purple-500', 'text-purple-600',
+        'border-orange-500', 'text-orange-600'
+      );
       button.classList.add('border-transparent', 'text-gray-500');
     });
     
-    tabContents.forEach(content => content.classList.add('hidden'));
+    // Hide all tab contents using inline styles
+    tabContents.forEach(content => {
+      content.style.display = 'none';
+    });
     
+    // Show target content
     const targetContent = document.getElementById(targetTab + '-tab');
-    targetContent?.classList.remove('hidden');
+    if (targetContent) {
+      targetContent.style.display = 'block';
+    }
     
+    // Activate target button
     const targetButton = document.querySelector(`[data-tab="${targetTab}"]`);
-    const firstTabButton = document.querySelector('[data-tab="lessons"]');
-    const colorClasses = firstTabButton?.className.match(/(border-\w+-\d+|text-\w+-\d+)/g);
-    
-    if (targetButton && colorClasses) {
-      colorClasses.forEach(colorClass => targetButton.classList.add(colorClass));
+    if (targetButton) {
+      targetButton.classList.add(`border-${sectionColor}-500`, `text-${sectionColor}-600`);
       targetButton.classList.remove('border-transparent', 'text-gray-500');
     }
   };
   
+  // Add click listeners
   tabButtons.forEach(button => {
     button.addEventListener('click', function() {
-      switchTab(this.getAttribute('data-tab'));
+      const tabName = this.getAttribute('data-tab');
+      console.log('Switching to tab:', tabName); // Debug log
+      switchTab(tabName);
     });
   });
   
+  // Initialize with lessons tab
+  console.log('Initializing tabs'); // Debug log
   switchTab('lessons');
 });
 </script>
