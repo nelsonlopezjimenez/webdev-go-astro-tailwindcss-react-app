@@ -1,5 +1,10 @@
 # webdev-class-server-ver2-app
 
+## 9.6.2025
+1. Httrack offline websites folder scan functionality added
+1. ![8080/websites astro route](image-9.png)
+
+
 ## 9.5.2025
 
 1. ```js
