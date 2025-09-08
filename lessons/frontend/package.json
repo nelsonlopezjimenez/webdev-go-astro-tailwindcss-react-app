@@ -6,7 +6,7 @@
     "dev": "astro dev --host",
     "start": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "astro preview --host",
     "build:watch": "nodemon --watch ../lessons --ext md --exec \"npm run build\"",
     "astro": "astro"
   },

@@ -12,6 +12,10 @@ objectives:
   - "Debug JavaScript using browser developer tools"
 ---
 # Week 13: JavaScript Fundamentals - Variables, Data Types, and Basic Operations
+[TOC]
+
+<!-- Or this: -->
+[[TOC]]
 
 ## Learning Objectives
 
