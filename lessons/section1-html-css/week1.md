@@ -86,24 +86,28 @@ As your teacher, I will work hard to:
 
 ### Required Software
 
+1. **Browser**
+   - Chrome 
+
 1. **Text Editor or IDE**
    - VS Code (recommended)
-   - Sublime Text
-   - Atom
+
 
 2. **Programming Language**
-   - Python 3.8 or higher
-   - Download from [python.org](https://python.org)
+   - JavaScript (and the other two HTML/CSS)
+
 
 3. **Terminal/Command Prompt**
-   - Built into your operating system
+   - Built into your operating system: vim, vi, nano (not favorite)
 
 ### Installation Steps
 
-1. Download and install 
-2. Download and install VS Code
-3. Install the Python extension in VS Code
-4. Open terminal and type `python --version` to verify installation
+1. JavaScript run natively in the browser (chrome, edge, firefox, saphari, others, many others)
+1. Download and install nodejs when ready to run JavaScript outside the browser
+1. NOTE: You do not need to download since it was done already.
+2. Download and install VS Code. NOTE: you already have a version of VS Code installed
+3. Install some extensions in VS Code: NOTE: you have already some extensions installed
+4. Open terminal and type `node --version` to verify JavaScript version
 
 
 

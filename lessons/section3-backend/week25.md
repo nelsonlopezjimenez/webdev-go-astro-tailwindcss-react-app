@@ -7,6 +7,7 @@ week: 25
 # Lesson  25 Content Here
 # Week 13: JavaScript Fundamentals
 
+
 ## Table of Contents
 - [Variables and Data Types](#variables-and-data-types)
 - [Functions](#functions)
@@ -16,6 +17,8 @@ week: 25
 - [Practice Exercises](#practice-exercises)
 
 ---
+
+<h2 id="variables-and-data-types">Variables and Data Types</h2>
 
 ## Variables and Data Types
 
@@ -66,7 +69,10 @@ document.getElementById("myButton").addEventListener("click", function() {
 ```
 
 ## Practice Exercises
+<h2 id="practice-exercises">Prac Ex</h2>
 
 1. Create a calculator function
 2. Build a simple to-do list
 3. Make an interactive but
+
+[back](#variables-and-data-types)
