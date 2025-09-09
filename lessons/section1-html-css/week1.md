@@ -111,20 +111,27 @@ As your teacher, I will work hard to:
 
 
 
-## Practice Exercises
+## Additional Resources
 
-### Exercise 1: Personal Introduction
+## Click to open **computer basics.exe** 
+1. Location: in the Downloads folder or in the canvas_file_cache folder
+1. Double click or right click on "computer-basics.exe" file and select open
+1. It should automatically open a browser, maybe Edge, maybe Chrome.
+1. If not click [HERE](http://localhost:4200)
+1. or open a browser (Edge, Chrome), go to the navigation bar and type
+```
+http://localhost:4200
+```
 
+### Recommendations 
+1. Learning Tips
+1. Problem Solving And Decision Making
+1. Windows 10
+1. Basic Computer Skills
+1. Computer Basics
+1. Resume Writing
+1. You can select any other tutorial among the ones presented or watch them all.
 
-### Exercise 2: Simple Calculator
-
-
-## Common Mistakes to Avoid
-
-1. **Spelling Errors**: `print` not `Print`
-2. **Missing Quotes**: `"Hello"` not `Hello`
-3. **Incorrect Indentation**: Python is sensitive to spaces
-4. **Forgetting Colons**: After `if`, `for`, `def`, etc.
 
 ## Next Week Preview
 
@@ -133,18 +140,7 @@ In Week 2, we'll dive deeper into:
 - Web Site Development Essentials
 - HTML Editor Assingment
 - Quiz on Markup Language and Site Development Essentials
-## Resources
 
-- [Python Official Tutorial](https://docs.python.org/3/tutorial/)
-- [Python.org Beginner's Guide](https://wiki.python.org/moin/BeginnersGuide)
-- [VS Code Python Tutorial](https://code.visualstudio.com/docs/python/python-tutorial)
-
-## Homework
-
-1. Complete both practice exercises
-2. Experiment with different print statements
-3. Try changing the values in variables and see what happens
-4. Read Chapter 1 of your textbook
 
 ---
 
