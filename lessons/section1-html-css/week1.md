@@ -124,13 +124,25 @@ http://localhost:4200
 ```
 
 ### Recommendations 
+<h3 id="day2">Day 1</h3>
 1. Learning Tips
 1. Problem Solving And Decision Making
+1. Resume Writing
+<h3 id="day3">Day 1</h3>
 1. Windows 10
 1. Basic Computer Skills
 1. Computer Basics
-1. Resume Writing
+<h3 id="day4">Day 1</h3>
+1. Buying Computers
 1. You can select any other tutorial among the ones presented or watch them all.
+
+## Assignments 
+<h3 id="assigday1">Day 1</h3>
+1. Write your resume
+<h3 id="assigday2">Day 2</h3>
+1. In computer Basics tutorial look for lesson on the Internet and write what you did not know
+<h3 id="assigday3">Day 3</h3>
+1. Build your dream computer. Explain what technical specifications are more important to you and how they would impact the cost.
 
 
 ## Next Week Preview
