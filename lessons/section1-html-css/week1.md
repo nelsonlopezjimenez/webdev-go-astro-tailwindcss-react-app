@@ -11,8 +11,11 @@ week: 1
 - [Day 3](#day3)
 - [Day 4](#day4)
 - [Assignments](#assigday1)
+- [Assignments](#assigday2)
 
 
+<h1 id="day1">Welcome to Web Development!</h1>
+<h1 id="day1">Welcome to Web Development!</h1>
 <h1 id="day1">Welcome to Web Development!</h1>
 
 ## Learning Objectives
@@ -52,6 +55,8 @@ You will be graded on how well you achieve the Learning Objectives provided for 
 
 Information about Exams: Exams are meant to show yourself and me what you’ve learned and what you still need to learn. For the midterm that you do better on, you will automatically have that midterm be worth more of your grade. This is to help relieve test anxiety associated with the midterm.
 
+[↑ Back to Top](#table-of-contents)
+
 ### Assignments and Grading
 
 #### Weekly Journal (optional)
@@ -89,7 +94,7 @@ As your teacher, I will work hard to:
 1.  I expect you to take the opportunity to learn from your peers through activities in lecture and section, and I expect you to be respectful and courteous to one another. Finally, I expect you to hold yourself to the highest standards for academic honesty and integrity in your work.
 
 
-
+[↑ Back to Top](#table-of-contents)
 
 ## Setting Up Your Environment
 
@@ -132,37 +137,45 @@ As your teacher, I will work hard to:
 http://localhost:4200
 ```
 
+[↑ Back to Top](#table-of-contents)
+
 ### Recommendations
 
-<h3 id="day2">Day 2</h3>
 
+<hr id="day2" />
+
+#### Day 2
 1. Learning Tips
 1. Problem Solving And Decision Making
 1. Resume Writing
 
-<h3 id="day3">Day 3</h3>
+<hr id="day3" />
 
+#### Day 3
 1. Windows 10
 1. Basic Computer Skills
 1. Computer Basics
 
-<h3 id="day4">Day 4</h3>
+<hr id="day4" />
 
+#### Day 4
 1. Buying Computers
 1. You can select any other tutorial among the ones presented or watch them all.
 
-<h2 id="assigday1"> Assignments </h2>
+### Assignments
+<hr id="assigday2" />
 
-<h3 id="assigday2">Day 2</h3>
-
+#### Assignment Day 2
 1. Write your resume
 
-<h3 id="assigday3">Day3</h3>
+<hr id="assigday3" />
 
+#### Assignment Day 3
 1. In computer Basics tutorial look for lesson on the Internet and write what you did not know
 
-<h3 id="assigday4">Day 4</h3>
+<hr id="assigday4" />
 
+## Assignment Day 4
 1. Build your dream computer. Explain what technical specifications are more important to you and how they would impact the cost.
 
 [↑ Back to Top](#table-of-contents)
