@@ -3,8 +3,17 @@ title: "CIS 241 - Web Development I"
 description: "WEEK 1 - Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting. Students will build multi-page websites using GUI editors, Git and GitHub."
 week: 1
 ---
+<!-- Solution 4: Use explicit HTML anchors (most reliable) -->
+<h2 id="table-of-contents"> 📚 Table of Contents </h2>
 
-# Welcome to Web Development!
+- [Day 1](#day1)
+- [Day 2](#day2)
+- [Day 3](#day3)
+- [Day 4](#day4)
+- [Assignments](#assigday1)
+
+
+<h1 id="day1">Welcome to Web Development!</h1>
 
 ## Learning Objectives
 
@@ -123,27 +132,40 @@ As your teacher, I will work hard to:
 http://localhost:4200
 ```
 
-### Recommendations 
-<h3 id="day2">Day 1</h3>
+### Recommendations
+
+<h3 id="day2">Day 2</h3>
+
 1. Learning Tips
 1. Problem Solving And Decision Making
 1. Resume Writing
-<h3 id="day3">Day 1</h3>
+
+<h3 id="day3">Day 3</h3>
+
 1. Windows 10
 1. Basic Computer Skills
 1. Computer Basics
-<h3 id="day4">Day 1</h3>
+
+<h3 id="day4">Day 4</h3>
+
 1. Buying Computers
 1. You can select any other tutorial among the ones presented or watch them all.
 
-## Assignments 
-<h3 id="assigday1">Day 1</h3>
-1. Write your resume
+<h2 id="assigday1"> Assignments </h2>
+
 <h3 id="assigday2">Day 2</h3>
+
+1. Write your resume
+
+<h3 id="assigday3">Day3</h3>
+
 1. In computer Basics tutorial look for lesson on the Internet and write what you did not know
-<h3 id="assigday3">Day 3</h3>
+
+<h3 id="assigday4">Day 4</h3>
+
 1. Build your dream computer. Explain what technical specifications are more important to you and how they would impact the cost.
 
+[↑ Back to Top](#table-of-contents)
 
 ## Next Week Preview
 
