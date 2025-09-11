@@ -6,17 +6,22 @@ week: 1
 <!-- Solution 4: Use explicit HTML anchors (most reliable) -->
 <h2 id="table-of-contents"> 📚 Table of Contents </h2>
 
+- [grades](#grades)
+- [expectations](#expectations)
+- [environment](#environment)
+- [additional](#additional)
+- [recommendation](#recommendation)
 - [Day 1](#day1)
 - [Day 2](#day2)
 - [Day 3](#day3)
 - [Day 4](#day4)
-- [Assignments](#assigday1)
-- [Assignments](#assigday2)
+- [Assignments](#assigday)
+- [next week preview](#nextweek)
 
 
+
 <h1 id="day1">Welcome to Web Development!</h1>
-<h1 id="day1">Welcome to Web Development!</h1>
-<h1 id="day1">Welcome to Web Development!</h1>
+
 
 ## Learning Objectives
 
@@ -42,6 +47,9 @@ Your grade is based on how successful you are at evidencing that you have master
 If you ever feel that an assignment or specific question is unfair or confusing please come and speak with me (ideally before it is due or during the assessment, but afterwards is okay also) so that we can address this concern as soon as possible. I am committed to making sure the assessment of your learning is comprehensive, fair, and incorporates best practices from education research on assessment design and inclusive practices. 
 
 You will be graded on how well you achieve the Learning Objectives provided for each unit. You are guaranteed an A- if >90%, a B- if >80% and a C- if >70%. 
+
+[↑ Back to Top](#table-of-contents)
+<hr id="grades" />
 
 ### Grade Weigths
 
@@ -75,6 +83,10 @@ Course quizzes are designed to test your understanding of the course material an
 
 Your final reflection will be a demonstration of what you learned in this course and how you plan to remember and apply the information and skills you have gained in future situations.
 
+
+[↑ Back to Top](#table-of-contents)
+<hr id="expectations" />
+
 ## Classroom Community Expectations
 As your teacher, I will work hard to:
 
@@ -94,7 +106,9 @@ As your teacher, I will work hard to:
 1.  I expect you to take the opportunity to learn from your peers through activities in lecture and section, and I expect you to be respectful and courteous to one another. Finally, I expect you to hold yourself to the highest standards for academic honesty and integrity in your work.
 
 
+
 [↑ Back to Top](#table-of-contents)
+<hr id="environment" />
 
 ## Setting Up Your Environment
 
@@ -124,6 +138,8 @@ As your teacher, I will work hard to:
 4. Open terminal and type `node --version` to verify JavaScript version
 
 
+[↑ Back to Top](#table-of-contents)
+<hr id="additional" />
 
 ## Additional Resources
 
@@ -137,7 +153,9 @@ As your teacher, I will work hard to:
 http://localhost:4200
 ```
 
+
 [↑ Back to Top](#table-of-contents)
+<hr id="recommendation" />
 
 ### Recommendations
 
@@ -162,23 +180,26 @@ http://localhost:4200
 1. Buying Computers
 1. You can select any other tutorial among the ones presented or watch them all.
 
+
+[↑ Back to Top](#table-of-contents)
+<hr id="assigday" />
+
+
 ### Assignments
-<hr id="assigday2" />
 
 #### Assignment Day 2
 1. Write your resume
 
-<hr id="assigday3" />
 
 #### Assignment Day 3
 1. In computer Basics tutorial look for lesson on the Internet and write what you did not know
 
-<hr id="assigday4" />
 
 ## Assignment Day 4
 1. Build your dream computer. Explain what technical specifications are more important to you and how they would impact the cost.
 
 [↑ Back to Top](#table-of-contents)
+<hr id="nextweek" />
 
 ## Next Week Preview
 
