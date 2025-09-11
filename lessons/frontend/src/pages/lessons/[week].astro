@@ -1,39 +1,17 @@
 ---
+// src/pages/lessons/[week].astro - Updated with sidebar TOC
 import Layout from '../../layouts/Layout.astro';
-import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
 import TableOfContents from '../../components/TableOfContents.astro';
 
-export const prerender = false; // Server-render this page
-
-
-export async function  getStaticPaths () {
+export async function getStaticPaths() {
   const paths = [];
-  for (let week = 1; week < 60; week++) {
-    paths.push({params: {week: week.toString()}})
+  for (let week = 1; week <= 48; week++) {
+    paths.push({ params: { week: week.toString() } });
   }
   return paths;
-};
-
-export async function getStaticPaths1() {
-  // Generate paths for weeks 1-10
-  return [
-    {params: {week: "1"}},
-    {params: {week: "2"}},
-    {params: {week: "3"}},
-    {params: {week: "4"}},
-    {params: {week: "5"}},
-    {params: {week: "6"}},
-    {params: {week: "7"}},
-    {params: {week: "8"}},
-    {params: {week: "9"}},
-    {params: {week: "10"}},
-    {params: {week: "11"}},
-    {params: {week: "12"}},
-  ];
 }
 
 const { week } = Astro.params;
-
 const weekNumber = parseInt(week);
 
 // Determine section
@@ -60,172 +38,172 @@ const tocItems = [
   { id: "assignments", title: "Assignments", level: 2 },
   { id: "resources", title: "Additional Resources", level: 2 }
 ];
-
-// Fetch lesson data
-const API_BASE = 'http://localhost:8080/api';
-let lesson = null;
-let error = null;
-
-try {
-  const response = await fetch(`${API_BASE}/lessons/${week}`);
-  if (response.ok) {
-    lesson = await response.json();
-  } else if (response.status === 404) {
-    error = 'Lesson not found';
-  } else {
-    error = 'Failed to load lesson';
-  }
-} catch (err) {
-  console.error('Failed to fetch lesson:', err);
-  error = 'Failed to connect to server';
-}
-
-// Get all lessons for navigation
-let allLessons = [];
-try {
-  const response = await fetch(`${API_BASE}/lessons`);
-  if (response.ok) {
-    allLessons = await response.json();
-  }
-} catch (err) {
-  console.error('Failed to fetch all lessons:', err);
-}
-
-// Find prev/next lessons
-const currentWeek = parseInt(week);
-const prevLesson = allLessons.find(l => l.week === currentWeek - 1);
-const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
 ---
 
-<!-- After: 5-6 columns total -->
-<div class="grid grid-cols-1 xl:grid-cols-6 lg:grid-cols-5 gap-6">
-  <aside class="xl:col-span-1 lg:col-span-1">    <!-- 1/6 = 16% or 1/5 = 20% -->
-            <TableOfContents weekNumber={parseInt(week)} />
-    </aside>  
-  <main class="xl:col-span-5 lg:col-span-4">     <!-- 5/6 = 84% or 4/5 = 80% -->
+<Layout title={`Week ${week} - Course Lesson`}>
+  <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <!-- Breadcrumb -->
+      <nav class="mb-6">
+        <ol class="flex items-center space-x-2 text-sm">
+          <li><a href="/" class="text-indigo-600 hover:text-indigo-800">Home</a></li>
+          <li class="text-gray-400">/</li>
+          <li><a href="/lessons" class="text-indigo-600 hover:text-indigo-800">Lessons</a></li>
+          <li class="text-gray-400">/</li>
+          <li class="text-gray-600">Week {week}</li>
+        </ol>
+      </nav>
 
-
-
-<Layout title={lesson ? `Week ${lesson.week}: ${lesson.title}` : `Week ${week} - Lesson`}>
-  <div class="max-w-4xl mx-auto">
-    {error ? (
-      <div class="bg-red-50 border border-red-200 rounded-lg p-8 text-center">
-        <div class="text-6xl mb-4">❌</div>
-        <h1 class="text-2xl font-bold text-red-800 mb-4">Lesson Not Available</h1>
-        <p class="text-red-700 mb-6">{error}</p>
-        <a 
-          href="/lessons" 
-          class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          Back to All Lessons
-        </a>
-      </div>
-    ) : lesson ? (
-      <>
-        <!-- Lesson Header -->
-        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center space-x-4">
-              <div class="bg-blue-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg">
-                {lesson.week}
-              </div>
-              <div>
-                <h1 class="text-3xl font-bold text-gray-800">{lesson.title}</h1>
-                <p class="text-gray-600">Week {lesson.week} of {allLessons.length}</p>
-              </div>
-            </div>
-            
-            <div class="text-right">
-              <p class="text-sm text-gray-500">
-                Last updated: {new Date(lesson.created_at).toLocaleDateString()}
-              </p>
-            </div>
-          </div>
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        <!-- Sidebar - Table of Contents -->
+        <aside class="lg:col-span-1 order-2 lg:order-1">
+          <TableOfContents 
+            weekNumber={weekNumber} 
+            tocItems={tocItems}
+            className="lg:sticky lg:top-4"
+          />
           
-          {lesson.description && (
-            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
-              <p class="text-blue-800 font-medium">{lesson.description}</p>
-            </div>
-          )}
-        </div>
-
-
-
-
-        <!-- Lesson Content -->
-        <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-          <div class="markdown-content">
-            <MarkdownRenderer content={lesson.content} client:load />
-          </div>
-        </div>
-
-
-
-
-
-        <!-- Navigation -->
-        <div class="bg-white rounded-lg shadow-lg p-6">
-          <div class="flex justify-between items-center">
-            <div>
-              {prevLesson ? (
+          <!-- Week Navigation -->
+          <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+            <h4 class="font-semibold text-gray-900 mb-3">Navigate Weeks</h4>
+            <div class="flex flex-col space-y-2">
+              {weekNumber > 1 && (
                 <a 
-                  href={`/lessons/${prevLesson.week}`}
-                  class="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
+                  href={`/lessons/${weekNumber - 1}`}
+                  class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                 >
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                   </svg>
-                  <div>
-                    <div class="text-sm text-gray-500">Previous</div>
-                    <div class="font-medium">Week {prevLesson.week}: {prevLesson.title}</div>
-                  </div>
+                  Week {weekNumber - 1}
                 </a>
-              ) : (
-                <div class="text-gray-400">
-                  <div class="text-sm">Previous</div>
-                  <div>No previous lesson</div>
-                </div>
               )}
-            </div>
-            
-            <a 
-              href="/lessons" 
-              class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              All Lessons
-            </a>
-            
-            <div class="text-right">
-              {nextLesson ? (
+              
+              <a 
+                href="/lessons"
+                class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+              >
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+                All Lessons
+              </a>
+              
+              {weekNumber < 48 && (
                 <a 
-                  href={`/lessons/${nextLesson.week}`}
-                  class="inline-flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
+                  href={`/lessons/${weekNumber + 1}`}
+                  class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                 >
-                  <div>
-                    <div class="text-sm text-gray-500">Next</div>
-                    <div class="font-medium">Week {nextLesson.week}: {nextLesson.title}</div>
-                  </div>
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  Week {weekNumber + 1}
+                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </a>
-              ) : (
-                <div class="text-gray-400">
-                  <div class="text-sm">Next</div>
-                  <div>No next lesson</div>
-                </div>
               )}
             </div>
           </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="lg:col-span-3 order-1 lg:order-2">
+          
+          <!-- Lesson Header -->
+          <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">
+                  Week {week} Lesson
+                </h1>
+                <p class="text-gray-600">
+                  {sectionName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                </p>
+              </div>
+              
+              <!-- Mobile TOC Toggle Button -->
+              <button 
+                id="mobile-toc-toggle"
+                class="lg:hidden px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Lesson Content -->
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <!-- This is where your actual lesson content will go -->
+            <!-- You can use your existing MarkdownRenderer component here -->
+            
+            <div class="prose max-w-none">
+              <!-- Sample content structure that matches typical TOC -->
+              
+              <h2 id="learning-objectives">Learning Objectives</h2>
+              <p>By the end of this week, you will be able to...</p>
+              <ul>
+                <li>Understand core concepts</li>
+                <li>Apply practical skills</li>
+                <li>Complete hands-on exercises</li>
+              </ul>
+
+              <h2 id="day-1-introduction">Day 1: Introduction</h2>
+              <p>Today we'll start with the fundamentals...</p>
+
+              <h2 id="day-2-fundamentals">Day 2: Fundamentals</h2>
+              <p>Building on yesterday's introduction...</p>
+
+              <h2 id="day-3-practice">Day 3: Practice</h2>
+              <p>Time to put theory into practice...</p>
+
+              <h2 id="day-4-advanced">Day 4: Advanced Topics</h2>
+              <p>Now let's explore more advanced concepts...</p>
+
+              <h2 id="day-5-review">Day 5: Review</h2>
+              <p>Let's review everything we've learned...</p>
+
+              <h2 id="assignments">Assignments</h2>
+              <p>Complete the following assignments...</p>
+
+              <h2 id="resources">Additional Resources</h2>
+              <p>Here are some helpful resources for further learning...</p>
+            </div>
+          </div>
         </div>
-      </>
-    ) : (
-      <div class="bg-gray-50 rounded-lg p-12 text-center">
-        <div class="animate-spin w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-        <p class="text-gray-600">Loading lesson...</p>
       </div>
-    )}
-  </div>
-</Layout>
+    </div>
   </main>
-</div>
+</Layout>
+
+<script>
+  // Mobile TOC toggle functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('mobile-toc-toggle');
+    const sidebar = document.querySelector('aside');
+    
+    if (toggleButton && sidebar) {
+      toggleButton.addEventListener('click', function() {
+        sidebar.classList.toggle('hidden');
+        sidebar.classList.toggle('block');
+      });
+    }
+  });
+</script>
+
+<style>
+  /* Mobile TOC styles */
+  @media (max-width: 1024px) {
+    aside {
+      @apply fixed top-0 left-0 z-50 w-80 h-full bg-white shadow-xl transform -translate-x-full transition-transform duration-300 p-6 overflow-y-auto;
+    }
+    
+    aside.block {
+      @apply translate-x-0;
+    }
+    
+ 
+  }
+</style>
