@@ -1,6 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
+import TableOfContents from '../../components/TableOfContents.astro';
 
 export const prerender = false; // Server-render this page
 
@@ -32,6 +33,33 @@ export async function getStaticPaths1() {
 }
 
 const { week } = Astro.params;
+
+const weekNumber = parseInt(week);
+
+// Determine section
+let sectionName = '';
+if (weekNumber >= 1 && weekNumber <= 12) {
+  sectionName = 'section1-html-css';
+} else if (weekNumber >= 13 && weekNumber <= 24) {
+  sectionName = 'section2-javascript';
+} else if (weekNumber >= 25 && weekNumber <= 36) {
+  sectionName = 'section3-backend';
+} else if (weekNumber >= 37 && weekNumber <= 48) {
+  sectionName = 'section4-react';
+}
+
+// For now, we'll use default TOC items
+// Later you can fetch these from your markdown files or API
+const tocItems = [
+  { id: "learning-objectives", title: "Learning Objectives", level: 2 },
+  { id: "day-1-introduction", title: "Day 1: Introduction", level: 2 },
+  { id: "day-2-fundamentals", title: "Day 2: Fundamentals", level: 2 },
+  { id: "day-3-practice", title: "Day 3: Practice", level: 2 },
+  { id: "day-4-advanced", title: "Day 4: Advanced Topics", level: 2 },
+  { id: "day-5-review", title: "Day 5: Review", level: 2 },
+  { id: "assignments", title: "Assignments", level: 2 },
+  { id: "resources", title: "Additional Resources", level: 2 }
+];
 
 // Fetch lesson data
 const API_BASE = 'http://localhost:8080/api';
@@ -68,6 +96,15 @@ const currentWeek = parseInt(week);
 const prevLesson = allLessons.find(l => l.week === currentWeek - 1);
 const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
 ---
+
+<!-- After: 5-6 columns total -->
+<div class="grid grid-cols-1 xl:grid-cols-6 lg:grid-cols-5 gap-6">
+  <aside class="xl:col-span-1 lg:col-span-1">    <!-- 1/6 = 16% or 1/5 = 20% -->
+            <TableOfContents weekNumber={parseInt(week)} />
+    </aside>  
+  <main class="xl:col-span-5 lg:col-span-4">     <!-- 5/6 = 84% or 4/5 = 80% -->
+
+
 
 <Layout title={lesson ? `Week ${lesson.week}: ${lesson.title}` : `Week ${week} - Lesson`}>
   <div class="max-w-4xl mx-auto">
@@ -112,12 +149,19 @@ const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
           )}
         </div>
 
+
+
+
         <!-- Lesson Content -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
           <div class="markdown-content">
             <MarkdownRenderer content={lesson.content} client:load />
           </div>
         </div>
+
+
+
+
 
         <!-- Navigation -->
         <div class="bg-white rounded-lg shadow-lg p-6">
@@ -183,3 +227,5 @@ const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
     )}
   </div>
 </Layout>
+  </main>
+</div>
