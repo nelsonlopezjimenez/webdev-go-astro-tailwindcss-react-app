@@ -13,21 +13,158 @@ export async function getStaticPaths() {
 }
 
 const { week } = Astro.params;
+// Find prev/next lessons
+const currentWeek = parseInt(week);
+const weekNumber = parseInt(week);
+
+
+// Determine section
+let sectionName = '';
+if (currentWeek >= 1 && currentWeek <= 12) {
+  sectionName = 'section1-html-css';
+} else if (currentWeek >= 13 && currentWeek <= 24) {
+  sectionName = 'section2-javascript';
+} else if (currentWeek >= 25 && currentWeek <= 36) {
+  sectionName = 'section3-backend';
+} else if (currentWeek >= 37 && currentWeek <= 48) {
+  sectionName = 'section4-react';
+}
+
+
+
+// Function to fetch TOC from your Go API
+async function fetchTOCFromAPI(sectionName: string, weekNumber: number) {
+  try {
+    // This calls your Go server API endpoint
+    const response = await fetch(`${Astro.url.origin}/api/lessons/${sectionName}/week${weekNumber}/toc`);
+    
+    if (response.ok) {
+      const data = await response.json();
+      return data.tocItems || [];
+    }
+  } catch (error) {
+    console.log('Failed to fetch TOC from API:', error);
+  }
+  
+  // Fallback to default TOC items
+  return [
+    { id: "learning-objectives", title: "Learning Objectives", level: 2 },
+    { id: "day-1-introduction", title: "Day 1: Introduction", level: 2 },
+    { id: "day-2-fundamentals", title: "Day 2: Fundamentals", level: 2 },
+    { id: "day-3-practice", title: "Day 3: Practice", level: 2 },
+    { id: "day-4-advanced", title: "Day 4: Advanced Topics", level: 2 },
+    { id: "day-5-review", title: "Day 5: Review", level: 2 },
+    { id: "assignments", title: "Assignments", level: 2 },
+    { id: "resources", title: "Additional Resources", level: 2 }
+  ];
+}
+
+
+// Function to fetch TOC directly from markdown file content
+async function fetchTOCFromMarkdown(sectionName: string, weekNumber: number) {
+  try {
+    // Fetch the markdown content
+    const response = await fetch(`${Astro.url.origin}/api/lessons/${sectionName}/week${weekNumber}/content`);
+  
+    // const response = await fetch(`http://localhost:8080/api/lessons/${sectionName}/week${weekNumber}/content`);
+
+    
+    if (response.ok) {
+      console.log('response ok')
+      const markdownContent = await response.json();
+      return extractTOCFromMarkdown(markdownContent.content);
+    }
+  } catch (error) {
+    console.log('Failed to fetch markdown content:', error);
+  }
+  
+  return [];
+}
+
+// Function to extract TOC from markdown content
+function extractTOCFromMarkdown(markdownContent: string) {
+  const tocItems = [];
+  const lines = markdownContent.split('\n');
+  let inTOCSection = false;
+  
+  for (const line of lines) {
+    // Look for explicit TOC section
+    if (line.match(/^##?\s*(table of contents|contents|toc)/i)) {
+      inTOCSection = true;
+      continue;
+    }
+    
+    // Stop when we hit another major section
+    if (inTOCSection && line.match(/^##?\s+(?!.*\[.*\])/)) {
+      break;
+    }
+    
+    // Extract TOC links
+    if (inTOCSection) {
+      const linkMatch = line.match(/^\s*[-*]\s*\[([^\]]+)\]\(#([^)]+)\)/);
+      if (linkMatch) {
+        const [, title, id] = linkMatch;
+        const level = (line.match(/^\s*/)[0].length / 2) + 2; // Estimate level from indentation
+        
+        tocItems.push({
+          id: id,
+          title: title,
+          level: Math.min(level, 6) // Cap at h6
+        });
+      }
+    }
+    
+    // If no explicit TOC, extract from headings
+    if (!inTOCSection) {
+      const headingMatch = line.match(/^(#{1,6})\s+(.+)$/);
+      if (headingMatch) {
+        const [, hashes, title] = headingMatch;
+        const level = hashes.length;
+        
+        // Skip the main title (h1)
+        if (level > 1) {
+          const id = title.toLowerCase()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/^-+|-+$/g, '');
+          
+          tocItems.push({
+            id: id,
+            title: title,
+            level: level
+          });
+        }
+      }
+    }
+  }
+  
+  return tocItems;
+}
+
+// Fetch TOC items (try API first, then markdown parsing)
+let tocItems ;
+try {
+  tocItems = await fetchTOCFromAPI(sectionName, weekNumber);
+  
+  // If API doesn't return items, try parsing markdown
+  if (!tocItems || tocItems.length === 0) {
+    tocItems = await fetchTOCFromMarkdown(sectionName, weekNumber);
+  }
+} catch (error) {
+  console.log('Error fetching TOC:', error);
+  tocItems = [
+    { id: "learning-objectives", title: "Learning Objectives", level: 2 },
+    { id: "introduction", title: "Introduction", level: 2 },
+    { id: "main-content", title: "Main Content", level: 2 },
+    { id: "exercises", title: "Exercises", level: 2 },
+    { id: "summary", title: "Summary", level: 2 }
+  ];
+}
 
 
 
 
 
-const tocItems = [
-  { id: "learning-objectives", title: "Learning Objectives", level: 2 },
-  { id: "day-1-introduction", title: "Day 1: Introduction", level: 2 },
-  { id: "day-2-fundamentals", title: "Day 2: Fundamentals", level: 2 },
-  { id: "day-3-practice", title: "Day 3: Practice", level: 2 },
-  { id: "day-4-advanced", title: "Day 4: Advanced Topics", level: 2 },
-  { id: "day-5-review", title: "Day 5: Review", level: 2 },
-  { id: "assignments", title: "Assignments", level: 2 },
-  { id: "resources", title: "Additional Resources", level: 2 }
-];
 
 // Fetch lesson data
 const API_BASE = 'http://localhost:8080/api';
@@ -59,22 +196,12 @@ try {
   console.error('Failed to fetch all lessons:', err);
 }
 
-// Find prev/next lessons
-const currentWeek = parseInt(week);
+
+
+
+
 const prevLesson = allLessons.find(l => l.week === currentWeek - 1);
 const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
-
-// Determine section
-let sectionName = '';
-if (currentWeek >= 1 && currentWeek <= 12) {
-  sectionName = 'section1-html-css';
-} else if (currentWeek >= 13 && currentWeek <= 24) {
-  sectionName = 'section2-javascript';
-} else if (currentWeek >= 25 && currentWeek <= 36) {
-  sectionName = 'section3-backend';
-} else if (currentWeek >= 37 && currentWeek <= 48) {
-  sectionName = 'section4-react';
-}
 ---
 
 <Layout title={lesson ? `Week ${lesson.week}: ${lesson.title}` : `Week ${week} - Lesson`}>
