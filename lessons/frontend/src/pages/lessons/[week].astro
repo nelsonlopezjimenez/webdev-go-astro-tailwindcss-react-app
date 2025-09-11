@@ -5,7 +5,7 @@ import TableOfContents from '../../components/TableOfContents.astro';
 
 export async function getStaticPaths() {
   const paths = [];
-  for (let week = 1; week <= 48; week++) {
+  for (let week = 1; week <= 60; week++) {
     paths.push({ params: { week: week.toString() } });
   }
   return paths;
