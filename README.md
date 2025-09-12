@@ -9,6 +9,8 @@
 1. Still images not rendered even with img tags
 1.![v2.6.17](image-3.png)
 1. ![hardcoded side navbar links partial](image-4.png)
+1. v2.6.21.exe not crashing, not styled, partially working side navbar "Learning Objectives" and "Assignments" links. "Back to top" internal link working.
+1. Images not rendered.
 
 ## 9.11.2025
 1. created branch weeknavigation to test side navbar. 
