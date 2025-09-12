@@ -6,6 +6,7 @@
 1. astro build, go build to v6.2.6.exe
 1. Images not rendered
 1. added img tags
+1. Still images not rendered even with img tags
 
 ## 9.11.2025
 1. created branch weeknavigation to test side navbar. 

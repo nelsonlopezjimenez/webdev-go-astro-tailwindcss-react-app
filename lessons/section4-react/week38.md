@@ -14,3 +14,5 @@ week: 38
 <img src="image-2.png" alt="secondev branch" width="500" height="600">
 ![added this images not rendered](image-3.png)
 <img src="image-3.png" alt="alt pics rendering branch" width="500" height="600">
+![with img tags](image-4.png)
+<img src="image-4.png" alt="alt with img tags" width="500" height="600">
