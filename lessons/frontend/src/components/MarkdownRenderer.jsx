@@ -6,6 +6,7 @@ const MarkdownRenderer = ({ content }) => {
 
   useEffect(() => {
     if (content) {
+      console.log("line 9 ", typeof content)
       // Configure marked options
       marked.setOptions({
         breaks: true,

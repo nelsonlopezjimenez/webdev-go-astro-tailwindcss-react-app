@@ -574,3 +574,5 @@ let sales = [
     { product: "Laptop", amount: 999, quantity: 2, date: "2023-01-15" },
     { product: "Mouse", amount: 25, quantity: 5, date: "2023-01-16" },
     { product: "
+    
+```

@@ -2,6 +2,7 @@
 // src/pages/lessons/[week].astro - Updated with sidebar TOC
 import Layout from '../../layouts/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
+import MarkdownRenderer from '../../components/MarkdownRenderer';
 
 export async function getStaticPaths() {
   const paths = [];
@@ -13,6 +14,7 @@ export async function getStaticPaths() {
 
 const { week } = Astro.params;
 const weekNumber = parseInt(week);
+const currentWeek = weekNumber;
 
 // Determine section
 let sectionName = '';
@@ -26,18 +28,125 @@ if (weekNumber >= 1 && weekNumber <= 12) {
   sectionName = 'section4-react';
 }
 
-// For now, we'll use default TOC items
-// Later you can fetch these from your markdown files or API
-const tocItems = [
-  { id: "learning-objectives", title: "Learning Objectives", level: 2 },
-  { id: "day-1-introduction", title: "Day 1: Introduction", level: 2 },
-  { id: "day-2-fundamentals", title: "Day 2: Fundamentals", level: 2 },
-  { id: "day-3-practice", title: "Day 3: Practice", level: 2 },
-  { id: "day-4-advanced", title: "Day 4: Advanced Topics", level: 2 },
-  { id: "day-5-review", title: "Day 5: Review", level: 2 },
-  { id: "assignments", title: "Assignments", level: 2 },
-  { id: "resources", title: "Additional Resources", level: 2 }
-];
+// Safe function to fetch TOC with error handling
+async function fetchTOCSafely(sectionName, weekNumber) {
+  try {
+    // Only try to fetch if we're in a server environment and have the API
+    if (typeof fetch !== 'undefined') {
+      const response = await fetch(`${Astro.url.origin}/api/lessons/${sectionName}/week${weekNumber}/toc`);
+      if (response.ok) {
+        const data = await response.json();
+        return data.tocItems || [];
+      }
+    }
+  } catch (error) {
+    console.log(`Could not fetch TOC for week ${weekNumber}:`, error.message);
+  }
+  
+  // Return default TOC items
+  return [
+    { id: "learning-objectives", title: "Learning Objectives", level: 2 },
+    { id: "introduction", title: "Introduction", level: 2 },
+    { id: "main-concepts", title: "Main Concepts", level: 2 },
+    { id: "practical-examples", title: "Practical Examples", level: 2 },
+    { id: "hands-on-practice", title: "Hands-on Practice", level: 2 },
+    { id: "review-summary", title: "Review & Summary", level: 2 },
+    { id: "assignments", title: "Assignments", level: 2 },
+    { id: "resources", title: "Additional Resources", level: 2 }
+  ];
+}
+
+// Safe function to fetch content with error handling
+async function fetchContentSafely(sectionName, weekNumber) {
+  try {
+    if (typeof fetch !== 'undefined') {
+      const response = await fetch(`${Astro.url.origin}/api/lessons/${sectionName}/week${weekNumber}/content`);
+      if (response.ok) {
+        return await response.text();
+      }
+    }
+  } catch (error) {
+    console.log(`Could not fetch content for week ${weekNumber}:`, error.message);
+  }
+  
+  return null;
+}
+
+// Fetch data safely
+let tocItems = [];
+let lessonContent = null;
+
+try {
+  tocItems = await fetchTOCSafely(sectionName, weekNumber);
+  lessonContent = await fetchContentSafely(sectionName, weekNumber);
+} catch (error) {
+  console.log(`Error fetching lesson data for week ${weekNumber}:`, error);
+  tocItems = [
+    { id: "learning-objectives", title: "Learning Objectives", level: 2 },
+    { id: "introduction", title: "Introduction", level: 2 },
+    { id: "main-concepts", title: "Main Concepts", level: 2 },
+    { id: "assignments", title: "Assignments", level: 2 }
+  ];
+}
+
+// Ensure tocItems is always an array
+if (!Array.isArray(tocItems)) {
+  tocItems = [];
+}
+
+// Fetch lesson data
+const API_BASE = 'http://localhost:8080/api';
+let lesson = null;
+let error = null;
+
+try {
+  const response = await fetch(`${API_BASE}/lessons/${week}`);
+  if (response.ok) {
+    lesson = await response.json();
+  } else if (response.status === 404) {
+    error = 'Lesson not found';
+  } else {
+    error = 'Failed to load lesson';
+  }
+} catch (err) {
+  console.error('Failed to fetch lesson:', err);
+  error = 'Failed to connect to server';
+}
+
+// Get all lessons for navigation
+let allLessons = [];
+try {
+  const response = await fetch(`${API_BASE}/lessons`);
+  if (response.ok) {
+    allLessons = await response.json();
+  }
+} catch (err) {
+  console.error('Failed to fetch all lessons:', err);
+}
+
+// Find prev/next lessons
+// const currentWeek = parseInt(week);
+const prevLesson = allLessons.find(l => l.week === currentWeek - 1);
+const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
+
+const tmp = `---
+title: "Arrays and Modern JavaScript Methods"
+description: "Master array manipulation, iteration methods, and modern JavaScript features for data processing"
+week: 18
+section: 2
+prerequisites: ["Objects", "Functions", "Loops"]
+objectives:
+  - "Master array creation, manipulation, and transformation methods"
+  - "Use modern array methods (map, filter, reduce, forEach)"
+  - "Implement functional programming concepts with arrays"
+  - "Handle complex data structures and nested arrays"
+  - "Apply array methods for real-world data processing"
+---
+
+# Week 18: Arrays and Modern JavaScript Methods
+
+## Learning Objectives`
+
 ---
 
 <Layout title={`Week ${week} - Course Lesson`}>
@@ -115,7 +224,7 @@ const tocItems = [
             <div class="flex items-center justify-between mb-4">
               <div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">
-                  Week {week} Lesson
+                  Week {week} Lesson Lesson
                 </h1>
                 <p class="text-gray-600">
                   {sectionName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -134,11 +243,22 @@ const tocItems = [
             </div>
           </div>
 
-          <!-- Lesson Content -->
-          <div class="bg-white rounded-lg shadow-lg p-6">
-            <!-- This is where your actual lesson content will go -->
-            <!-- You can use your existing MarkdownRenderer component here -->
-            
+      <!-- Lesson Content -->
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+              <!-- {lesson.content ? () : ()} -->
+              {lesson.content ? (
+              <div class="markdown-content">
+                <MarkdownRenderer content={lesson.content} client:load />
+              </div>
+              ) : (
+                <MarkdownRenderer content={tmp} client:load />
+              )}
+
+
+
+             
+            </div>
+
             <div class="prose max-w-none">
               <!-- Sample content structure that matches typical TOC -->
               
