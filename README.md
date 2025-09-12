@@ -7,6 +7,8 @@
 1. Images not rendered
 1. added img tags
 1. Still images not rendered even with img tags
+1.![v2.6.17](image-3.png)
+1. ![hardcoded side navbar links partial](image-4.png)
 
 ## 9.11.2025
 1. created branch weeknavigation to test side navbar. 

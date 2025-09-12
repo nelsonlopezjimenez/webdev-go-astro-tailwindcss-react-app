@@ -1,8 +1,8 @@
 ---
-// src/pages/lessons/[week].astro - Updated with sidebar TOC
+// src/pages/lessons/[week].astro - Fixed with null safety
 import Layout from '../../layouts/Layout.astro';
 import TableOfContents from '../../components/TableOfContents.astro';
-import MarkdownRenderer from '../../components/MarkdownRenderer';
+import MarkdownRenderer from '../../components/MarkdownRenderer.jsx';
 
 export async function getStaticPaths() {
   const paths = [];
@@ -14,7 +14,6 @@ export async function getStaticPaths() {
 
 const { week } = Astro.params;
 const weekNumber = parseInt(week);
-const currentWeek = weekNumber;
 
 // Determine section
 let sectionName = '';
@@ -93,7 +92,6 @@ try {
 if (!Array.isArray(tocItems)) {
   tocItems = [];
 }
-
 // Fetch lesson data
 const API_BASE = 'http://localhost:8080/api';
 let lesson = null;
@@ -103,6 +101,7 @@ try {
   const response = await fetch(`${API_BASE}/lessons/${week}`);
   if (response.ok) {
     lesson = await response.json();
+    lessonContent = lesson.content;
   } else if (response.status === 404) {
     error = 'Lesson not found';
   } else {
@@ -125,33 +124,14 @@ try {
 }
 
 // Find prev/next lessons
-// const currentWeek = parseInt(week);
+const currentWeek = parseInt(week);
 const prevLesson = allLessons.find(l => l.week === currentWeek - 1);
 const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
-
-const tmp = `---
-title: "Arrays and Modern JavaScript Methods"
-description: "Master array manipulation, iteration methods, and modern JavaScript features for data processing"
-week: 18
-section: 2
-prerequisites: ["Objects", "Functions", "Loops"]
-objectives:
-  - "Master array creation, manipulation, and transformation methods"
-  - "Use modern array methods (map, filter, reduce, forEach)"
-  - "Implement functional programming concepts with arrays"
-  - "Handle complex data structures and nested arrays"
-  - "Apply array methods for real-world data processing"
----
-
-# Week 18: Arrays and Modern JavaScript Methods
-
-## Learning Objectives`
-
 ---
 
 <Layout title={`Week ${week} - Course Lesson`}>
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="max-w-full mx-auto px-4">
       
       <!-- Breadcrumb -->
       <nav class="mb-6">
@@ -165,10 +145,10 @@ objectives:
       </nav>
 
       <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div class="grid grid-cols-1 xl:grid-cols-6 lg:grid-cols-5 gap-6">
         
         <!-- Sidebar - Table of Contents -->
-        <aside class="lg:col-span-1 order-2 lg:order-1">
+        <aside class="xl:col-span-1 lg:col-span-1 order-2 lg:order-1">
           <TableOfContents 
             weekNumber={weekNumber} 
             tocItems={tocItems}
@@ -177,37 +157,37 @@ objectives:
           
           <!-- Week Navigation -->
           <div class="mt-6 bg-white rounded-lg shadow-sm border border-gray-200 p-4">
-            <h4 class="font-semibold text-gray-900 mb-3">Navigate Weeks</h4>
+            <h4 class="font-semibold text-gray-900 mb-3 text-sm">Navigate</h4>
             <div class="flex flex-col space-y-2">
               {weekNumber > 1 && (
                 <a 
                   href={`/lessons/${weekNumber - 1}`}
-                  class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+                  class="flex items-center px-3 py-2 text-xs text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                 >
-                  <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                   </svg>
-                  Week {weekNumber - 1}
+                  <span class="truncate">Week {weekNumber - 1}</span>
                 </a>
               )}
               
               <a 
                 href="/lessons"
-                class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+                class="flex items-center px-3 py-2 text-xs text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
               >
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
                 </svg>
-                All Lessons
+                <span class="truncate">All Lessons</span>
               </a>
               
               {weekNumber < 48 && (
                 <a 
                   href={`/lessons/${weekNumber + 1}`}
-                  class="flex items-center px-3 py-2 text-sm text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
+                  class="flex items-center px-3 py-2 text-xs text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-md transition-colors"
                 >
-                  Week {weekNumber + 1}
-                  <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <span class="truncate">Week {weekNumber + 1}</span>
+                  <svg class="w-4 h-4 ml-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                   </svg>
                 </a>
@@ -217,24 +197,30 @@ objectives:
         </aside>
 
         <!-- Main Content Area -->
-        <div class="lg:col-span-3 order-1 lg:order-2">
+        <div class="xl:col-span-5 lg:col-span-4 order-1 lg:order-2">
           
           <!-- Lesson Header -->
           <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
             <div class="flex items-center justify-between mb-4">
-              <div>
+              <div class="flex-1">
                 <h1 class="text-3xl font-bold text-gray-900 mb-2">
-                  Week {week} Lesson Lesson
+                  Week {week} Lesson
                 </h1>
                 <p class="text-gray-600">
                   {sectionName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </p>
+                <!-- Debug info (remove in production) -->
+                {import.meta.env.DEV && (
+                  <p class="text-xs text-gray-400 mt-2">
+                    TOC Items: {tocItems?.length || 0} | Content: {lessonContent ? 'Found' : 'Not found'}
+                  </p>
+                )}
               </div>
               
               <!-- Mobile TOC Toggle Button -->
               <button 
                 id="mobile-toc-toggle"
-                class="lg:hidden px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                class="lg:hidden px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors flex-shrink-0"
               >
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path>
@@ -243,53 +229,81 @@ objectives:
             </div>
           </div>
 
-      <!-- Lesson Content -->
-            <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-              <!-- {lesson.content ? () : ()} -->
-              {lesson.content ? (
-              <div class="markdown-content">
-                <MarkdownRenderer content={lesson.content} client:load />
-              </div>
-              ) : (
-                <MarkdownRenderer content={tmp} client:load />
-              )}
-
-
-
-             
-            </div>
-
-            <div class="prose max-w-none">
-              <!-- Sample content structure that matches typical TOC -->
+          <!-- Lesson Content -->
+          <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="prose prose-lg max-w-none">
               
-              <h2 id="learning-objectives">Learning Objectives</h2>
-              <p>By the end of this week, you will be able to...</p>
-              <ul>
-                <li>Understand core concepts</li>
-                <li>Apply practical skills</li>
-                <li>Complete hands-on exercises</li>
-              </ul>
+              {lessonContent ? (
+                <!-- Render actual content if available -->
+                <div class="lesson-content">
 
-              <h2 id="day-1-introduction">Day 1: Introduction</h2>
-              <p>Today we'll start with the fundamentals...</p>
 
-              <h2 id="day-2-fundamentals">Day 2: Fundamentals</h2>
-              <p>Building on yesterday's introduction...</p>
+                  <!-- Content will be processed by client-side JavaScript -->
+                  <div id="markdown-content" style="display: none;">{lessonContent}</div>
 
-              <h2 id="day-3-practice">Day 3: Practice</h2>
-              <p>Time to put theory into practice...</p>
+            
 
-              <h2 id="day-4-advanced">Day 4: Advanced Topics</h2>
-              <p>Now let's explore more advanced concepts...</p>
 
-              <h2 id="day-5-review">Day 5: Review</h2>
-              <p>Let's review everything we've learned...</p>
 
-              <h2 id="assignments">Assignments</h2>
-              <p>Complete the following assignments...</p>
-
-              <h2 id="resources">Additional Resources</h2>
-              <p>Here are some helpful resources for further learning...</p>
+                  <div id="rendered-content">
+                    <!-- Fallback content while JavaScript loads -->
+                    <h2 id="learning-objectives">Learning Objectives</h2>
+                    <p>By the end of this week, you will be able to...</p>
+                    
+                    <h2 id="introduction">Introduction</h2>
+                    <p>Welcome to Week {week} of the course...</p>
+                    
+                    <h2 id="main-concepts">Main Concepts</h2>
+                    <p>In this lesson, we'll explore...</p>
+                    
+                    <h2 id="assignments">Assignments</h2>
+                    <p>Complete the following assignments...</p>
+                  </div>
+                </div>
+              ) : (
+                <!-- Fallback content when lesson not available -->
+                <div class="text-center py-12">
+                  <div class="max-w-md mx-auto">
+                    <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-2">
+                      Week {week} Content Coming Soon
+                    </h2>
+                    <p class="text-gray-600 mb-6">
+                      The lesson content for Week {week} is being prepared and will be available soon.
+                    </p>
+                    
+                    <!-- Sample content structure -->
+                    <div class="text-left bg-gray-50 rounded-lg p-6 mb-6">
+                      <h3 class="font-semibold text-gray-800 mb-3">This lesson will cover:</h3>
+                      <ul class="text-sm text-gray-600 space-y-1 list-disc list-inside">
+                        {tocItems.slice(0, 4).map(item => (
+                          <li>{item.title}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                      <a 
+                        href="/lessons" 
+                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                      >
+                        View All Lessons
+                      </a>
+                      {weekNumber > 1 && (
+                        <a 
+                          href={`/lessons/${weekNumber - 1}`}
+                          class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                        >
+                          Previous Week
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              
             </div>
           </div>
         </div>
@@ -299,8 +313,22 @@ objectives:
 </Layout>
 
 <script>
-  // Mobile TOC toggle functionality
+  // Client-side content rendering (only if content exists)
   document.addEventListener('DOMContentLoaded', function() {
+    const markdownContent = document.getElementById('markdown-content');
+    const renderedContent = document.getElementById('rendered-content');
+    
+    if (markdownContent && renderedContent && markdownContent.textContent.trim()) {
+      // Simple markdown to HTML conversion
+      const markdown = markdownContent.textContent;
+      const html = convertMarkdownToHTML(markdown);
+      renderedContent.innerHTML = html;
+      
+      // Add IDs to headings for TOC navigation
+      addIDsToHeadings();
+    }
+
+    // Mobile TOC toggle
     const toggleButton = document.getElementById('mobile-toc-toggle');
     const sidebar = document.querySelector('aside');
     
@@ -311,10 +339,64 @@ objectives:
       });
     }
   });
+
+  function convertMarkdownToHTML(markdown) {
+    return markdown
+      .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+      .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+      .replace(/\*(.*)\*/gim, '<em>$1</em>')
+      .replace(/```([^`]+)```/gim, '<pre><code>$1</code></pre>')
+      .replace(/`([^`]+)`/gim, '<code>$1</code>')
+      .replace(/\[([^\]]+)\]\(([^)]+)\)/gim, '<a href="$2">$1</a>')
+      .replace(/\n/gim, '<br>');
+  }
+
+  function addIDsToHeadings() {
+    const headings = document.querySelectorAll('#rendered-content h1, #rendered-content h2, #rendered-content h3, #rendered-content h4, #rendered-content h5, #rendered-content h6');
+    
+    headings.forEach(heading => {
+      if (!heading.id) {
+        const id = heading.textContent
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/^-+|-+$/g, '');
+        heading.id = id;
+      }
+    });
+  }
 </script>
 
 <style>
-  /* Mobile TOC styles */
+  /* Custom prose styles for better readability */
+  .prose {
+    max-width: none !important;
+  }
+  
+  .prose p {
+    margin-bottom: 1.25rem;
+    line-height: 1.7;
+  }
+  
+  .prose h2 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #1f2937;
+  }
+  
+  .prose h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  /* Mobile responsive adjustments */
   @media (max-width: 1024px) {
     aside {
       @apply fixed top-0 left-0 z-50 w-80 h-full bg-white shadow-xl transform -translate-x-full transition-transform duration-300 p-6 overflow-y-auto;
@@ -323,7 +405,5 @@ objectives:
     aside.block {
       @apply translate-x-0;
     }
-    
- 
   }
 </style>
