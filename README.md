@@ -1,5 +1,22 @@
 # webdev-class-server-ver2-app
 
+
+## 9.12.2025
+1. Added screenshots from various exe files to week38
+1. astro build, go build to v6.2.6.exe
+1. Images not rendered
+1. added img tags
+1. Still images not rendered even with img tags
+
+## 9.11.2025
+1. created branch weeknavigation to test side navbar. 
+1. In Astro development it worked, but it did not build
+1. The layout was correct but with hardcoded links
+1. Tried to extract the TOC, claude gave three options: static, through API or dinamically using react
+1. I started with static using astro dev. It worked but at some point it stopped building so I could not compile go server anymore
+1. I created seconddev branch to test TOC extraction in separate files but it did not build or compile
+1. Back to development branch and start from fresh.
+
 ## 9.10.2025
 1. https://edu.gcfglobal.org/en/download/all/
 
