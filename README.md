@@ -2,6 +2,26 @@
 
 
 ## 9.12.2025
+
+### TOC internal links issue
+1. Tried manual html tag additions: hr, then h1,h2
+1. Tried without astro and it worked the original solution by reading /api/sections/section1/week/1/toc and content but stopped working when using astro rendering
+1. Tried  Intersection Observer in DynamicTableOfContent
+1. Added a script to [week].astro as well javascript to react
+1. Finally it was a combination of code that worked
+    1. This solution:
+    1.Waits for content to load before setting up scroll tracking
+    1.Ensures all headings have IDs programmatically
+    1.Uses throttled scroll events for better performance
+    1.Shows debug info so you can see what's happening
+    1.Handles smooth scrolling and URL updates
+
+### Problem with fronend building using API call when go server is down or nonresponsive
+1. Resolved the situation adding a conditional that test if the go server is available or not
+1. All lessons created an index file and a TOC default or based on the lesson conten
+
+### Testing images and side navigation bar generation
+
 1. Added screenshots from various exe files to week38
 1. astro build, go build to v6.2.6.exe
 1. Images not rendered
@@ -11,6 +31,7 @@
 1. ![hardcoded side navbar links partial](image-4.png)
 1. v2.6.21.exe not crashing, not styled, partially working side navbar "Learning Objectives" and "Assignments" links. "Back to top" internal link working.
 1. Images not rendered.
+
 
 ## 9.11.2025
 1. created branch weeknavigation to test side navbar. 
