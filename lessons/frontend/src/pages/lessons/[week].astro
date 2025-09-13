@@ -326,6 +326,20 @@ const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
 </Layout>
 
 <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Ensure all headings have proper IDs
+    document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
+      if (!heading.id && heading.textContent) {
+        heading.id = heading.textContent
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .replace(/\s+/g, '-')
+          .trim();
+      }
+    });
+  });
+</script>
+<script>
   // Client-side content rendering (only if content exists)
   document.addEventListener('DOMContentLoaded', function() {
     const markdownContent = document.getElementById('markdown-content');

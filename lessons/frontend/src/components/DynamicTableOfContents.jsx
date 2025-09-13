@@ -1,77 +1,33 @@
-// src/components/DynamicTableOfContents.jsx
 import { useState, useEffect } from 'react';
 
 export default function DynamicTableOfContents({ sectionName, weekNumber }) {
   const [tocItems, setTocItems] = useState([]);
+  const [activeId, setActiveId] = useState('');
   const [loading, setLoading] = useState(true);
-   const [activeId, setActiveId] = useState('');
+
+  // Your existing fetchTOC code...
 
   useEffect(() => {
-    fetchTOC();
-  }, [sectionName, weekNumber]);
-
-
-   // NEW: Add this useEffect for Intersection Observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          const id = entry.target.id;
-          
-          if (entry.isIntersecting) {
-            setActiveId(id);
-          }
-        });
-      },
-      { 
-        rootMargin: '-20% 0px -80% 0px',
-        threshold: 0
-      }
-    );
-
-    // Wait a bit for content to load, then observe headings
-    const timer = setTimeout(() => {
-      document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]').forEach(
-        heading => observer.observe(heading)
-      );
-    }, 1000);
-
-    return () => {
-      clearTimeout(timer);
-      observer.disconnect();
-    };
-  }, [tocItems]); // Re-run when tocItems change
-
-
-  const fetchTOC = async () => {
-    setLoading(true);
-    try {
-      const response = await fetch(`/api/sections/${sectionName}/week/${weekNumber}/toc`);
+    const handleScroll = () => {
+      const headings = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id], h5[id], h6[id]');
+      let currentActiveId = '';
       
-      if (response.ok) {
-        const data = await response.json();
-        setTocItems(data.tocItems || []);
-      } else {
-        setTocItems(getDefaultTOCItems());
+      for (const heading of headings) {
+        const rect = heading.getBoundingClientRect();
+        if (rect.top <= 150) {
+          currentActiveId = heading.id;
+        }
       }
-    } catch (error) {
-      console.error('Failed to fetch TOC:', error);
-      setTocItems(getDefaultTOCItems());
-    } finally {
-      setLoading(false);
-    }
-  };
+      
+      setActiveId(currentActiveId);
+    };
 
-  const getDefaultTOCItems = () => [
-    { id: "learning-objectives", title: "Learning Objectives", level: 2 },
-    { id: "introduction", title: "Introduction", level: 2 }
-  ];
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Set initial active state
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  if (loading) {
-    return <div className="p-4">Loading TOC...</div>;
-  }
-
- // Update your render to use activeId state
   return (
     <nav className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-4">
       <h3 className="font-semibold mb-4">Week {weekNumber} Contents</h3>
@@ -79,18 +35,19 @@ export default function DynamicTableOfContents({ sectionName, weekNumber }) {
         {tocItems.map((item, index) => (
           <li key={index}>
             <a 
-              href={`#${item.id}`} 
+              href={`#${item.id}`}
               className={`block text-sm py-1 transition-colors ${
                 activeId === item.id 
-                  ? 'text-indigo-600 font-semibold' 
-                  : 'text-gray-700 hover:text-indigo-600'
+                  ? 'text-indigo-600 font-semibold border-l-2 border-indigo-600 pl-2' 
+                  : 'text-gray-700 hover:text-indigo-600 pl-2'
               }`}
               onClick={(e) => {
                 e.preventDefault();
-                document.getElementById(item.id)?.scrollIntoView({ 
-                  behavior: 'smooth',
-                  block: 'start'
-                });
+                const element = document.getElementById(item.id);
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  setActiveId(item.id);
+                }
               }}
             >
               {item.title}
@@ -98,6 +55,8 @@ export default function DynamicTableOfContents({ sectionName, weekNumber }) {
           </li>
         ))}
       </ul>
+      
     </nav>
+    
   );
 }
