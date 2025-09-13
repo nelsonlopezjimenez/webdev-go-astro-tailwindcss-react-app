@@ -29,6 +29,19 @@ if (weekNumber >= 1 && weekNumber <= 12) {
 
 // Safe function to fetch TOC with error handling
 async function fetchTOCSafely(sectionName, weekNumber) {
+  // Skip API calls during static build
+  if (import.meta.env.SSG || typeof window === 'undefined') {
+    return [
+    { id: "learning-objectives", title: "Learning Objectives", level: 2 },
+    { id: "introduction", title: "Introduction", level: 2 },
+    { id: "main-concepts", title: "Main Concepts", level: 2 },
+    { id: "practical-examples", title: "Practical Examples", level: 2 },
+    { id: "hands-on-practice", title: "Hands-on Practice", level: 2 },
+    { id: "review-summary", title: "Review & Summary", level: 2 },
+    { id: "assignments", title: "Assignments", level: 2 },
+    { id: "resources", title: "Additional Resources", level: 2 }
+  ];
+  }
   try {
     // Only try to fetch if we're in a server environment and have the API
     if (typeof fetch !== 'undefined') {
@@ -39,7 +52,9 @@ async function fetchTOCSafely(sectionName, weekNumber) {
       }
     }
   } catch (error) {
-    console.log(`Could not fetch TOC for week ${weekNumber}:`, error.message);
+    // console.log(`Could not fetch TOC for week ${weekNumber}:`, error.message);
+     console.log(`Build-time: Using default TOC for week ${weekNumber}`);
+
   }
   
   // Return default TOC items
@@ -57,6 +72,10 @@ async function fetchTOCSafely(sectionName, weekNumber) {
 
 // Safe function to fetch content with error handling
 async function fetchContentSafely(sectionName, weekNumber) {
+    // Skip during build
+  if (import.meta.env.SSG || typeof window === 'undefined') {
+    return null;
+  }
   try {
     if (typeof fetch !== 'undefined') {
       const response = await fetch(`${Astro.url.origin}/api/sections/${sectionName}/week/${weekNumber}/content`);
@@ -65,7 +84,9 @@ async function fetchContentSafely(sectionName, weekNumber) {
       }
     }
   } catch (error) {
-    console.log(`Could not fetch content for week ${weekNumber}:`, error.message);
+    // console.log(`Could not fetch content for week ${weekNumber}:`, error.message);
+       console.log(`Build-time: No content for week ${weekNumber}`);
+
   }
   
   return null;
@@ -242,11 +263,11 @@ const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
                   {/* <div id="markdown-content" style="display: none;">{lessonContent}</div> */}
 
                           <!-- Lesson Content -->
-                <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-                  <div class="markdown-content">
-                    <MarkdownRenderer content={lesson.content} client:load />
-                  </div>
+              <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <div class="markdown-content">
+                  <MarkdownRenderer content={lesson.content} client:load />
                 </div>
+              </div>
 
 
 
