@@ -3,6 +3,8 @@ title: "CIS 241 - Web Development I"
 description: "WEEK 1 - Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting. Students will build multi-page websites using GUI editors, Git and GitHub."
 week: 1
 ---
+<h1 id="day1">Welcome to Web Development!</h1>
+
 <!-- Solution 4: Use explicit HTML anchors (most reliable) -->
 <h2 id="table-of-contents"> 📚 Table of Contents </h2>
 
@@ -20,7 +22,6 @@ week: 1
 
 
 
-<h1 id="day1">Welcome to Web Development!</h1>
 
 
 ## Learning Objectives
@@ -163,16 +164,20 @@ http://localhost:4200
 <hr id="day2" />
 
 #### Day 2
-1. Learning Tips
+1. [Learning Tips](http://localhost:4200)
 1. Problem Solving And Decision Making
 1. Resume Writing
+1. Windows 10
+1. Basic Computer Skills
+1. Computer Basics
 
 <hr id="day3" />
 
 #### Day 3
-1. Windows 10
-1. Basic Computer Skills
-1. Computer Basics
+
+1. [what is the internet](http://localhost:22025/content/internetbasics/what-is-the-internet/lesson.html)
+1. [using a web browser](http://localhost:22025/content/internetbasics/using-a-web-browser/lesson.html)
+1. [URL](http://localhost:22025/content/internetbasics/understanging-urls/lesson.html)
 
 <hr id="day4" />
 
