@@ -262,29 +262,16 @@ const nextLesson = allLessons.find(l => l.week === currentWeek + 1);
                   <!-- Content will be processed by client-side JavaScript -->
                   {/* <div id="markdown-content" style="display: none;">{lessonContent}</div> */}
 
-                          <!-- Lesson Content -->
-              <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-                <div class="markdown-content">
-                  <MarkdownRenderer content={lesson.content} client:load />
-                </div>
-              </div>
-
-
-
-                  <div id="rendered-content">
-                    <!-- Fallback content while JavaScript loads -->
-                    <h2 id="learning-objectives">Learning Objectives</h2>
-                    <p>By the end of this week, you will be able to...</p>
-                    
-                    <h2 id="introduction">Introduction</h2>
-                    <p>Welcome to Week {week} of the course...</p>
-                    
-                    <h2 id="main-concepts">Main Concepts</h2>
-                    <p>In this lesson, we'll explore...</p>
-                    
-                    <h2 id="assignments">Assignments</h2>
-                    <p>Complete the following assignments...</p>
+                              <!-- Lesson Content -->
+                  <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+                    <div class="markdown-content">
+                      <MarkdownRenderer content={lesson.content} client:load />
+                    </div>
                   </div>
+
+
+
+                  
                 </div>
               ) : (
                 <!-- Fallback content when lesson not available -->
