@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -67,6 +68,22 @@ type Server struct {
 	sections   map[string]*Section // New section-based mapping
 	mutex      sync.RWMutex
 	watcher    *fsnotify.Watcher
+}
+
+// Add these structs after your existing structs (after Section struct)
+
+type TOCItem struct {
+	ID       string    `json:"id"`
+	Title    string    `json:"title"`
+	Level    int       `json:"level"`
+	Children []TOCItem `json:"children,omitempty"`
+}
+
+type TOCResponse struct {
+	TOCItems []TOCItem `json:"tocItems"`
+	Source   string    `json:"source"` // "markdown", "default", or "error"
+	Week     int       `json:"week"`
+	Section  string    `json:"section"`
 }
 
 func NewServer(lessonsDir string) (*Server, error) {
@@ -391,7 +408,7 @@ func (s *Server) handleLessons(w http.ResponseWriter, r *http.Request) {
 	defer s.mutex.RUnlock()
 
 	var lessons []*Lesson
-	for i := 1; i <= 48; i++ {
+	for i := 1; i <= 60; i++ {
 		if lesson, exists := s.lessons[i]; exists {
 			lessons = append(lessons, lesson)
 		}
@@ -828,6 +845,9 @@ func (s *Server) setupRoutes() http.Handler {
 	// api.HandleFunc("/sections/{section}/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
 	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}", s.handleSectionLesson).Methods("GET")
 
+	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}/toc", s.handleLessonTOC).Methods("GET")
+	api.HandleFunc("/sections/{section}/week/{week:[0-9]+}/content", s.handleLessonContent).Methods("GET")
+
 	// Debug log
 	log.Println("API routes registered")
 
@@ -911,6 +931,237 @@ func (s *Server) setupRoutesLegacy() http.Handler {
 	return corsHandler
 }
 
+// Add these methods to your Server struct (add after your existing methods)
+
+func (s *Server) handleLessonTOC(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sectionID := vars["section"]
+	weekStr := vars["week"]
+
+	week, err := strconv.Atoi(weekStr)
+	if err != nil || week < 1 {
+		http.Error(w, "Invalid week number", http.StatusBadRequest)
+		return
+	}
+
+	// Get the lesson content
+	s.mutex.RLock()
+	section, sectionExists := s.sections[sectionID]
+	s.mutex.RUnlock()
+
+	if !sectionExists {
+		http.Error(w, "Section not found", http.StatusNotFound)
+		return
+	}
+
+	// Convert section week to global week
+	globalWeek := section.WeekStart + week - 1
+
+	s.mutex.RLock()
+	lesson, lessonExists := s.lessons[globalWeek]
+	s.mutex.RUnlock()
+
+	response := TOCResponse{
+		Week:    week,
+		Section: sectionID,
+		Source:  "error",
+	}
+
+	if !lessonExists {
+		response.TOCItems = s.getDefaultTOCItems()
+		response.Source = "default"
+	} else {
+		// Extract TOC from lesson content
+		tocItems := s.extractTOCFromContent(lesson.Content)
+		if len(tocItems) == 0 {
+			response.TOCItems = s.getDefaultTOCItems()
+			response.Source = "default"
+		} else {
+			response.TOCItems = tocItems
+			response.Source = "markdown"
+		}
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
+}
+
+func (s *Server) handleLessonContent(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	sectionID := vars["section"]
+	weekStr := vars["week"]
+
+	week, err := strconv.Atoi(weekStr)
+	if err != nil || week < 1 {
+		http.Error(w, "Invalid week number", http.StatusBadRequest)
+		return
+	}
+
+	s.mutex.RLock()
+	section, sectionExists := s.sections[sectionID]
+	s.mutex.RUnlock()
+
+	if !sectionExists {
+		http.Error(w, "Section not found", http.StatusNotFound)
+		return
+	}
+
+	// Convert section week to global week
+	globalWeek := section.WeekStart + week - 1
+
+	s.mutex.RLock()
+	lesson, lessonExists := s.lessons[globalWeek]
+	s.mutex.RUnlock()
+
+	if !lessonExists {
+		http.Error(w, "Lesson content not found", http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/markdown; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(lesson.Content))
+}
+
+// Add these helper methods
+
+func (s *Server) extractTOCFromContent(content string) []TOCItem {
+	var tocItems []TOCItem
+	lines := strings.Split(content, "\n")
+	inTOCSection := false
+
+	// Method 1: Look for explicit Table of Contents section
+	for _, line := range lines {
+		// Look for TOC header
+		if matched, _ := regexp.MatchString(`(?i)^##?\s*(table of contents|contents|toc)\s*$`, line); matched {
+			inTOCSection = true
+			continue
+		}
+
+		// Stop when we hit another major section
+		if inTOCSection {
+			if matched, _ := regexp.MatchString(`^##?\s+[^[]+$`, line); matched {
+				break
+			}
+		}
+
+		// Extract TOC links from explicit TOC section
+		if inTOCSection {
+			if matched, _ := regexp.MatchString(`^\s*[-*]\s*\[([^\]]+)\]\(#([^)]+)\)`, line); matched {
+				re := regexp.MustCompile(`^\s*[-*]\s*\[([^\]]+)\]\(#([^)]+)\)`)
+				matches := re.FindStringSubmatch(line)
+				if len(matches) >= 3 {
+					title := matches[1]
+					id := matches[2]
+
+					// Estimate level from indentation
+					indentation := len(line) - len(strings.TrimLeft(line, " \t"))
+					level := (indentation / 2) + 2 // Convert to heading level
+					if level > 6 {
+						level = 6
+					}
+
+					tocItems = append(tocItems, TOCItem{
+						ID:    id,
+						Title: title,
+						Level: level,
+					})
+				}
+			}
+		}
+	}
+
+	// Method 2: If no explicit TOC found, extract from headings
+	if len(tocItems) == 0 {
+		tocItems = s.extractTOCFromHeadings(content)
+	}
+
+	return tocItems
+}
+
+func (s *Server) extractTOCFromHeadings(content string) []TOCItem {
+	var tocItems []TOCItem
+	lines := strings.Split(content, "\n")
+
+	for _, line := range lines {
+		if matched, _ := regexp.MatchString(`^(#{1,6})\s+(.+)$`, line); matched {
+			re := regexp.MustCompile(`^(#{1,6})\s+(.+)$`)
+			matches := re.FindStringSubmatch(line)
+			if len(matches) >= 3 {
+				hashes := matches[1]
+				title := matches[2]
+				level := len(hashes)
+
+				// Skip h1 (main title) and empty titles
+				if level <= 1 || strings.TrimSpace(title) == "" {
+					continue
+				}
+
+				// Generate ID from title
+				id := s.generateIDFromTitle(title)
+
+				tocItems = append(tocItems, TOCItem{
+					ID:    id,
+					Title: s.cleanTitle(title),
+					Level: level,
+				})
+			}
+		}
+	}
+
+	return tocItems
+}
+
+func (s *Server) generateIDFromTitle(title string) string {
+	// Remove markdown formatting
+	re1 := regexp.MustCompile(`\*\*([^*]+)\*\*`)
+	title = re1.ReplaceAllString(title, "$1") // Bold
+	re2 := regexp.MustCompile(`\*([^*]+)\*`)
+	title = re2.ReplaceAllString(title, "$1") // Italic
+	re3 := regexp.MustCompile("`([^`]+)`")
+	title = re3.ReplaceAllString(title, "$1") // Code
+	re4 := regexp.MustCompile(`\[([^\]]+)\]\([^)]+\)`)
+	title = re4.ReplaceAllString(title, "$1") // Links
+
+	// Convert to lowercase and replace spaces/special chars with hyphens
+	id := strings.ToLower(title)
+	re5 := regexp.MustCompile(`[^\w\s-]`)
+	id = re5.ReplaceAllString(id, "")
+	re6 := regexp.MustCompile(`\s+`)
+	id = re6.ReplaceAllString(id, "-")
+	re7 := regexp.MustCompile(`-+`)
+	id = re7.ReplaceAllString(id, "-")
+	id = strings.Trim(id, "-")
+
+	return id
+}
+
+func (s *Server) cleanTitle(title string) string {
+	// Remove markdown formatting for display
+	re1 := regexp.MustCompile(`\*\*([^*]+)\*\*`)
+	title = re1.ReplaceAllString(title, "$1") // Bold
+	re2 := regexp.MustCompile(`\*([^*]+)\*`)
+	title = re2.ReplaceAllString(title, "$1") // Italic
+	re3 := regexp.MustCompile("`([^`]+)`")
+	title = re3.ReplaceAllString(title, "$1") // Code
+	re4 := regexp.MustCompile(`\[([^\]]+)\]\([^)]+\)`)
+	title = re4.ReplaceAllString(title, "$1") // Links
+
+	return strings.TrimSpace(title)
+}
+
+func (s *Server) getDefaultTOCItems() []TOCItem {
+	return []TOCItem{
+		{ID: "learning-objectives", Title: "Learning Objectives", Level: 2},
+		{ID: "introduction", Title: "Introduction", Level: 2},
+		{ID: "main-concepts", Title: "Main Concepts", Level: 2},
+		{ID: "practical-examples", Title: "Practical Examples", Level: 2},
+		{ID: "hands-on-practice", Title: "Hands-on Practice", Level: 2},
+		{ID: "review-summary", Title: "Review & Summary", Level: 2},
+		{ID: "assignments", Title: "Assignments", Level: 2},
+		{ID: "resources", Title: "Additional Resources", Level: 2},
+	}
+}
 func (s *Server) close() error {
 	if s.watcher != nil {
 		return s.watcher.Close()
