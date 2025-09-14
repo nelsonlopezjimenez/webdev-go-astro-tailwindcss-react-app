@@ -141,3 +141,47 @@ Yes, you can create basic icons in Windows 10 without extra tools, though the op
 Browse `shell32.dll` and `imageres.dll` - they contain hundreds of professional icons including folders, documents, tools, and various symbols that might work for your course server.
 
 For a course server, you might find suitable education or computer-related icons in these system libraries.
+
+
+Here are icon suggestions for each learning item:
+
+**Learning Tips:**
+1. 🧠 Discover your learning style
+2. 🔄 The study cycle
+
+**Professional Skills:**
+1. 🧩 Problem Solving And Decision Making
+2. 📄 Resume Writing
+   1. 🖼️ Resume Writing Gallery
+
+**Operating System:**
+3. 🪟 Windows 10
+   1. ⚙️ Windows 10 Features
+
+**Computer Fundamentals:**
+4. 🖥️ Basic Computer Skills
+   1. 💻 Your First Computer
+5. 🔧 Computer Basics
+   1. ⚙️ Computer Basics Parts
+   2. 🌐 Connecting to the Internet
+   3. 💾 The Operating System
+   4. 📚 Learning a new program
+
+**Day 3 (Internet Basics):**
+1. 🌍 What is the internet
+2. 🔍 Using a web browser
+3. 🔗 Understanding URL
+4. 🎞️ What is gif
+
+**Day 4 (Digital Skills):**
+1. 🤖 Automation impact
+2. 🔐 Understanding login
+3. ⚠️ What is plagiarism
+4. 📸 Taking screenshots
+5. 📁 Finding your downloads
+6. 🗜️ Working with zip files
+7. ⌨️ Common keyboard shortcuts
+8. ⇥ Tab key usage
+9. 🛒 Buying Computers
+
+These icons provide clear visual cues that help students quickly identify different types of content and skills being covered in each section.

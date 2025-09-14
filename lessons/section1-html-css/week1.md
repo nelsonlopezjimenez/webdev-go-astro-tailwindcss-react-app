@@ -168,43 +168,44 @@ http://localhost:4200
 #### Day 2 🔧 🎥
 1. Click to open 🔧 [▶️ **gcf-browser.exe** ](http://localhost:22025)
 1. [Learning Tips](http://localhost:4200)
-   1. [Discover your learning style](http://localhost:4200/content/learning-tips/discover-your-learning-style/lesson.html)
-   1. [The study cycle](http://localhost:4200/content/learning-tips/the-study-cycle/lesson.html)
+   1.  [🧠 Discover your learning style](http://localhost:4200/content/learning-tips/discover-your-learning-style/lesson.html)
+   1.  [🔄 The study cycle](http://localhost:4200/content/learning-tips/the-study-cycle/lesson.html)
 1. [Problem Solving And Decision Making](http://localhost:4200)
-1. [Resume Writing](http://localhost:4200)
-   1. [Resume Writing Gallery](http://localhost:4200/content/resume-writing/gallery-of-sample-resumes/lesson.html)
-1. [Windows 10](http://localhost:4200)
+1.  [📄 Resume Writing](http://localhost:4200)
+   1.  [🖼️ Resume Writing Gallery](http://localhost:4200/content/resume-writing/gallery-of-sample-resumes/lesson.html)
+1. [Windows 10 ⚙️](http://localhost:4200)
    1. [Windows 10 Features](http://localhost:4200/content/windows-10/windows-10-features/lesson.html)
 1. [Basic Computer Skills](http://localhost:4200)
-   1. [Your First Computer](http://localhost:4200/content/basic-computer-skills/getting-started-with-your-first-computer/lesson.html)
+   1. [🖥️ Your First Computer](http://localhost:4200/content/basic-computer-skills/getting-started-with-your-first-computer/lesson.html)
 1. [Computer Basics](http://localhost:4200)
    1. [Computer Basics Parts](http://localhost:4200/content/computer-basics/basic-parts-of-a-computer/lesson.html)
-   1. [Connecting to the Internet](http://localhost:4200/content/computer-basics/connecting-to-the-internet/lesson.html)
-   1. [The Operating System](http://localhost:4200/content/computer-basics/getting-to-know-the-os/lesson.html)
-   1. [Learning a new program](http://localhost:4200/content/computer-basics/learning-a-new-program/lesson.html)
+   1. [🌐 Connecting to the Internet](http://localhost:4200/content/computer-basics/connecting-to-the-internet/lesson.html)
+   1. [💾 The Operating System](http://localhost:4200/content/computer-basics/getting-to-know-the-os/lesson.html)
+   1. [📚 Learning a new program](http://localhost:4200/content/computer-basics/learning-a-new-program/lesson.html)
 
 <hr id="day3" />
+
 [↑ Back to Top](#table-of-contents)
 
 #### Day 3 🎥
 
-1. [What is the internet](http://localhost:22025/content/internetbasics/what-is-the-internet/lesson.html)
-1. [Using a web browser](http://localhost:22025/content/internetbasics/using-a-web-browser/lesson.html)
+1. [🌍 What is the internet](http://localhost:22025/content/internetbasics/what-is-the-internet/lesson.html)
+1. [🔍 Using a web browser](http://localhost:22025/content/internetbasics/using-a-web-browser/lesson.html)
 1. [Understanding URL](http://localhost:22025/content/internetbasics/understanding-urls/lesson.html)
 1. [What is gif](http://localhost:22025/content/internet-tips/what-is-an-animated-gif/lesson.html)
 
 <hr id="day4" />
 
 #### Day 4
-1. [Automation impact](http://localhost:22025/content/thenow/how-will-automation-impact-our-lives/lesson.html)
+1. [🤖 Automation impact](http://localhost:22025/content/thenow/how-will-automation-impact-our-lives/lesson.html)
 1. [Understanding login](http://localhost:22025/content/thenow/understanding-login-methods/lesson.html)
-1. [What is plagiarism ](http://localhost:22025/content/usinginformationcorrectly/avoiding-plagiarism/lesson.html)
-1. [Taking screenshots](http://localhost:22025/content/techsavvy/taking-screenshots/lesson.html)
-1. [Finding your downloads](http://localhost:22025/content/techsavvy/finding-your-downloads/lesson.html)
-1. [Working with zip files](http://localhost:22025/content/techsavvy/working-with-zip-files/lesson.html)
+1. [⚠️ What is plagiarism ](http://localhost:22025/content/usinginformationcorrectly/avoiding-plagiarism/lesson.html)
+1. [📸 Taking screenshots](http://localhost:22025/content/techsavvy/taking-screenshots/lesson.html)
+1. [📁 Finding your downloads](http://localhost:22025/content/techsavvy/finding-your-downloads/lesson.html)
+1. [🗜️ Working with zip files](http://localhost:22025/content/techsavvy/working-with-zip-files/lesson.html)
 1. [Common keyboard shortcuts](http://localhost:22025/content/techsavvy/keyboard-shortcuts/lesson.html)
-1. [tab key usage](http://localhost:22025/content/techsavvy/speed-up-your-workflow-with-the-tab-key/lesson.html)
-1. [Buying Computers](http://localhost:4200/content/buying-computers/computer-buying-guide/lesson.html)
+1. [⇥ tab key usage](http://localhost:22025/content/techsavvy/speed-up-your-workflow-with-the-tab-key/lesson.html)
+1. [🛒 Buying Computers](http://localhost:4200/content/buying-computers/computer-buying-guide/lesson.html)
 1. You can select any other tutorial among the ones presented or watch them all.
 
 

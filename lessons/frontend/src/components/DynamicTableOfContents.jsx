@@ -128,16 +128,16 @@ export default function DynamicTableOfContents({ sectionName, weekNumber }) {
   }
 
   return (
-    <nav className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-4 max-h-96 overflow-y-auto">
+    <nav className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sticky top-4 max-h-96 space-y-0 overflow-y-auto">
       <h3 className="font-semibold mb-4 text-gray-900">Week {weekNumber} Contents</h3>
       
-      <ul className="space-y-1">
+      <ul className="space-y-0.5">
         {tocItems.map((item, index) => (
-          <li key={`${item.id}-${index}`}>
+          <li key={`${item.id}-${index}`} className="leading-tight">
             <a 
               href={`#${item.id}`}
               onClick={(e) => handleLinkClick(e, item.id)}
-              className={`block text-sm py-2 px-3 rounded-md transition-all duration-200 ${
+              className={`block text-sm py-1 px-2 rounded-md transition-all duration-200 ${
                 activeId === item.id 
                   ? 'text-indigo-700 bg-indigo-50 border-l-4 border-indigo-500 font-medium' 
                   : 'text-gray-700 hover:text-indigo-600 hover:bg-gray-50 border-l-4 border-transparent'
