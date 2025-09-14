@@ -1,6 +1,8 @@
 # webdev-class-server-ver2-app
 
-
+## 9.14.2025
+1. ![exe v2.10.0 week1](image-5.png)
+1. ![week1 day2 with icons](image-6.png)
 ## 9.12.2025
 
 ### TOC internal links issue
