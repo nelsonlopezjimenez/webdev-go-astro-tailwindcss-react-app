@@ -175,13 +175,22 @@ http://localhost:4200
 
 #### Day 3
 
-1. [what is the internet](http://localhost:22025/content/internetbasics/what-is-the-internet/lesson.html)
-1. [using a web browser](http://localhost:22025/content/internetbasics/using-a-web-browser/lesson.html)
-1. [URL](http://localhost:22025/content/internetbasics/understanging-urls/lesson.html)
+1. [What is the internet](http://localhost:22025/content/internetbasics/what-is-the-internet/lesson.html)
+1. [Using a web browser](http://localhost:22025/content/internetbasics/using-a-web-browser/lesson.html)
+1. [Understanding URL](http://localhost:22025/content/internetbasics/understanding-urls/lesson.html)
+1. [What is gif](http://localhost:22025/content/internet-tips/what-is-an-animated-gif/lesson.html)
 
 <hr id="day4" />
 
 #### Day 4
+1. [Automation impact](http://localhost:22025/content/thenow/how-will-automation-impact-our-lives/lesson.html)
+1. [Understanding login](http://localhost:22025/content/thenow/understanding-login-methods/lesson.html)
+1. [What is plagiarism ](http://localhost:22025/content/usinginformationcorrectly/avoiding-plagiarism/lesson.html)
+1. [Taking screenshots](http://localhost:22025/content/techsavvy/taking-screenshots/lesson.html)
+1. [Finding your downloads](http://localhost:22025/content/techsavvy/finding-your-downloads/lesson.html)
+1. [Working with zip files](http://localhost:22025/content/techsavvy/working-with-zip-files/lesson.html)
+1. [Common keyboard shortcuts](http://localhost:22025/content/techsavvy/keyboard-shortcuts/lesson.html)
+1. [tab key usage](http://localhost:22025/content/techsavvy/speed-up-your-workflow-with-the-tab-key/lesson.html)
 1. Buying Computers
 1. You can select any other tutorial among the ones presented or watch them all.
 
