@@ -17,7 +17,7 @@ week: 1
 - [Day 2](#day2)
 - [Day 3](#day3)
 - [Day 4](#day4)
-- [Assignments](#assigday)
+- 🧪 [Assignments](#assigday)
 - [next week preview](#nextweek)
 
 
@@ -52,7 +52,7 @@ You will be graded on how well you achieve the Learning Objectives provided for 
 [↑ Back to Top](#table-of-contents)
 <hr id="grades" />
 
-### Grade Weigths
+### ⭐ Grade Weigths
 
 1. Labs: **30%**
 1. Quizzes: **10%**
@@ -66,16 +66,16 @@ Information about Exams: Exams are meant to show yourself and me what you’ve l
 
 [↑ Back to Top](#table-of-contents)
 
-### Assignments and Grading
+### 🧪 Assignments and Grading
 
-#### Weekly Journal (optional)
+#### ✍️ Weekly Journal (optional)
 During this course, you will keep a journal of reflections on what you are learning. This will build your skills in engaging with and understanding content and in reflecting on what works best for you as a learner. Each week, you will choose from a list of prompts and respond in your journal. 
 
-#### Discussion Posts (Mandatory)
+#### ✍️ Discussion Posts (Mandatory)
 
 Each week, unless otherwise noted, you will respond to a prompt in a Canvas discussion forum and reply to your classmates’ posts. These discussion forums are your opportunity to continue the conversations we began in class, to engage with your classmates, and to support each other in learning the course material. 
 
-### Quizzes and Activities
+### 🎯 Quizzes and Activities
 
 Course quizzes are designed to test your understanding of the course material and to give you practice using the test-preparation strategies introduced in this course. Class activities will help you get to know your classmates and will also prepare you for success with the major assignments.
 
@@ -116,10 +116,12 @@ As your teacher, I will work hard to:
 ### Required Software
 
 1. **Browser**
-   - Chrome 
+   - Chrome <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="100" height="100" viewBox="0 0 48 48">
+<path fill="#4caf50" d="M44,24c0,11.044-8.956,20-20,20S4,35.044,4,24S12.956,4,24,4S44,12.956,44,24z"></path><path fill="#ffc107" d="M24,4v20l8,4l-8.843,16c0.317,0,0.526,0,0.843,0c11.053,0,20-8.947,20-20S35.053,4,24,4z"></path><path fill="#4caf50" d="M44,24c0,11.044-8.956,20-20,20S4,35.044,4,24S12.956,4,24,4S44,12.956,44,24z"></path><path fill="#ffc107" d="M24,4v20l8,4l-8.843,16c0.317,0,0.526,0,0.843,0c11.053,0,20-8.947,20-20S35.053,4,24,4z"></path><path fill="#f44336" d="M41.84,15H24v13l-3-1L7.16,13.26H7.14C10.68,7.69,16.91,4,24,4C31.8,4,38.55,8.48,41.84,15z"></path><path fill="#dd2c00" d="M7.158,13.264l8.843,14.862L21,27L7.158,13.264z"></path><path fill="#558b2f" d="M23.157,44l8.934-16.059L28,25L23.157,44z"></path><path fill="#f9a825" d="M41.865,15H24l-1.579,4.58L41.865,15z"></path><path fill="#fff" d="M33,24c0,4.969-4.031,9-9,9s-9-4.031-9-9s4.031-9,9-9S33,19.031,33,24z"></path><path fill="#2196f3" d="M31,24c0,3.867-3.133,7-7,7s-7-3.133-7-7s3.133-7,7-7S31,20.133,31,24z"></path>
+</svg>
 
 1. **Text Editor or IDE**
-   - VS Code (recommended)
+   - VS Code (recommended) ![VS Code](vscode.png)
 
 
 2. **Programming Language**
@@ -144,11 +146,11 @@ As your teacher, I will work hard to:
 
 ## Additional Resources
 
-## Click to open **computer basics.exe** 
+## Click to open 🔧 [▶️ **computer basics.exe** ](http://localhost:4200)
 1. Location: in the Downloads folder or in the canvas_file_cache folder
 1. Double click or right click on "computer-basics.exe" file and select open
 1. It should automatically open a browser, maybe Edge, maybe Chrome.
-1. If not click [HERE](http://localhost:4200)
+1. If not click [HERE ▶️](http://localhost:4200)
 1. or open a browser (Edge, Chrome), go to the navigation bar and type
 ```
 http://localhost:4200
@@ -163,17 +165,28 @@ http://localhost:4200
 
 <hr id="day2" />
 
-#### Day 2
+#### Day 2 🔧 🎥
+1. Click to open 🔧 [▶️ **gcf-browser.exe** ](http://localhost:22025)
 1. [Learning Tips](http://localhost:4200)
-1. Problem Solving And Decision Making
-1. Resume Writing
-1. Windows 10
-1. Basic Computer Skills
-1. Computer Basics
+   1. [Discover your learning style](http://localhost:4200/content/learning-tips/discover-your-learning-style/lesson.html)
+   1. [The study cycle](http://localhost:4200/content/learning-tips/the-study-cycle/lesson.html)
+1. [Problem Solving And Decision Making](http://localhost:4200)
+1. [Resume Writing](http://localhost:4200)
+   1. [Resume Writing Gallery](http://localhost:4200/content/resume-writing/gallery-of-sample-resumes/lesson.html)
+1. [Windows 10](http://localhost:4200)
+   1. [Windows 10 Features](http://localhost:4200/content/windows-10/windows-10-features/lesson.html)
+1. [Basic Computer Skills](http://localhost:4200)
+   1. [Your First Computer](http://localhost:4200/content/basic-computer-skills/getting-started-with-your-first-computer/lesson.html)
+1. [Computer Basics](http://localhost:4200)
+   1. [Computer Basics Parts](http://localhost:4200/content/computer-basics/basic-parts-of-a-computer/lesson.html)
+   1. [Connecting to the Internet](http://localhost:4200/content/computer-basics/connecting-to-the-internet/lesson.html)
+   1. [The Operating System](http://localhost:4200/content/computer-basics/getting-to-know-the-os/lesson.html)
+   1. [Learning a new program](http://localhost:4200/content/computer-basics/learning-a-new-program/lesson.html)
 
 <hr id="day3" />
+[↑ Back to Top](#table-of-contents)
 
-#### Day 3
+#### Day 3 🎥
 
 1. [What is the internet](http://localhost:22025/content/internetbasics/what-is-the-internet/lesson.html)
 1. [Using a web browser](http://localhost:22025/content/internetbasics/using-a-web-browser/lesson.html)
@@ -191,7 +204,7 @@ http://localhost:4200
 1. [Working with zip files](http://localhost:22025/content/techsavvy/working-with-zip-files/lesson.html)
 1. [Common keyboard shortcuts](http://localhost:22025/content/techsavvy/keyboard-shortcuts/lesson.html)
 1. [tab key usage](http://localhost:22025/content/techsavvy/speed-up-your-workflow-with-the-tab-key/lesson.html)
-1. Buying Computers
+1. [Buying Computers](http://localhost:4200/content/buying-computers/computer-buying-guide/lesson.html)
 1. You can select any other tutorial among the ones presented or watch them all.
 
 
@@ -199,23 +212,23 @@ http://localhost:4200
 <hr id="assigday" />
 
 
-### Assignments
+### 🧪 Assignments
 
 #### Assignment Day 2
-1. Write your resume
+1. 🧪 Write your resume
 
 
-#### Assignment Day 3
-1. In computer Basics tutorial look for lesson on the Internet and write what you did not know
+####  Assignment Day 3
+1. 🧪 In computer Basics tutorial look for lesson on the Internet and write what you did not know
 
 
 ## Assignment Day 4
-1. Build your dream computer. Explain what technical specifications are more important to you and how they would impact the cost.
+1. 🧪 Build your dream computer. Explain what technical specifications are more important to you and how they would impact the cost.
 
 [↑ Back to Top](#table-of-contents)
 <hr id="nextweek" />
 
-## Next Week Preview
+## 🆕 🗂️  Next Week Preview
 
 In Week 2, we'll dive deeper into:
 - Markup Language
