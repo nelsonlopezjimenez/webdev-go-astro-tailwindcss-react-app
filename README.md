@@ -1,8 +1,8 @@
 # webdev-class-server-ver2-app
 
 ## 9.14.2025
-1. ![exe v2.10.0 week1](image-5.png)
-1. ![week1 day2 with icons](image-6.png)
+1. ![exe v2.10.0 week1](image-folder/exe-v2.10.0/image-5.png)
+1. ![week1 day2 with icons](image-folder/exe-v2.10.0/image-6.png)
 ## 9.12.2025
 
 ### TOC internal links issue
@@ -29,8 +29,8 @@
 1. Images not rendered
 1. added img tags
 1. Still images not rendered even with img tags
-1.![v2.6.17](image-3.png)
-1. ![hardcoded side navbar links partial](image-4.png)
+1.![v2.6.17](image-folder/exe-v2.10.0/image-3.png)
+1. ![hardcoded side navbar links partial](image-folder/exe-v2.10.0/image-4.png)
 1. v2.6.21.exe not crashing, not styled, partially working side navbar "Learning Objectives" and "Assignments" links. "Back to top" internal link working.
 1. Images not rendered.
 
@@ -59,15 +59,15 @@ http://localhost:8080/sections-test
 1. Enhancing the app => /src/pages/sections/[section].astro: ternary operators with JSX prevented the app from building. Tried three iterations but none worked.
 1. Refactored with minimal content and if/else statements
 1. it built
-1. ![no ternary/jsx built](image-2.png)
+1. ![no ternary/jsx built](image-folder/exe-v2.10.0/image-2.png)
 
 ## 9.4.2025
 
 ### refactoring to include four sections
 
-1. ![Section API Test Page](image.png)
+1. ![Section API Test Page](image-folder/exe-v2.10.0/image.png)
 1. End points /api/sections /api/sections/section1-2-3-4
-1. ![sections/sections-test astro](image-1.png)
+1. ![sections/sections-test astro](image-folder/exe-v2.10.0/image-1.png)
 1. tree from sourceforge binary tree.exe to ~/bin folder
 1. run tree -I "node_modules|.git|dist|from_claude|course-server|lessons-from-claude"
 1. 
