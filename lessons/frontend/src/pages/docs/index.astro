@@ -1,0 +1,39 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const docs = await getCollection('docs');
+---
+
+<Layout title="Documentation">
+  <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div class="max-w-7xl mx-auto px-4">
+      
+      <!-- Header matching lesson pages -->
+      <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-4">Documentation</h1>
+        <p class="text-gray-600">Additional course materials and resources</p>
+      </div>
+
+      <!-- Document Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {docs.map((doc) => (
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+              <h3 class="font-semibold text-gray-900 mb-2">{doc.data.title}</h3>
+              {doc.data.description && (
+                <p class="text-sm text-gray-600 mb-4">{doc.data.description}</p>
+              )}
+              <a 
+                href={`/docs/${doc.slug}`}
+                class="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Read Document
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </main>
+</Layout>
