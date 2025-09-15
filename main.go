@@ -216,6 +216,7 @@ func (s *Server) scanLessons() error {
 		"section2-javascript": {"JavaScript Programming", 13, 24},
 		"section3-backend":    {"Backend Development", 25, 36},
 		"section4-react":      {"React & Frontend", 37, 48},
+		"section5":            {"Section 5", 49, 60},
 	}
 
 	for sectionID, config := range sectionConfigs {
