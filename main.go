@@ -424,7 +424,7 @@ func (s *Server) handleLesson(w http.ResponseWriter, r *http.Request) {
 	weekStr := vars["week"]
 
 	week, err := strconv.Atoi(weekStr)
-	if err != nil || week < 1 || week > 48 {
+	if err != nil || week < 1 || week > 60 {
 		http.Error(w, "Invalid week number", http.StatusBadRequest)
 		return
 	}
