@@ -6,7 +6,7 @@ import node from '@astrojs/node';
 export default defineConfig({
   integrations: [react(), tailwind()],
   output:'static',
-  outDir: 'dist'
+  outDir: 'dist',
   // output: 'hybrid',
   // adapter: node ({
   //   mode: 'standalone'
@@ -16,4 +16,11 @@ export default defineConfig({
   //     '/api': 'http://localhost:8080'
   //   }
   // }
+  markdown: {
+    shikiConfig: {
+      theme: 'github-dark',
+      wrap: true
+    },
+    syntaxHighlight: 'shiki'
+  }
 });
