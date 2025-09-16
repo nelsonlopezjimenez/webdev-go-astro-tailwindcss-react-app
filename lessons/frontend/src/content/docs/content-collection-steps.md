@@ -1,10 +1,20 @@
 ---
 title: "Content collection steps"
-description: "Approach 1: Astro Content Collections (Recommended). Move your markdown files to src/content/ directory in your Astro project.Define a content collection schema in src/content/config.ts Astro will automatically process and include them in the build Benefits: Built-in frontmatter validation, type safety, automatic routing Drawback: Requires moving files into the Astro project structure"
+description: "Approach 1: Astro Content Collections. Move your markdown files to src/content/ directory. Define a schema in src/content/config.ts."
 publishDate: 2025-01-01
-tags: ["tutorial", "guide", "test"]
+tags: ["collection", "config", "test"]
 draft: false
 ---
+
+# Approach 1: 
+
+## Astro Content Collections (Recommended). 
+
+1. Move your markdown files to src/content/ directory in your Astro project.
+1. Define a content collection schema in src/content/config.ts 
+1. Astro will automatically process and include them in the build 1. 
+Benefits: Built-in frontmatter validation, type safety, automatic routing 
+1. Drawback: Requires moving files into the Astro project structure
 
 Here's how to implement Approach 1 (Astro Content Collections) for your external markdown files:
 

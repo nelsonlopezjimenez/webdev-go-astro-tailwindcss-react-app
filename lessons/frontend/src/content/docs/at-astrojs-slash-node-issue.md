@@ -1,8 +1,8 @@
 ---
-title: "File One Title"
-description: "Brief description file1"
+title: "At astrojs slash node issue"
+description: "The version conflict is because `@astrojs/node` requires Astro v5, but you have v4. Let's fix this with compatible versions or use a simpler approach."
 publishDate: 2024-01-01
-tags: ["tutorial", "guide", "test"]
+tags: ["astro", "node", "test"]
 draft: false
 ---
 The version conflict is because `@astrojs/node` requires Astro v5, but you have v4. Let's fix this with compatible versions or use a simpler approach.
