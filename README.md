@@ -3,6 +3,8 @@
 
 ## 9.15.2025
 
+1. /src/content/docs passed doc.body to MarckdownRendere.jsx. The {Content} is an object. There is doc.body = markdown; doc.data-frontmatter and doc.slug part of the astro component
+1. ![added prismjs](image-2.png)
 1. ![content collection docs](image.png)
 1. ![src/content/docs/file1.md](image-1.png)
 
