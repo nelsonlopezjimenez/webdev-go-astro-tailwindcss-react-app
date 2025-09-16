@@ -1,19 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { marked } from 'marked';
+import Prism from 'prismjs';
+
+// Import the languages you need
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-yaml';
+import 'prismjs/components/prism-bash';
+
+// Import a theme
+import 'prismjs/themes/prism-dark.css';
 
 const MarkdownRenderer = ({ content }) => {
   const [htmlContent, setHtmlContent] = useState('');
 
   useEffect(() => {
     if (content) {
-      console.log("line 9 ", typeof content)
-      // Configure marked options
+      console.log("line 9 ", typeof content);
+      
+      // Configure marked with proper syntax highlighting
       marked.setOptions({
         breaks: true,
         gfm: true,
         highlight: function(code, lang) {
-          // Basic syntax highlighting placeholder
-          return `<code class="language-${lang || 'text'}">${code}</code>`;
+          if (lang && Prism.languages[lang]) {
+            try {
+              return Prism.highlight(code, Prism.languages[lang], lang);
+            } catch (err) {
+              console.warn('Prism highlighting failed:', err);
+            }
+          }
+          // Fallback: escape HTML
+          return code
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
         }
       });
 
@@ -21,6 +42,11 @@ const MarkdownRenderer = ({ content }) => {
       setHtmlContent(html);
     }
   }, [content]);
+
+  useEffect(() => {
+    // Re-highlight any code blocks that weren't caught by marked
+    Prism.highlightAll();
+  }, [htmlContent]);
 
   if (!content) {
     return <div className="text-gray-500 italic">No content available</div>;
