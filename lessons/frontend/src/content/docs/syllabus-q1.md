@@ -1,3 +1,11 @@
+---
+title: "Syllabus Q1"
+description: "Syllabus quarter 1"
+publishDate: 2025-09-17
+tags: ["syllabus", "quarter1", "test"]
+draft: false
+---
+
 Quarter 1 Syllabus
 Jan 6, 2025
 
@@ -25,7 +33,7 @@ copy/paste the following link into the navigation bar in chrome browser
 If you do not know how to do it, I'll explain in class
 http://localhost:22022/Public/Documents/duckett.pdfLinks to an external site.
 HTML & CSS design and build websites, Jon Ducket, Wiley, 2011 31EDwrw2voL._SX342_SY445_.jpg  
-![HTML/CSS Duckett](image.png)      
+    
 ISBN: 978-1-118-00818-8
 Soure codeLinks to an external site.
 Course Objectives:

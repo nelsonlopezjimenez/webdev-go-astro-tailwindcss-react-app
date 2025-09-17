@@ -86,6 +86,24 @@ type TOCResponse struct {
 	Section  string    `json:"section"`
 }
 
+type InstructorInfo struct {
+	Name             string   `json:"name"`
+	TelephoneNumbers []string `json:"telephone_numbers"`
+	Emails           []string `json:"emails"`
+	PreferredContact string   `json:"preferred_contact"`
+	ResponseTime     string   `json:"response_time"`
+}
+
+func getInstructorInfo() InstructorInfo {
+	return InstructorInfo{
+		Name:             "Nelson Lopez",
+		TelephoneNumbers: []string{"TRU: x42478", "TRU: x44215"},
+		Emails:           []string{"ndlopezjimenez@doc1.wa.gov", "nelson.lopez-jimenez@edmonds.edu"},
+		PreferredContact: "Kiosk messaging system",
+		ResponseTime:     "Within 24-hours on weekdays",
+	}
+}
+
 func NewServer(lessonsDir string) (*Server, error) {
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
@@ -540,8 +558,8 @@ func (s *Server) handleSectionSyllabus(w http.ResponseWriter, r *http.Request) {
 		Resources     []string `json:"resources"`
 	}{
 		"section1-html-css": {
-			CourseCode:    "CIS 241",
-			Credits:       "5.0 Credits",
+			CourseCode:    "CIS 241 ART 225 CIS 291",
+			Credits:       "11.0 Credits",
 			Prerequisites: "CIS 100 or instructor permission",
 			Description:   "Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting.",
 			Objectives: []string{
@@ -726,19 +744,21 @@ func (s *Server) handleSyllabus(w http.ResponseWriter, r *http.Request) {
 	defer s.mutex.RUnlock()
 
 	syllabus := struct {
-		Course      Course              `json:"course"`
-		Lessons     map[int]*Lesson     `json:"lessons"`
-		Sections    map[string]*Section `json:"sections"`
-		Weeks       []int               `json:"weeks"`
-		LastUpdated time.Time           `json:"last_updated"`
-		TotalFiles  int                 `json:"total_files"`
+		Course         Course              `json:"course"`
+		InstructorInfo InstructorInfo      `json:"instructor_info"` // Add this
+		Lessons        map[int]*Lesson     `json:"lessons"`
+		Sections       map[string]*Section `json:"sections"`
+		Weeks          []int               `json:"weeks"`
+		LastUpdated    time.Time           `json:"last_updated"`
+		TotalFiles     int                 `json:"total_files"`
 	}{
-		Course:      s.course,
-		Lessons:     s.lessons,
-		Sections:    s.sections,
-		Weeks:       make([]int, 0),
-		LastUpdated: time.Now(),
-		TotalFiles:  len(s.lessons),
+		Course:         s.course,
+		InstructorInfo: getInstructorInfo(), // Add this
+		Lessons:        s.lessons,
+		Sections:       s.sections,
+		Weeks:          make([]int, 0),
+		LastUpdated:    time.Now(),
+		TotalFiles:     len(s.lessons),
 	}
 
 	var weeks []int
