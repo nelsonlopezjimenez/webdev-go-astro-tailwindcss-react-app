@@ -8,6 +8,7 @@ interface Props {
 }
 
 const { sectionData, meta, syllabus, courseInfo, syllabusData } = Astro.props;
+// console.log("line 11", syllabus.resources)
 ---
 
 <!-- Tab Navigation -->
@@ -246,18 +247,32 @@ const { sectionData, meta, syllabus, courseInfo, syllabusData } = Astro.props;
           </div>
         </div>
 
-        <!-- Resources -->
+         <!-- Resources -->
         <div class="bg-white rounded-xl shadow-lg p-6">
           <h3 class="text-lg font-bold text-gray-800 mb-4">Resources</h3>
           <div class="space-y-2">
             {syllabus.resources && syllabus.resources.map((resource) => (
               <div class="flex items-start text-sm">
                 <div class="w-2 h-2 bg-blue-500 rounded-full mr-2 mt-2 flex-shrink-0"></div>
-                <span class="text-gray-700">{resource}</span>
+                {typeof resource === 'string' ? (
+                  <span class="text-gray-700" set:html={resource}></span>
+                ) : resource.url ? (
+                  <a 
+                    href={resource.url}
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    class="text-blue-600 underline hover:text-blue-800 transition-colors"
+                  >
+                    {resource.text}
+                  </a>
+                ) : (
+                  <span class="text-gray-700">{resource.text}</span>
+                )}
               </div>
             ))}
           </div>
         </div>
+
 
         <!-- Data Source Indicator -->
         <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">

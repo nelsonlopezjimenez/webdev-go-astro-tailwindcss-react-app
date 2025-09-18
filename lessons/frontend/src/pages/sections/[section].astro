@@ -78,7 +78,7 @@ const sectionMeta = {
         "Lab exercises and participation (15%)"
       ],
       resources: [
-        "MDN Web Docs - HTML/CSS Reference",
+        "[SECTION] - MDN Web Docs - HTML/CSS Reference <a href='http://localhost:22022'/>dddd</a>",
         "W3Schools - HTML/CSS Tutorials",
         "CSS-Tricks - CSS techniques and guides",
         "Can I Use - Browser compatibility tables"
@@ -116,10 +116,33 @@ const sectionMeta = {
         "Interactive web app project (30%)",
         "Lab work and code reviews (15%)"
       ],
+// In your [section].astro fallbackSyllabus
       resources: [
-        "MDN Web Docs - JavaScript Reference",
-        "JavaScript.info - Modern JavaScript tutorial",
-        "W3Schools - JavaScript tutorials and examples"
+        {
+          text: "SECTION2 - MDN Web Docs - HTML/CSS Reference",
+          url: "https://developer.mozilla.org/en-US/docs/Web/HTML"
+        },
+        {
+          text: "W3Schools - HTML/CSS Tutorials",
+          url: "https://www.w3schools.com/html/"
+        },
+        {
+          text: "CSS-Tricks - CSS techniques and guides",
+          url: "https://css-tricks.com/"
+        },
+        {
+          text: "Can I Use - Browser compatibility tables",
+          url: "https://caniuse.com/"
+        },
+        {
+          text: "W3C Markup Validator - Validate your HTML code",
+          url: "https://validator.w3.org/"
+        },
+        // For resources without links, just use text
+        {
+          text: "Course textbook: HTML & CSS Design and Build Websites",
+          url: null
+        }
       ]
     }
   },
@@ -153,7 +176,7 @@ const sectionMeta = {
         "Technical documentation and testing (15%)"
       ],
       resources: [
-        "Node.js Documentation",
+        "[SECTION] - Node.js Documentation",
         "Express.js Official Guide",
         "MongoDB University courses"
       ]
@@ -189,7 +212,7 @@ const sectionMeta = {
         "Code quality and documentation (10%)"
       ],
       resources: [
-        "React Official Documentation",
+        "[SESCTION] - React Official Documentation",
         "Create React App - Development environment", 
         "React Router documentation"
       ]

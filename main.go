@@ -590,7 +590,7 @@ func (s *Server) handleSectionSyllabus(w http.ResponseWriter, r *http.Request) {
 				"Lab exercises and participation (15%)",
 			},
 			Resources: []string{
-				"MDN Web Docs - HTML/CSS Reference",
+				"MAIN.GO - MDN Web Docs - HTML/CSS Reference  <a href='http://localhost:22022'/>main.go</a>",
 				"W3Schools - HTML/CSS Tutorials",
 				"Can I Use - Browser compatibility tables",
 				"CSS-Tricks - CSS techniques and guides",
@@ -630,12 +630,13 @@ func (s *Server) handleSectionSyllabus(w http.ResponseWriter, r *http.Request) {
 				"Interactive web app project (30%)",
 				"Lab work and code reviews (15%)",
 			},
+
 			Resources: []string{
-				"MDN Web Docs - JavaScript Reference",
-				"JavaScript.info - Modern JavaScript tutorial",
-				"W3Schools - JavaScript tutorials and examples",
-				"CodePen - JavaScript code playground",
-				"Chrome DevTools - Debugging and testing",
+				`<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">MDN Web Docs - JavaScript Reference</a>`,
+				`<a href="https://javascript.info/" target="_blank">JavaScript.info - Modern JavaScript tutorial</a>`,
+				`<a href="https://www.w3schools.com/js/" target="_blank">W3Schools - JavaScript tutorials and examples</a>`,
+				`<a href="https://codepen.io/" target="_blank">CodePen - JavaScript code playground</a>`,
+				`<a href="https://developer.chrome.com/docs/devtools/" target="_blank">Chrome DevTools - Debugging and testing</a>`,
 			},
 		},
 		"section3-backend": {
@@ -672,7 +673,7 @@ func (s *Server) handleSectionSyllabus(w http.ResponseWriter, r *http.Request) {
 				"Technical documentation and testing (15%)",
 			},
 			Resources: []string{
-				"Node.js Documentation",
+				"MAIN.GO - Node.js Documentation",
 				"Express.js Official Guide",
 				"MongoDB University courses",
 				"Postman - API testing and documentation",
@@ -712,7 +713,7 @@ func (s *Server) handleSectionSyllabus(w http.ResponseWriter, r *http.Request) {
 				"Code quality and documentation (10%)",
 			},
 			Resources: []string{
-				"React Official Documentation",
+				"MAIN.GO - React Official Documentation",
 				"Create React App - Development environment",
 				"React Router documentation",
 				"Redux Toolkit - State management",

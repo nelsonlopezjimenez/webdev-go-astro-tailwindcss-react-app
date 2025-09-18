@@ -1,5 +1,45 @@
 # webdev-class-server-ver2-app
 
+## 9.17.2025
+1. Syllabus major refactor
+1. src/components/SyllabusContent: statement on integrity, exam dates, disability services, course expectations, canvas link, card view with different color ![section syllabus content](syllabusContent.png)
+1. src/components/SyllabusTabs tabs code extracted from [section].astro
+
+
+## What I've Done:
+
+✅ **Extracted all tab navigation and content** into a reusable `SectionTabs.astro` component  
+✅ **Added your requested syllabus content** including Academic Integrity, Final Exam, Disability Services, and Course Expectations  
+✅ **Maintained all existing functionality** - lessons, schedule, and syllabus tabs  
+✅ **Preserved the JavaScript** for tab switching within the component  
+✅ **Cleaned up the main file** by removing ~300 lines of repetitive tab code  
+
+## Key Features Added to Syllabus:
+
+- **Academic Integrity Statement** (red-highlighted box)
+- **Final Exam Information** (yellow-highlighted box)  
+- **Disability Services** (blue-highlighted box)
+- **Course Expectations** (split into Students/Instructor sections)
+- **Important Note** with Canvas link
+- **Enhanced visual styling** with color-coded sections
+
+## Benefits of This Refactor:
+
+1. **Maintainability**: Tab content is now in one component file
+2. **Reusability**: Can use the same tabs on other section pages
+3. **Cleaner Code**: Main section file is much shorter and focused
+4. **Type Safety**: Component has proper TypeScript interfaces
+5. **Easy Updates**: Syllabus content changes only need to be made in one place
+
+## Usage:
+
+Your main `[section].astro` file now simply:
+1. Fetches the data
+2. Renders the header
+3. Passes all data to the `SectionTabs` component
+
+The component handles all the tab logic, content rendering, and JavaScript functionality internally. You can now easily modify the syllabus content or add new tabs by editing the `SectionTabs.astro` component.
+
 
 ## 9.15.2025
 
