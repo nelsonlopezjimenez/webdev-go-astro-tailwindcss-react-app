@@ -7,21 +7,76 @@ const API_BASE = "http://localhost:8080/api";
 let course = null;
 let sections = [];
 let error = null;
+let isBackendDown = false;
 
 try {
-  const courseRes = await fetch(`${API_BASE}/course`);
-  const sectionsRes = await fetch(`${API_BASE}/sections`);
+  console.log('Attempting to fetch from: ', `${API_BASE}/sections`);
+
+
+  const sectionsRes = await fetch(`${API_BASE}/sections`, {
+      // Add timeout to prevent hanging
+      signal: AbortSignal.timeout(5000)  // 5 seconds timeout
+  });
+
+  const courseRes = await fetch(`${API_BASE}/course`, {
+    signal: AbortSignal.timeout(5000)
+  });
 
   if (courseRes.ok) {
     course = await courseRes.json();
+    console.log('Successfully fetched course')
   }
 
   if (sectionsRes.ok) {
     sections = await sectionsRes.json();
+    console.log('Successfully fetched sections:', sectionsRes.status)
+  } else {
+    console.error('API returned error status:', sectionsRes.status);
+    error = `API returned ${sectionsRes.status}`;
+    isBackendDown = true;
   }
+
 } catch (err) {
   console.error("Failed to fetch course data:", err);
-  error = err.message;
+  // error = err.message;
+   // Check if it's a connection error (backend not running)
+  if (err.cause?.code === 'ECONNREFUSED' || err.name === 'TypeError') {
+    isBackendDown = true;
+    error = 'Backend server is not running';
+  } else {
+    error = 'Failed to connect to course data';
+  }
+  // Provide fallback data for development
+  sections = [
+    {
+      id: "section1-html-css",
+      name: "Section 1: HTML & CSS Fundamentals",
+      description: "Learn the foundation of web development",
+      lessons: [],
+      week_start: 1
+    },
+    {
+      id: "section2-javascript", 
+      name: "Section 2: JavaScript Programming",
+      description: "Master JavaScript and DOM manipulation",
+      lessons: [],
+      week_start: 13
+    },
+    {
+      id: "section3-backend",
+      name: "Section 3: Backend Development", 
+      description: "Build server-side applications",
+      lessons: [],
+      week_start: 25
+    },
+    {
+      id: "section4-react",
+      name: "Section 4: React Framework",
+      description: "Create modern web applications",
+      lessons: [],
+      week_start: 37
+    }
+  ];
 }
 
 // Calculate overall progress

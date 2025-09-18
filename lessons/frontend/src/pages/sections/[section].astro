@@ -20,27 +20,54 @@ const API_BASE = 'http://localhost:8080/api';
 let sectionData = null;
 let syllabusData = null;
 let error = null;
+let isBackendDown = false;
+
 
 try {
+  console.log('Attempting to fetch from:', `${API_BASE}/sections`);
+
+
   // Fetch basic section data
-  const sectionResponse = await fetch(`${API_BASE}/sections/${section}`);
+  const sectionResponse = await fetch(`${API_BASE}/sections/${section}`, {
+      // Add timeout to prevent hanging
+      signal: AbortSignal.timeout(5000) 
+  });
+
   if (sectionResponse.ok) {
     sectionData = await sectionResponse.json();
+    console.log(`Successfully fetched sections/${section} ${sectionData.length}`)
   } else {
-    error = 'Section not found';
+    console.error('API returned error status:', sectionResponse.status);
+    error = `API returned ${sectionResponse.status}`;
+    isBackendDown = true;
   }
 
   // Try to fetch syllabus data (might not exist yet)
   try {
-    const syllabusResponse = await fetch(`${API_BASE}/sections/${section}/syllabus`);
+    const syllabusResponse = await fetch(`${API_BASE}/sections/${section}/syllabus`, {
+      signal: AbortSignal.timeout(5000)
+    });
     if (syllabusResponse.ok) {
       syllabusData = await syllabusResponse.json();
+    } else {
+      error = `API returned ${syllabusResponse.status}`;
+      isBackendDown = true;
     }
+
   } catch (syllabusError) {
     console.log('Syllabus data not available yet');
   }
 } catch (err) {
   error = 'Failed to connect to server';
+   console.error('Failed to fetch course data:', err);
+  
+  // Check if it's a connection error (backend not running)
+  if (err.cause?.code === 'ECONNREFUSED' || err.name === 'TypeError') {
+    isBackendDown = true;
+    error = 'Backend server is not running';
+  } else {
+    error = 'Failed to connect to course data';
+  }
 }
 
 // Enhanced section metadata with fallback data
@@ -234,20 +261,26 @@ const courseInfo = {
 <Layout title="Section Page">
   <div class="min-h-screen bg-gray-50">
     
-    <!-- Error handling -->
-    <div>
-      {error && (
-        <div class="max-w-4xl mx-auto px-6 py-16">
-          <div class="bg-red-50 border border-red-200 rounded-xl p-12 text-center">
-            <h1 class="text-3xl font-bold text-red-800 mb-4">Section Not Available</h1>
-            <p class="text-red-700 mb-8">{error}</p>
-            <a href="/" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-              Back to Home
-            </a>
+    <!-- Backend Status Banner -->
+    {isBackendDown && (
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+        <div class="max-w-7xl mx-auto flex">
+          <div class="flex-shrink-0">
+            <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="ml-3">
+            <p class="text-sm text-yellow-700">
+              <strong>Development Mode:</strong> Backend server is not running. Using fallback data.
+              <span class="block mt-1 text-xs">
+                Start your Go server with: <code class="bg-yellow-100 px-1 rounded">go run main.go</code>
+              </span>
+            </p>
           </div>
         </div>
-      )}
-    </div>
+      </div>
+    )}
 
     <!-- Main content when no error -->
     <div>
