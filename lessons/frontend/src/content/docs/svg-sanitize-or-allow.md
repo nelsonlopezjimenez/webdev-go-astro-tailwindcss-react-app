@@ -1,5 +1,5 @@
 ---
-title: "Format svf sanitize or allow"
+title: "Format svg sanitize or allow"
 description: "svg tag"
 publishDate: 2025-09-16
 tags: ["tutorial", "guide", "test"]
