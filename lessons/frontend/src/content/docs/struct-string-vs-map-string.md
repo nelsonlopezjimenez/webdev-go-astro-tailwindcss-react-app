@@ -1,7 +1,7 @@
 ---
 title: "struct string vs map array of objects"
 description: "Brief description file1"
-publishDate: 2025-09.17
+publishDate: 2025-09-17
 tags: ["struct", "map", "documentation"]
 draft: false
 ---
