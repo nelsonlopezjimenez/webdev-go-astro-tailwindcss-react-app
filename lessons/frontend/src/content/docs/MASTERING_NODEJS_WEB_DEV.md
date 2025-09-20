@@ -1,5 +1,9 @@
 ---
-
+title: "Mastering Node.js Web Development"
+description: "Server-side applications with Node.js, covering HTTP requests, static and dynamic content delivery, form data processing, and RESTful web services Hands-on examples, step-by-step code listings, and best practices for building and deploying server applications."
+publishDate: 2025-09-20
+tags: ["markdown", "code blocks", "setDate"]
+draft: false
 ---
 ## Title
 Mastering Node.js Web Development: Go on a comprehensive journey from the fundamentals to advanced web development with Node.js

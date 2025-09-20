@@ -2,38 +2,111 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 
+// Get all docs and sort by publishDate (most recent first)
 const docs = await getCollection('docs');
+const sortedDocs = docs.sort((a, b) => {
+  const dateA = a.data.publishDate || new Date(0);
+  const dateB = b.data.publishDate || new Date(0);
+  return new Date(dateB).getTime() - new Date(dateA).getTime();
+});
+// Sort by title alphabetically
+const sortedDocsTitle = docs.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+// Sort by tags (documents with more tags first)
+const sortedDocsTags = docs.sort((a, b) => (b.data.tags?.length || 0) - (a.data.tags?.length || 0));
+
+// Custom order field
+const sortedDocsCustom = docs.sort((a, b) => (a.data.order || 999) - (b.data.order || 999));
 ---
 
 <Layout title="Documentation">
   <main class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
-    <div class="max-w-7xl mx-auto px-4">
+    <div class="max-w-6xl mx-auto px-4">
       
-      <!-- Header matching lesson pages -->
-      <div class="bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 mb-4">Documentation</h1>
-        <p class="text-gray-600">Additional course materials and resources</p>
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Documentation</h1>
+        <p class="text-xl text-gray-600">Browse our collection of guides and references</p>
       </div>
 
-      <!-- Document Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {docs.map((doc) => (
-          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+      <!-- Documents Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sortedDocs.map((doc) => (
+          <article class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 overflow-hidden">
             <div class="p-6">
-              <h3 class="font-semibold text-gray-900 mb-2">{doc.data.title}</h3>
+              <h2 class="text-xl font-bold text-gray-800 mb-3">
+                <a href={`/docs/${doc.slug}`} class="hover:text-indigo-600 transition-colors">
+                  {doc.data.title}
+                </a>
+              </h2>
+              
               {doc.data.description && (
-                <p class="text-sm text-gray-600 mb-4">{doc.data.description}</p>
+                <p class="text-gray-600 mb-4 line-clamp-3">
+                  {doc.data.description}
+                </p>
               )}
+              
+              <div class="flex items-center justify-between text-sm text-gray-500 mb-4">
+                {doc.data.publishDate && (
+                  <div class="flex items-center">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    <time datetime={doc.data.publishDate.toISOString()}>
+                      {doc.data.publishDate.toLocaleDateString()}
+                    </time>
+                  </div>
+                )}
+                
+                {doc.data.tags && doc.data.tags.length > 0 && (
+                  <div class="flex items-center space-x-1">
+                    {doc.data.tags.slice(0, 2).map((tag) => (
+                      <span class="bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full text-xs font-medium">
+                        {tag}
+                      </span>
+                    ))}
+                    {doc.data.tags.length > 2 && (
+                      <span class="text-gray-400 text-xs">
+                        +{doc.data.tags.length - 2} more
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+              
               <a 
                 href={`/docs/${doc.slug}`}
-                class="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
               >
-                Read Document
+                Read more
+                <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
               </a>
             </div>
-          </div>
+          </article>
         ))}
       </div>
+
+      <!-- Empty state if no docs -->
+      {sortedDocs.length === 0 && (
+        <div class="text-center py-16">
+          <div class="text-8xl mb-6">📚</div>
+          <h2 class="text-3xl font-bold text-gray-800 mb-4">No Documentation Yet</h2>
+          <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+            Documentation is being prepared. Check back soon for helpful guides and references!
+          </p>
+        </div>
+      )}
     </div>
   </main>
 </Layout>
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
