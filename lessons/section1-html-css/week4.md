@@ -1,6 +1,6 @@
 ---
-title: "WEEK 4 - Cascading Style Sheets (CSS)"
-description: "WEEK 4 - Cascading Style Sheets (CSS) and graphical elements."
+title: "Lesson 3 - Cascading Style Sheets (CSS)"
+description: "Week 4 - Cascading Style Sheets (CSS) and graphical elements."
 week: 4
 ---
 Week 4 - Lesson 3 Cascading Style Sheets (CSS) and Graphical Elements

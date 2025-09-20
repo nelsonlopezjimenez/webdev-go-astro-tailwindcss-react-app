@@ -1,6 +1,6 @@
 ---
-title: "CIS 241 - Web Development I"
-description: "WEEK 1 - Website development using current HTML languages, approached from a source code perspective. Covers tags, forms, linked objects, current CSS, frames, tables, and an introduction to scripting. Students will build multi-page websites using GUI editors, Git and GitHub."
+title: "Introduction to the course. Syllabus content. Introduce Yourself"
+description: "Week 1 - Setting your environment, gcfglobal resources: learning tips, problem solving and decision making, resume writing, windows 10, computer basics, connecting to the Internet, what is the Internet, using internet browsers, plagiarism, buying computers. Assignments: write your Resume, write what you did not know, build your dream computer"
 week: 1
 ---
 <h1 id="day1">Welcome to Web Development!</h1>
@@ -20,26 +20,45 @@ week: 1
 - 🧪 [Assignments](#assigday)
 - [next week preview](#nextweek)
 
+## Daily Activities
 
+### Day 1: Course Introduction
+- Review syllabus and course expectations
+- Introduction to the course. 
+- Grading and Assignments
+- Introduce Yourself
+- Laptop deployment: read agreement, sign it
+- Set up folder structure for course projects
+- Introduction to Canvas and submission process
+- Additional Resources from gcfglobal dot edu.
 
+### Day 2: Computer Basics
+- Learning tips
+- Problem solving and decision making
+- Resume writing
+- Windows 10 features
+- File and folder organization best practices
+- Basic computer skills
+- Computer basics
 
+### Day 3: Web Technology Overview an the Internet
+- Understanding client-server architecture
+- What is the **Internet**
+- Web browsers and rendering engines
+- Domain names, hosting, and file paths
+- Understanging URL
+- Introduction to version control concepts
 
-## Learning Objectives
+### Day 4: Automation, plagiarism, downloads, zip files
+- Automaton impact
+- What is plagiarims
+- Taking screenshots
+- Finding your downloads
+- Working with zip files
+- Common keyboard shortcuts
+- Buying computers
 
-By the end of this lesson, you will be able to:
-
-- Perform content design and technical analysis on web applications and websites.",
-- Use current HTML to develop, debug, maintain, and document web applications and websites.", 
-- Compare and contrast different browsers' effects on current HTML documents.",
-- Use current HTML forms, iframes, and tables.",
-- Create current HTML style through inline, embedded, and Cascading Style Sheets
-
-## Goals
-
-1. Introduction to the course.
-1. Syllabus content.
-1. Introduce yourself
-1. Canvas videos
+### Day 5: Off-class activities
 
 ## Grading Information
 
@@ -110,6 +129,16 @@ As your teacher, I will work hard to:
 
 [↑ Back to Top](#table-of-contents)
 <hr id="environment" />
+
+## Course Materials
+
+1. HTML & CSS design and build websites, Jon Ducket, Wiley, 2011  (Links to an external site.)
+1. copy/paste the following link into the navigation bar in chrome browser
+1. If you do not know how to do it, I'll explain in class
+1. [http://localhost:22022/Public/Documents/duckett.pdf](http://localhost:22022/Public/Documents/duckett.pdf)
+1. HTML & CSS design and build websites, Jon Ducket, Wiley, 2011 <img src="/week1/duckett.png" alt="HTML-CSS" width="100" height="80" />
+1. ISBN: 978-1-118-00818-8
+
 
 ## Setting Up Your Environment
 

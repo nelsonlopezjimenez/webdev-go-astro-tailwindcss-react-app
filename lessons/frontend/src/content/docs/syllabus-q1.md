@@ -5,7 +5,7 @@ publishDate: 2025-09-17
 tags: ["syllabus", "quarter1", "test"]
 draft: false
 ---
-
+<pre>
 Quarter 1 Syllabus
 Jan 6, 2025
 
@@ -191,3 +191,4 @@ Week 11 - Lesson 10 Web Site Development for Business
 Week 12 – Site Development Associate – Conclusion
     Assignments:
     Competency Demonstration - CIS 241 Web Dev I Final Project
+</pre>

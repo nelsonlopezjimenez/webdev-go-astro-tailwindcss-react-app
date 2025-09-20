@@ -1,16 +1,17 @@
 ---
-title: "Week 1: Course Introduction and Web Development Overview"
+title: "Lesson 1: Markup Language and Site Development Essentials"
 description: "Introduction to the full-stack development program, development environment setup, and basic web technologies"
 week: 2
 ---
 
-# Week 1: Course Introduction and Web Development Overview
+# Week 2: Markup Language and Site Development Essentials
 
 ## Learning Objectives
 - Understand the structure of the full-stack development program
 - Set up development environment and tools
+- Defining Web page authoring terms
 - Learn basic web technologies and terminology
-- Create first HTML document
+- Quiz : Markup Language and Site Development Essentials
 
 ## Course Structure Overview
 
@@ -62,11 +63,12 @@ Create your first HTML document:
 </body>
 </html>
 ```
-
-### Day 5: Web Standards and Best Practices
 - W3C standards and validation
 - Accessibility basics
 - Code organization and commenting
+
+### Day 5: Web Standards and Best Practices
+
 - Planning your final project
 
 ## Final Project Planning

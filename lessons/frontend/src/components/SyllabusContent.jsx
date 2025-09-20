@@ -9,6 +9,25 @@ export default function SyllabusContent() {
             Edmonds CC students shall demonstrate Academic Integrity. I am expected to report all violations of Academic Integrity (cheating and plagiarism) to the College. The College's database of such incidents will be monitored by the Office of the Vice President for Student Services. Data will be maintained for three years. Evidence of repeat incidents will result in additional action by the Office of the Vice President for Student Services as governed by the Student Code of Conduct. In this class, cheating and plagiarism will result in an assignment or grade penalty ranging from "0" on an assignment to an "F" in the course.
           </p>
         </section>
+       
+        <section className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Policy on Use of Generative AI</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">What Is Generative AI?</h2>
+          <p className="text-gray-700 leading-relaxed">
+          Generative AI produces writing, art, and audio based on human-generated prompts. Generative AI includes tools such as ChatGPT, Perplexity.ai, and others. While these tools are the wave of the future in work and education, they also challenge what we mean by learning and raise questions about academic integrity.
+          </p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Full Use</h2>
+          <p className="text-gray-700 leading-relaxed">
+          You are authorized to use artificial intelligence engines, software, or artwork-generating programs to produce work for this class. All work created using Generative AI must be cited, and you will be provided with examples of how to cite Generative AI. Use of generative AI without proper attribution will be considered a violation of the Academic Conduct Policy for this course. 
+          </p>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Attributing Generative AI</h2>
+          <p className="text-gray-700 leading-relaxed">
+           All work using Generative AI must be accompanied by attribution language indicating the use of AI, stating the generative system used, and attesting that the human author reviewed, edited, and revised the language. For example: 
+           
+           The author generated this text in part with GPT-3, OpenAI’s large-scale language-generation model. Upon generating draft language, the author reviewed, edited, and revised the language to their own liking and takes ultimate responsibility for the content of this publication.
+          </p>
+           <p className="text-small">This sample “Generative AI Attribution Requirement” syllabus statement was created by Robin Datta.</p>
+        </section>
 
         <section className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">FINAL EXAM AND LAST MEETING OF CLASS</h2>

@@ -1,13 +1,13 @@
 ---
-title: "Week 2: HTML5 Fundamentals and Document Structure"
-description: "Master HTML5 semantic elements, proper document structure, and create well-structured web pages"
+title: "Lesson 2: HTML5 Fundamentals and Document Structure"
+description: "Master HTML5 semantic elements and attributes, proper document structure, and create well-structured web pages"
 week: 3
 ---
 
 # Week 2: HTML5 Fundamentals and Document Structure
 
 ## Learning Objectives
-- Master HTML5 semantic elements
+- Master HTML5 semantic elements and attributes
 - Understand proper document structure
 - Learn HTML5 form basics
 - Create well-structured web pages
