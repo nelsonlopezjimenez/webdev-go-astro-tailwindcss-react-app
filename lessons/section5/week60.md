@@ -1,5 +1,7 @@
 ---
-
+title: "WEEK 60 - Wireframe creation" 
+description: "Practical Web Design: chapter 1 about wireframe creation"
+week: 60
 ---
 # 3 Website-Designing Workflow
 From Practical Web Design by Philippe Hong, Packt>, 2018,  ISBN 978-1-78839-503-8
@@ -142,3 +144,14 @@ Get inspiration
  puzzle, try to compose by remixing shapes, colors, and so on. This is the most fun and
  creative part, because it's up to your imagination and the amount of flexibility you have to
  create something unique and of high quality
+
+ ![development branch](/week38/image-1.png)
+<img src="/week38/image-1.png" alt="development branch" width="500" height="600">
+![weeknavigation start branch](/week38/image.png)
+<img src="/week38/image.png" alt="weeknavigation branch" width="500" height="600">
+![secondev branch](/week38/image-2.png)
+<img src="/week38/image-2.png" alt="secondev branch" width="500" height="600">
+![added this images not rendered](/week38/image-3.png)
+<img src="/week38/image-3.png" alt="alt pics rendering branch" width="500" height="600">
+![with img tags](/week38/image-4.png)
+<img src="/week38/image-4.png" alt="alt with img tags" width="500" height="600">
