@@ -6,6 +6,24 @@ week: 38
 
 <h1 id="day1">Welcome to Web Development IV!</h1>
 
+ ## Week1 Quarter 4
+ 
+ ### What did you do during the break?
+ 1. #### Read the Textbooks
+ 1. #### Read Full-Stack React ++++
+ 1. #### Wrote a python program
+ 1. #### Walk/find loops on W3Schoolas  ++
+ 1. #### Read chapter 3 of Full-Stack textbook  backend  ++
+ 1. #### Buidls a modal login page
+ 1. #### Read more about expres and book node
+ 1.  #### worked on implement a database for personal app +
+ 1. #### Built SPA app:  single page application
+ 1. #### Studied form data on MDN
+ 1. #### Studied json data on MDN
+ 1. #### Studied mongoose syntax on zeal +
+ 1. #### Reviewed quarter 2 and 3 material ++
+ 1. #### Verdaccio npm  fail often because it can not find the dependency  ++
+
 ## Daily Activities
 
 ### Day 1: Quarter 4 Introduction
@@ -109,3 +127,4 @@ touch routes/index.js
  1. cd Documents/_QUARTER3/chapter-five-mern-social-yes-nm
  1. run npm install or tar xvfz nm.tar.gz
  1. npm run development
+
