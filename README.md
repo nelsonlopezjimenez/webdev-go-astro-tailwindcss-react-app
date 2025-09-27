@@ -1,5 +1,16 @@
 # webdev-class-server-ver2-app
 
+## 9.27.2025
+1. Build your dream computer assignment
+1. Steps post-credentialing a laptop
+1. Request a laptop with general image
+1. Answer questions from DOC IT
+1. transfer gcf-browser.exe file to credentialed laptop
+1. Transfer oneliners
+1. Review submodules syntax
+1. Review git remove folder from history
+1. Claude concept of best approach to use stored hardware for using in data processing.i
+
 ## 9.17.2025
 1. Syllabus major refactor
 1. src/components/SyllabusContent: statement on integrity, exam dates, disability services, course expectations, canvas link, card view with different color ![section syllabus content](syllabusContent.png)
