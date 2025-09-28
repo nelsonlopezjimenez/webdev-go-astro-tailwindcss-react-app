@@ -156,6 +156,14 @@ git filter-repo --path secrets/ --invert-paths
 git push origin --force --all
 git push origin --force --tags
 ```
+## Remove Large Executable from History
+
+bash# Using git filter-repo (recommended)
+git filter-repo --path COMPUTER_BASICS-8.25.2025.exe --invert-paths
+
+# Force push to update remote
+git push origin --force --all
+
 
 ## Clean up local repository
     ```sh
