@@ -25,9 +25,32 @@ This is the **first section** of a comprehensive **4-section full-stack web deve
 ## Daily Activities
 
 ### Day 1: Course Introduction
+- Download/update course-server from [http://192.168.1.28:3000](http://192.168.1.28:3000/s888888/node_modules_executables.git)
+- Download [gcf-browser.exe](http://192.168.1.28:3000/s888888/node_modules_executables.git)
 - Review syllabus and course expectations
-- Install VS Code and extensions (Live Server, HTML Snippets, Auto Rename Tag)
+- Assignment week2 - [Lab2.1 Build a Dream Computer](http://localhost:8080/docs/assign-dream-computer)
+- Configure individual laptops: Zeal, Desktop's shortcuts, gcf-browser.exe and/or class-server-8080 [postcredential steps](http://localhost:8080/lessons/50)
 - Set up folder structure for course projects
+```bash
+C:\USERS\sXXXXXX\DESKTOP
+├───quarter1
+│   ├───assignments
+│   │   ├───lab1.1
+│   │   ├───lab2.1
+│   │   ├───lab3.1
+│   │   └───lab3.2
+│   │       ├───css
+│   │       ├───images
+│   │       ├───javascript
+│   │       └───public
+│   ├───my-code
+│   ├───practices
+│   └───project
+├───quarter2
+├───quarter3
+└───quarter4
+```
+- Install VS Code and extensions (Live Server, HTML Snippets, Auto Rename Tag)
 - Introduction to Canvas and submission process
 
 ### Day 2: Web Technology Overview

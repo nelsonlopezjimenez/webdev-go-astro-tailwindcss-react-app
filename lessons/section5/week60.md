@@ -145,6 +145,29 @@ Get inspiration
  creative part, because it's up to your imagination and the amount of flexibility you have to
  create something unique and of high quality
 
+## Remove entire folder from git history
+## Remove folder with sensitive data
+```sh
+git filter-repo --path secrets/ --invert-paths
+```
+
+# Clean up and push
+```sh
+git push origin --force --all
+git push origin --force --tags
+```
+
+## Clean up local repository
+    ```sh
+git reflog expire --expire=now --all
+git gc --prune=now --aggressive
+```
+
+# Force push to update remote (DANGER: affects all collaborators)
+git push origin --force --all
+git push origin --force --tags
+
+
  ![development branch](/week38/image-1.png)
 <img src="/week38/image-1.png" alt="development branch" width="500" height="600">
 ![weeknavigation start branch](/week38/image.png)
