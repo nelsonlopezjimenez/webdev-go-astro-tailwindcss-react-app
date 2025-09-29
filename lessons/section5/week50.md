@@ -38,10 +38,15 @@ mkdir -p en4 && for i in *.zip; do mkdir -p "en4/${i%.zip}" && unzip -q "$i" -d 
 1. Networks, the Internet AIO_4_PPT and AIO_7_PPT at C:\Users\Public\CANVAS_FILE_CACHES\quarter1-in-base-image
 1. Technology In Action : Using the Internet: C:\Users\Public\CANVAS_FILE_CACHES\quarter1-in-base-image\tia18e_Chp3
 1. Duckett source code C:\Users\Public\Documents\duckett-textbook-src-code
+1. RAW-VIDEOS\Q1BigRawVideos
+1. Zen Garden : \Public\Videos\youtube.nel\public_html\zen
 
 ## Cheat Sheets
 1. HTML/CSS : C:\Users\Public\CANVAS_FILE_CACHES\quarter1\a5.pdf
 1. Git : C:\Users\Public\CANVAS_FILE_CACHES\quarter1-in-base-image\github-git-cheat-sheet
+1. HTML5 cheat sheet: C:\Users\Public\Videos\RAW_VIDEOS\codingheroes-intro-cheat-sheets/html5-cheat-sheet.pdf
+1. HTML5 cheat sheet: C:\Users\Public\Videos\RAW_VIDEOS\codingheroes-intro-cheat-sheets/WSU-HTML-Cheat-Sheet.pdf
+1. 
 
 # Lesson  50 Content Here
 

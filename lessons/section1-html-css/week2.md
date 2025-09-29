@@ -51,7 +51,8 @@ C:\USERS\sXXXXXX\DESKTOP
 └───quarter4
 ```
 - Install VS Code and extensions (Live Server, HTML Snippets, Auto Rename Tag)
-- Introduction to Canvas and submission process
+- Introduction to Canvas and submission process: [video canvas](http://localhost:22022/youtube.nel/public_html/RAW-VIDEOS/canvas-git-vscode/200-20-20Canvas 20Overview for Students-74677642.mp4)
+- Introduction to Canvas and submission process: [video canvas](http://localhost:22022/youtube.nel/public_html/RAW-VIDEOS/canvas-git-vscode/)
 
 ### Day 2: Web Technology Overview
 - Understanding client-server architecture
